@@ -12,6 +12,7 @@ using se_CodeFirst_3.Models;
 
 namespace se_CodeFirst_3.Controllers.api
 {
+    [Authorize]
     public class ProductsController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
