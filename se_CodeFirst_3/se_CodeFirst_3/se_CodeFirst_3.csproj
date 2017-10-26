@@ -34,6 +34,20 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PublishDatabaseSettings>
+      <Objects>
+        <ObjectGroup Name="DefaultConnection-Deployment" Order="1">
+          <Destination Path="Data Source=185.4.30.96,2014%3bInitial Catalog=kasrazhi_aa%3bPersist Security Info=True%3bUser ID=kasrazhi_aa%3bPassword=bbBB11!!%3bIntegrated Security=SSPI%3bAttachDBFilename=|DataDirectory|aspnetdb.mdf%3bUser Instance=true" />
+          <Object Type="DbFullSql">
+            <PreSource Path="Data Source=.\SQLEXPRESS%3bAttachDbFilename=|DataDirectory|aspnetdb.mdf%3bIntegrated Security=True%3bUser Instance=True" ScriptSchema="True" ScriptData="True" CopyAllFullTextCatalogs="False" DriDefaults="True" />
+            <Source Path="obj\Debug\AutoScripts\DefaultConnection-Deployment_SchemaAndData.sql" Transacted="True" />
+          </Object>
+          <Object Type="DbFullSql" xmlns="">
+            <Source Path="D:\a.sql" Transacted="False" />
+          </Object>
+        </ObjectGroup>
+      </Objects>
+    </PublishDatabaseSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -48,22 +62,54 @@
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions" />
-    <Reference Include="System.Web.Routing" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="Microsoft.CSharp">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Entity">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.ApplicationServices">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Abstractions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Routing">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Configuration">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -72,11 +118,13 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http">
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -206,13 +254,17 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AccountMVCController.cs" />
+    <Compile Include="Controllers\api\ContractsController.cs" />
     <Compile Include="Controllers\api\CustomersController.cs" />
     <Compile Include="Controllers\api\IncomingCallsController.cs" />
     <Compile Include="Controllers\api\OrdersController.cs" />
     <Compile Include="Controllers\api\Order_DetailController.cs" />
+    <Compile Include="Controllers\api\OtherFunctionsController.cs" />
     <Compile Include="Controllers\api\ProductsController.cs" />
     <Compile Include="Controllers\api\SuppliersController.cs" />
     <Compile Include="Controllers\api\UsersController.cs" />
+    <Compile Include="Controllers\ContractsController.cs" />
     <Compile Include="Controllers\CustomersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IncomingCallsController.cs" />
@@ -222,11 +274,13 @@
     <Compile Include="Controllers\SuppliersController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Filters\FutureDateAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\ConnectToWebApiHelper.cs" />
     <Compile Include="Helper\IConnectToWebApiHelper.cs" />
+    <Compile Include="Helper\UsefulMethodsHelper.cs" />
     <Compile Include="Migrations\201710142041082_Initial.cs" />
     <Compile Include="Migrations\201710142041082_Initial.Designer.cs">
       <DependentUpon>201710142041082_Initial.cs</DependentUpon>
@@ -267,17 +321,78 @@
     <Compile Include="Migrations\201710151824235_Initial10.Designer.cs">
       <DependentUpon>201710151824235_Initial10.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710180612158_Initial11.cs" />
+    <Compile Include="Migrations\201710180612158_Initial11.Designer.cs">
+      <DependentUpon>201710180612158_Initial11.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710180948219_Initial12.cs" />
+    <Compile Include="Migrations\201710180948219_Initial12.Designer.cs">
+      <DependentUpon>201710180948219_Initial12.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710181543492_Initial14.cs" />
+    <Compile Include="Migrations\201710181543492_Initial14.Designer.cs">
+      <DependentUpon>201710181543492_Initial14.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710181637274_Initial16.cs" />
+    <Compile Include="Migrations\201710181637274_Initial16.Designer.cs">
+      <DependentUpon>201710181637274_Initial16.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710181639451_Initial17.cs" />
+    <Compile Include="Migrations\201710181639451_Initial17.Designer.cs">
+      <DependentUpon>201710181639451_Initial17.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710181739532_Initial18.cs" />
+    <Compile Include="Migrations\201710181739532_Initial18.Designer.cs">
+      <DependentUpon>201710181739532_Initial18.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710181740562_Initial19.cs" />
+    <Compile Include="Migrations\201710181740562_Initial19.Designer.cs">
+      <DependentUpon>201710181740562_Initial19.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710181744542_Initial20.cs" />
+    <Compile Include="Migrations\201710181744542_Initial20.Designer.cs">
+      <DependentUpon>201710181744542_Initial20.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710191101035_Initial21.cs" />
+    <Compile Include="Migrations\201710191101035_Initial21.Designer.cs">
+      <DependentUpon>201710191101035_Initial21.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710191550123_SomeChanges1.cs" />
+    <Compile Include="Migrations\201710191550123_SomeChanges1.Designer.cs">
+      <DependentUpon>201710191550123_SomeChanges1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710191939110_SomeChanges2.cs" />
+    <Compile Include="Migrations\201710191939110_SomeChanges2.Designer.cs">
+      <DependentUpon>201710191939110_SomeChanges2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710192051435_AddSalaryToUser.cs" />
+    <Compile Include="Migrations\201710192051435_AddSalaryToUser.Designer.cs">
+      <DependentUpon>201710192051435_AddSalaryToUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710192122220_AddMoreColumnsToUser.cs" />
+    <Compile Include="Migrations\201710192122220_AddMoreColumnsToUser.Designer.cs">
+      <DependentUpon>201710192122220_AddMoreColumnsToUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710192122546_AddMoreColumnsToUser1.cs" />
+    <Compile Include="Migrations\201710192122546_AddMoreColumnsToUser1.Designer.cs">
+      <DependentUpon>201710192122546_AddMoreColumnsToUser1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\BuySellContext2.cs" />
+    <Compile Include="Models\Contract.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\CustomerViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\IncomingCall.cs" />
+    <Compile Include="Models\LogInViewModel.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Order_Detail.cs" />
+    <Compile Include="Models\Order_DetailViewModel.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\Supplier.cs" />
+    <Compile Include="Models\SupplierInformationViewModel.cs" />
+    <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
@@ -357,6 +472,8 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <None Include="Properties\PublishProfiles\a.pubxml" />
+    <None Include="Properties\PublishProfiles\amir hossein.pubxml" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />
     <Content Include="Scripts\jquery-1.12.4.min.js" />
@@ -374,7 +491,9 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -391,7 +510,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\AdminPanel.cshtml" />
     <Content Include="Views\Home\AdminPanelCustomer.cshtml" />
-    <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\IncomingCalls\Index.cshtml" />
     <Content Include="Views\IncomingCalls\Create.cshtml" />
     <Content Include="Views\IncomingCalls\Details.cshtml" />
@@ -417,11 +535,23 @@
     <Content Include="Views\Customers\Details.cshtml" />
     <Content Include="Views\Customers\Edit.cshtml" />
     <Content Include="Views\Customers\Index.cshtml" />
-    <Content Include="Views\Order_Detail\Create.cshtml" />
+    <Content Include="Views\Users\Create.cshtml" />
+    <Content Include="Views\Users\Delete.cshtml" />
+    <Content Include="Views\Users\Details.cshtml" />
+    <Content Include="Views\Users\Edit.cshtml" />
+    <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\Home\LogIn.cshtml" />
+    <Content Include="Views\Home\Test.cshtml" />
+    <Content Include="Views\Contracts\Create.cshtml" />
+    <Content Include="Views\Contracts\Delete.cshtml" />
+    <Content Include="Views\Contracts\Details.cshtml" />
+    <Content Include="Views\Contracts\Edit.cshtml" />
+    <Content Include="Views\Contracts\Index.cshtml" />
     <Content Include="Views\Order_Detail\Delete.cshtml" />
     <Content Include="Views\Order_Detail\Details.cshtml" />
-    <Content Include="Views\Order_Detail\Edit.cshtml" />
     <Content Include="Views\Order_Detail\Index.cshtml" />
+    <Content Include="Views\Order_Detail\Create.cshtml" />
+    <Content Include="Views\Order_Detail\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -463,6 +593,48 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710151824235_Initial10.resx">
       <DependentUpon>201710151824235_Initial10.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710180612158_Initial11.resx">
+      <DependentUpon>201710180612158_Initial11.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710180948219_Initial12.resx">
+      <DependentUpon>201710180948219_Initial12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710181543492_Initial14.resx">
+      <DependentUpon>201710181543492_Initial14.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710181637274_Initial16.resx">
+      <DependentUpon>201710181637274_Initial16.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710181639451_Initial17.resx">
+      <DependentUpon>201710181639451_Initial17.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710181739532_Initial18.resx">
+      <DependentUpon>201710181739532_Initial18.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710181740562_Initial19.resx">
+      <DependentUpon>201710181740562_Initial19.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710181744542_Initial20.resx">
+      <DependentUpon>201710181744542_Initial20.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710191101035_Initial21.resx">
+      <DependentUpon>201710191101035_Initial21.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710191550123_SomeChanges1.resx">
+      <DependentUpon>201710191550123_SomeChanges1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710191939110_SomeChanges2.resx">
+      <DependentUpon>201710191939110_SomeChanges2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710192051435_AddSalaryToUser.resx">
+      <DependentUpon>201710192051435_AddSalaryToUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710192122220_AddMoreColumnsToUser.resx">
+      <DependentUpon>201710192122220_AddMoreColumnsToUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710192122546_AddMoreColumnsToUser1.resx">
+      <DependentUpon>201710192122546_AddMoreColumnsToUser1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

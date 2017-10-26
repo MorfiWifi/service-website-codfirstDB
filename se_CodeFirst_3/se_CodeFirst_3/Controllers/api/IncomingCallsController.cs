@@ -12,6 +12,11 @@ using se_CodeFirst_3.Models;
 
 namespace se_CodeFirst_3.Controllers.api
 {
+#if DEBUG
+
+#else
+    [Authorize(Roles = "Administrator,Secretary")]
+#endif
     public class IncomingCallsController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

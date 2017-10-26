@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using se_CodeFirst_3.Models;
 using System.Data.Entity;
+using System.ComponentModel.DataAnnotations;
 
 namespace se_CodeFirst_3.Models
 {
@@ -20,6 +21,23 @@ namespace se_CodeFirst_3.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        [Display(Name = "حقوق")]
+        [Range(0, int.MaxValue, ErrorMessage = "حقوق نمی تواند منفی باشد.")]
+        public int Salary { get; set; }
+
+        [Display(Name = "غیبت")]
+        [Range(0, int.MaxValue, ErrorMessage = "روز های غیبت نمی تواند منفی باشد.")]
+        public int AbsentDays { get; set; }
+
+        [Display(Name = "اضافه کاری")]
+        [Range(0, int.MaxValue, ErrorMessage = "اضافه کاری نمی تواند منفی باشد.")]
+        public int OverTime { get; set; }
+
+        [Display(Name = "مزایا")]
+        [Range(0, int.MaxValue, ErrorMessage = "مزایا نمی تواند منفی باشد.")]
+        public int Benefits { get; set; }
+
 
         //Navigation Properties:
         public virtual ICollection<IncomingCall> IncomingCalls { get; set; }
@@ -41,10 +59,12 @@ namespace se_CodeFirst_3.Models
         public DbSet<Order_Detail> Order_Details { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Contract> Contracts { get; set; }
 
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
         }
+
     }
 }

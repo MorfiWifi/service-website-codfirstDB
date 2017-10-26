@@ -1,4 +1,4 @@
-﻿@model se_CodeFirst_3.Models.Supplier
+﻿@model se_CodeFirst_3.Models.SupplierInformationViewModel
 
 @{
     ViewBag.Title = "Details";
@@ -6,45 +6,59 @@
 
 <h2>Details</h2>
 
-<div>
-    <h4>Supplier</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.CompanyName)
-        </dt>
+<div class="col-sm-6">
+    <table class="table table-responsive table-hover table-bordered table-striped">
+        <tr class="success">
+            <th>اطلاعات تولید کننده</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.CompanyName)</td>
+            <td>@Html.DisplayFor(model => model.CompanyName)</td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.CompanyName)
-        </dd>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Name)</td>
+            <td>@Html.DisplayFor(model => model.Name)</td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Address)</td>
+            <td>@Html.DisplayFor(model => model.Address)</td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.PhoneNumber)</td>
+            <td>@Html.DisplayFor(model => model.PhoneNumber)</td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.UnitsInStock)</td>
+            <td>@Html.DisplayFor(model => model.UnitsInStock)</td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.Address)
-        </dd>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Price)</td>
+            <td>@Html.DisplayFor(model => model.Price)</td>
+        </tr>
+        <tr class="success">
+            <th>لیست محصولات</th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model.Products)
+        {
+            <tr>
+                <td>[ @Html.DisplayNameFor(model => model.Products.FirstOrDefault().Name),
+                     @Html.DisplayNameFor(model => model.Products.FirstOrDefault().UnitsInStock),
+                     @Html.DisplayNameFor(model => model.Products.FirstOrDefault().UnitPrice)]</td>
+                <td>[@Html.ActionLink(@item.Name.ToString(),
+                        "Details", "Products", new { id = item.Id }, new { @class = "btn btn-default" }) , @item.UnitsInStock, @item.UnitPrice]</td>
+            </tr>
+        }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Phone)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
-
-    </dl>
+    </table>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
     @Html.ActionLink("Back to List", "Index")
 </p>

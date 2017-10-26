@@ -8,17 +8,26 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using se_CodeFirst_3.Models;
+using se_CodeFirst_3.Helper;
 
 namespace se_CodeFirst_3.Controllers
 {
     public class CustomersController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
+
+        string basePath = "api/customers/";
+        public CustomersController()
+        {
+            basePath = "api/customers/";
+        }
 
         // GET: Customers
         public async Task<ActionResult> Index()
         {
-            return View(await db.Customers.ToListAsync());
+            List<Customer> customers = await helper.GetListOfItems<Customer>(basePath);
+
+            return View(customers);
         }
 
         // GET: Customers/Details/5
@@ -28,12 +37,12 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = await db.Customers.FindAsync(id);
-            if (customer == null)
+            CustomerViewModel customerInformation = await helper.GetItem<CustomerViewModel>(basePath + id);
+            if (customerInformation == null)
             {
                 return HttpNotFound();
             }
-            return View(customer);
+            return View(customerInformation);
         }
 
         // GET: Customers/Create
@@ -47,12 +56,11 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Name,CompanyName,Phone")] Customer customer)
+        public ActionResult Create([Bind(Include = "Id,Name,CompanyName,PhoneNumber")] Customer customer)
         {
             if (ModelState.IsValid)
             {
-                db.Customers.Add(customer);
-                await db.SaveChangesAsync();
+                helper.CreateItem<Customer>(basePath, customer);
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +74,7 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = await db.Customers.FindAsync(id);
+            Customer customer = await helper.GetItem<Customer>(basePath + id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -79,12 +87,11 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,CompanyName,Phone")] Customer customer)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,CompanyName,PhoneNumber")] Customer customer)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(customer).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                helper.ChangeItem<Customer>(basePath + customer.Id, customer);
                 return RedirectToAction("Index");
             }
             return View(customer);
@@ -97,7 +104,7 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = await db.Customers.FindAsync(id);
+            Customer customer = await helper.GetItem<Customer>(basePath + id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -110,19 +117,10 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Customer customer = await db.Customers.FindAsync(id);
-            db.Customers.Remove(customer);
-            await db.SaveChangesAsync();
+            helper.DeleteItem(basePath, id);
+
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
     }
 }

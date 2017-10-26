@@ -14,7 +14,6 @@ namespace se_CodeFirst_3.Controllers
 {
     public class ProductsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
         ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
 
         string basePath = "api/products/";
@@ -47,8 +46,9 @@ namespace se_CodeFirst_3.Controllers
         }
 
         // GET: Products/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            ViewBag.SupplierId = new SelectList(await helper.GetListOfItems<Supplier>("api/suppliers"), "Id", "CompanyName");
             return View();
         }
 
@@ -57,14 +57,16 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder")] Product product)
+        public async Task<ActionResult> Create([Bind(Include = "Id,Name,UnitPrice,UnitsInStock,UnitsOnOrder,SupplierId")] Product product)//, int supplierId)//
         {
             if (ModelState.IsValid)
             {
+                //product.Supplier = await helper.GetItem<Supplier>("api/suppliers/" + product.Supplier.Id);
                 helper.CreateItem<Product>(basePath, product);
                 return RedirectToAction("Index");
             }
 
+            ViewBag.SupplierId = new SelectList(await helper.GetListOfItems<Supplier>("api/suppliers"), "Id", "CompanyName", product.SupplierId);
             return View(product);
         }
 
@@ -80,6 +82,8 @@ namespace se_CodeFirst_3.Controllers
             {
                 return HttpNotFound();
             }
+
+            ViewBag.SupplierId = new SelectList(await helper.GetListOfItems<Supplier>("api/suppliers"), "Id", "CompanyName", product.SupplierId);
             return View(product);
         }
 
@@ -88,13 +92,15 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder")] Product product)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,UnitPrice,UnitsInStock,UnitsOnOrder,SupplierId")] Product product)
         {
             if (ModelState.IsValid)
             {
                 helper.ChangeItem<Product>(basePath + product.Id, product);
                 return RedirectToAction("Index");
             }
+
+            ViewBag.SupplierId = new SelectList(await helper.GetListOfItems<Supplier>("api/suppliers"), "Id", "CompanyName", product.SupplierId);
             return View(product);
         }
 
@@ -122,13 +128,5 @@ namespace se_CodeFirst_3.Controllers
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
     }
 }

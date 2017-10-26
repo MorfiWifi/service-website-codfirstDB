@@ -3,7 +3,7 @@
 .show-error {
     color: red;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-} 
+}
 
 .show-success {
     color: green;
@@ -16,4 +16,9 @@
 
 html {
     direction: rtl;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+table {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }

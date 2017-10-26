@@ -1,83 +1,48 @@
-﻿using Newtonsoft.Json;
-using se_CodeFirst_3.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using se_CodeFirst_3.Models;
+using se_CodeFirst_3.Helper;
 
 namespace se_CodeFirst_3.Controllers
 {
     public class UsersController : Controller
     {
+
+        ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
+        string basePath = "/api/users/";
+        public UsersController()
+        {
+            basePath = "/api/users/";
+        }
+
         // GET: Users
-        //public ActionResult Index()
-        //{
-        //    var httpClient = new HttpClient();
-
-        //    string baseUrl = "http://localhost:46810/";
-        //    HttpResponseMessage response = httpClient.GetAsync("http://localhost:46810/api/users").Result;
-
-        //    string a = "";
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        a = response.Content.ReadAsStringAsync().Result;
-        //    }
-        //    else
-        //    {
-        //        a = response.Headers.ToString();
-        //    }
-
-        //    ViewBag.Title = a;
-
-        //    return View();
-        //}
-
         public async Task<ActionResult> Index()
         {
-            List<ApplicationUser> EmpInfo = new List<ApplicationUser>();
+            List<ApplicationUser> users = await helper.GetListOfItems<ApplicationUser>(basePath);
 
-            string baseUrl = "http://localhost:46810/";
-
-            using (var client = new HttpClient())
-            {
-                //Passing service base url  
-                client.BaseAddress = new Uri(baseUrl);
-
-                client.DefaultRequestHeaders.Clear();
-                //Define request data format  
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                //Sending request to find web api REST service resource GetAllEmployees using HttpClient  
-                HttpResponseMessage Res = await client.GetAsync("api/users");
-
-                //Checking the response is successful or not which is sent using HttpClient  
-                if (Res.IsSuccessStatusCode)
-                {
-                    //Storing the response details recieved from web api   
-                    var EmpResponse = Res.Content.ReadAsStringAsync().Result;
-
-                    //Deserializing the response recieved from web api and storing into the Employee list  
-                    EmpInfo = JsonConvert.DeserializeObject<List<ApplicationUser>>(EmpResponse);
-
-                    ViewBag.Title = "Successful";
-                }
-                else
-                {
-                    ViewBag.Title = "Failed";
-                }
-                //returning the employee list to view  
-                return View(EmpInfo);
-            }
+            return View(users);
         }
 
         // GET: Users/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(string id)
         {
-            return View();
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            UserViewModel userInformation = await helper.GetItem<UserViewModel>(basePath + id);
+            if (userInformation == null)
+            {
+                return HttpNotFound();
+            }
+            return View(userInformation);
         }
 
         // GET: Users/Create
@@ -87,63 +52,74 @@ namespace se_CodeFirst_3.Controllers
         }
 
         // POST: Users/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName,Salary,AbsentDays,OverTime,Benefits")] ApplicationUser applicationUser)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
-
+                helper.CreateItem<ApplicationUser>("/api/account/register", applicationUser);
                 return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+
+            return View(applicationUser);
         }
 
         // GET: Users/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(string id)
         {
-            return View();
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser applicationUser = await helper.GetItem<ApplicationUser>(basePath + id);
+            if (applicationUser == null)
+            {
+                return HttpNotFound();
+            }
+            return View(applicationUser);
         }
 
         // POST: Users/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName,Salary,AbsentDays,OverTime,Benefits")] ApplicationUser applicationUser)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add update logic here
-
+                helper.ChangeItem<ApplicationUser>(basePath + applicationUser.Id, applicationUser);
                 return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+            return View(applicationUser);
         }
 
         // GET: Users/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser applicationUser = await helper.GetItem<ApplicationUser>(basePath + id);
+            if (applicationUser == null)
+            {
+                return HttpNotFound();
+            }
+            return View(applicationUser);
         }
 
         // POST: Users/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
         {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            helper.DeleteItem(basePath, id);
+            return RedirectToAction("Index");
         }
+
     }
 }

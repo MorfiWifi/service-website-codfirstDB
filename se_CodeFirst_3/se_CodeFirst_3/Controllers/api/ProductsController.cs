@@ -12,6 +12,11 @@ using se_CodeFirst_3.Models;
 
 namespace se_CodeFirst_3.Controllers.api
 {
+#if DEBUG
+
+#else
+    [Authorize(Roles = "Administrator,Secretary,StoreKeeper,Accountant")]
+#endif
     public class ProductsController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -78,7 +83,8 @@ namespace se_CodeFirst_3.Controllers.api
             {
                 return BadRequest(ModelState);
             }
-
+            //first, we have to set the supplier for prodoct; otherwise, EF create new Supplier in DB. is that what we want?no
+            //product.Supplier = db.Suppliers.Find(product.Supplier.Id);
             db.Products.Add(product);
             db.SaveChanges();
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using se_CodeFirst_3.Filters;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,11 +11,12 @@ namespace se_CodeFirst_3.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "متن پیام نمی تواند خالی باشد.")]
         [Display(Name = "پیام")]
         public string Message { get; set; }
 
         [Display(Name = "تاریخ")]
+        [FutureDate]
         public DateTime Date { get; set; }
 
         //Navigation Properties:

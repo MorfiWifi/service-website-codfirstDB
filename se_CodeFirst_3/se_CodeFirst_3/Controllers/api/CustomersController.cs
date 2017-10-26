@@ -12,6 +12,11 @@ using se_CodeFirst_3.Models;
 
 namespace se_CodeFirst_3.Controllers.api
 {
+#if DEBUG
+
+#else
+    [Authorize(Roles = "Administrator,Secretary")]
+#endif
     public class CustomersController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -32,7 +37,37 @@ namespace se_CodeFirst_3.Controllers.api
                 return NotFound();
             }
 
-            return Ok(customer);
+            var allProductsPurchased = (from item in customer.Orders
+                                        join item2 in db.Order_Details on item.Id equals item2.OrderId
+                                        select item2.Quantity).Sum();
+
+            var priceOfAllProductsPurchased = (from item in customer.Orders
+                                               join item2 in db.Order_Details on item.Id equals item2.OrderId
+                                               join item3 in db.Products on item2.ProductId equals item3.Id
+                                               select item3.UnitPrice * item2.Quantity).Sum();
+
+            var products = from item in customer.Orders
+                           join item2 in db.Order_Details on item.Id equals item2.OrderId
+                           join item3 in db.Products on item2.ProductId equals item3.Id
+                           select item3;
+
+            var order_details = from item in customer.Orders
+                                join item2 in db.Order_Details on item.Id equals item2.OrderId
+                                select item2;
+
+            CustomerViewModel customerInformation = new CustomerViewModel
+            {
+                Name = customer.Name,
+                Orders = customer.Orders,
+                CompanyName = customer.CompanyName,
+                PhoneNumber = customer.PhoneNumber,
+                AllProductsPurchased = allProductsPurchased,
+                PriceOfAllProductsPurchased = priceOfAllProductsPurchased,
+                Products = products,
+                Order_Details = order_details
+            };
+
+            return Ok(customerInformation);
         }
 
         // PUT: api/Customers/5

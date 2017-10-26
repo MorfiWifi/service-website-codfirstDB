@@ -1,0 +1,56 @@
+﻿@model se_CodeFirst_3.Models.UserViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div class="col-sm-6">
+    <table class="table table-responsive table-hover table-bordered table-striped">
+        <tr class="success">
+            <th>اطلاعات کاربر</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.UserName)</td>
+            <td>@Html.DisplayFor(model => model.UserName)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Roles)</td>
+            <td>@Html.DisplayFor(model => model.Roles)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Salary)</td>
+            <td>@Html.DisplayFor(model => model.Salary)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Benefits)</td>
+            <td>@Html.DisplayFor(model => model.Benefits)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.OverTime)</td>
+            <td>@Html.DisplayFor(model => model.OverTime)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.AbsentDays)</td>
+            <td>@Html.DisplayFor(model => model.AbsentDays)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.FinalSalary)</td>
+            <td>@Html.DisplayFor(model => model.FinalSalary)</td>
+        </tr>
+
+    </table>
+</div>
+
+
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

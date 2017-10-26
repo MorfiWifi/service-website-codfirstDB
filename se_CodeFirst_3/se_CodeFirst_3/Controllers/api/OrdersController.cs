@@ -12,6 +12,11 @@ using se_CodeFirst_3.Models;
 
 namespace se_CodeFirst_3.Controllers.api
 {
+#if DEBUG
+
+#else
+    [Authorize(Roles = "Administrator,Secretary")]
+#endif
     public class OrdersController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -78,7 +83,6 @@ namespace se_CodeFirst_3.Controllers.api
             {
                 return BadRequest(ModelState);
             }
-
             db.Orders.Add(order);
             db.SaveChanges();
 

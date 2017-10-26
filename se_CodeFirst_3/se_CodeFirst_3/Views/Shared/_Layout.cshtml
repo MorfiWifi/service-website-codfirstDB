@@ -27,9 +27,20 @@
                     <li>@Html.ActionLink("تهیه کنندگان", "Index", "Suppliers", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("کالا ها", "Index", "Products", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("سفارشات", "Index", "Orders", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("قراردادها", "Index", "Contracts", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("Order_Details", "Index", "Order_Detail", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("تماس های ورودی", "Index", "IncomingCalls", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("مشتری ها", "Index", "Customers", new { area = "" }, null)</li>
+                    <li>
+                        @if (HttpContext.Current.Session["loginToken"] == null)
+                        {
+                            @Html.ActionLink("ورود", "LogIn", "Home", new { area = "" }, null)
+                        }
+                        else
+                        {
+                            @Html.ActionLink("خروج", "LogOut", "Home", new { area = "" }, null)
+                        }
+                    </li>
                 </ul>
             </div>
         </div>

@@ -8,17 +8,26 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using se_CodeFirst_3.Models;
+using se_CodeFirst_3.Helper;
 
 namespace se_CodeFirst_3.Controllers
 {
     public class OrdersController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
+
+        string basePath = "api/orders/";
+        public OrdersController()
+        {
+            basePath = "api/orders/";
+        }
 
         // GET: Orders
         public async Task<ActionResult> Index()
         {
-            return View(await db.Orders.ToListAsync());
+            List<Order> orders = await helper.GetListOfItems<Order>(basePath);
+
+            return View(orders);
         }
 
         // GET: Orders/Details/5
@@ -28,7 +37,7 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Order order = await db.Orders.FindAsync(id);
+            Order order = await helper.GetItem<Order>(basePath + id);
             if (order == null)
             {
                 return HttpNotFound();
@@ -37,8 +46,10 @@ namespace se_CodeFirst_3.Controllers
         }
 
         // GET: Orders/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            ViewBag.ContractId = new SelectList(await helper.GetListOfItems<Contract>("api/contracts/"), "Id", "Content");
+            ViewBag.CustomerId = new SelectList(await helper.GetListOfItems<Customer>("api/customers/"), "Id", "Name");
             return View();
         }
 
@@ -47,15 +58,16 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Content,OrderDate,RequiredDate,ShippedDate")] Order order)
+        public async Task<ActionResult> Create([Bind(Include = "Id,OrderDate,RequiredDate,CustomerId,ContractId")] Order order)
         {
             if (ModelState.IsValid)
             {
-                db.Orders.Add(order);
-                await db.SaveChangesAsync();
+                helper.CreateItem<Order>(basePath, order);
                 return RedirectToAction("Index");
             }
 
+            ViewBag.ContractId = new SelectList(await helper.GetListOfItems<Contract>("api/contracts/"), "Id", "Content");
+            ViewBag.CustomerId = new SelectList(await helper.GetListOfItems<Customer>("api/customers/"), "Id", "Name");
             return View(order);
         }
 
@@ -66,11 +78,13 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Order order = await db.Orders.FindAsync(id);
+            Order order = await helper.GetItem<Order>(basePath + id);
             if (order == null)
             {
                 return HttpNotFound();
             }
+            ViewBag.ContractId = new SelectList(await helper.GetListOfItems<Contract>("api/contracts/"), "Id", "Content");
+            ViewBag.CustomerId = new SelectList(await helper.GetListOfItems<Customer>("api/customers/"), "Id", "Name");
             return View(order);
         }
 
@@ -79,14 +93,15 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Content,OrderDate,RequiredDate,ShippedDate")] Order order)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,OrderDate,RequiredDate,CustomerId,ContractId")] Order order)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(order).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                helper.ChangeItem<Order>(basePath + order.Id, order);
                 return RedirectToAction("Index");
             }
+            ViewBag.ContractId = new SelectList(await helper.GetListOfItems<Contract>("api/contracts/"), "Id", "Content");
+            ViewBag.CustomerId = new SelectList(await helper.GetListOfItems<Customer>("api/customers/"), "Id", "Name");
             return View(order);
         }
 
@@ -97,7 +112,7 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Order order = await db.Orders.FindAsync(id);
+            Order order = await helper.GetItem<Order>(basePath + id);
             if (order == null)
             {
                 return HttpNotFound();
@@ -110,19 +125,10 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Order order = await db.Orders.FindAsync(id);
-            db.Orders.Remove(order);
-            await db.SaveChangesAsync();
+            helper.DeleteItem(basePath, id);
+
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
     }
 }

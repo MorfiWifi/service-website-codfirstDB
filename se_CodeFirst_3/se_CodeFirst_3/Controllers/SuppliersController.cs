@@ -36,12 +36,17 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Supplier supplier = await helper.GetItem<Supplier>(basePath + id);
-            if (supplier == null)
+            //Supplier supplier = await helper.GetItem<Supplier>(basePath + id);
+            //we want to share more details about Supplier, so instead of above commented code, we create an instance of SupplierInformationViewModel: 
+            SupplierInformationViewModel supplierInformation = await helper.GetItem<SupplierInformationViewModel>(basePath + id);
+
+            if (supplierInformation == null)
             {
                 return HttpNotFound();
             }
-            return View(supplier);
+            return View(supplierInformation);
+
+
         }
 
         // GET: Suppliers/Create
@@ -55,7 +60,7 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CompanyName,Name,Address,Phone")] Supplier supplier)
+        public ActionResult Create([Bind(Include = "Id,CompanyName,Name,Address,PhoneNumber")] Supplier supplier)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +91,7 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,CompanyName,Name,Address,Phone")] Supplier supplier)
+        public ActionResult Edit([Bind(Include = "Id,CompanyName,Name,Address,PhoneNumber")] Supplier supplier)
         {
             if (ModelState.IsValid)
             {

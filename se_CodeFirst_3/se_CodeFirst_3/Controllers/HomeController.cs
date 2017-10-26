@@ -1,4 +1,5 @@
-﻿using se_CodeFirst_3.Models;
+﻿using se_CodeFirst_3.Helper;
+using se_CodeFirst_3.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,38 @@ namespace se_CodeFirst_3.Controllers
 {
     public class HomeController : Controller
     {
-        ApplicationDbContext db = new ApplicationDbContext();
+        ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
+
+        public ActionResult Test()
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            var supplier = db.Suppliers.Find(1);
+
+            var a = DateTimeOffset.Now;
+            var a1 = DateTimeOffset.UtcNow;
+            var a2 = DateTimeOffset.MinValue;
+            var a3 = DateTimeOffset.MaxValue;
+
+            System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
+
+            DateTime datetime = new DateTime();
+            datetime = DateTime.Now;
+
+            var c = pc.GetDayOfWeek(datetime);
+            var c2 = pc.GetDayOfMonth(datetime);
+            var c3 = pc.GetDayOfYear(datetime);
+            var c4 = pc.GetHour(datetime);
+            var c5 = pc.GetMinute(datetime);
+            var c6 = pc.GetMonth(datetime);
+            var c7 = pc.GetSecond(datetime);
+
+            var user = db.Users.Find(1);
+
+            return View(supplier.Products);
+        }
+
         public ActionResult Index()
         {
-            //var a = db.Users.Find(1);
-            ViewBag.Title = db.Users.ToList();
             return View();
         }
 
@@ -27,6 +55,41 @@ namespace se_CodeFirst_3.Controllers
         public ActionResult AdminPanelCustomer()
         {
             return View();
+        }
+
+        public ActionResult LogIn()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogIn(LogInViewModel logInViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                Dictionary<string, string> token = helper.GetTokenDetails(logInViewModel.UserName, logInViewModel.Password);
+                HttpContext.Session["loginToken"] = token.Values.ElementAt(0);
+                ViewBag.Title = Session["loginToken"];
+            }
+            else
+            {
+                ViewBag.Title = "B";
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult LogOut()
+        {
+            bool successful = helper.LogOut("api/account/logout");
+
+            if (successful)
+            {
+                HttpContext.Session["loginToken"] = null;
+            }
+
+            return RedirectToAction("LogIn");
         }
     }
 }

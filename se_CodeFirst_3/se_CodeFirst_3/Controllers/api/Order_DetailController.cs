@@ -12,6 +12,11 @@ using se_CodeFirst_3.Models;
 
 namespace se_CodeFirst_3.Controllers.api
 {
+#if DEBUG
+
+#else
+    [Authorize(Roles = "Administrator,Secretary")]
+#endif
     public class Order_DetailController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -49,10 +54,24 @@ namespace se_CodeFirst_3.Controllers.api
                 return BadRequest();
             }
 
+            //tip: order_detail is for after changing and order_detail with Id=id is the one before editing
+            var quantityBefore = db.Order_Details.Find(id).Quantity;
+
             db.Entry(order_Detail).State = EntityState.Modified;
 
             try
             {
+                db.SaveChanges();
+
+                //now we have to update products table too:
+                var product = (from item in db.Products
+                               where item.Id == order_Detail.ProductId
+                               select item).SingleOrDefault();
+
+                product.UnitsInStock = product.UnitsInStock + quantityBefore;
+                product.UnitsInStock = product.UnitsInStock - order_Detail.Quantity;
+
+                db.Entry(product).State = EntityState.Modified;
                 db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
@@ -79,10 +98,27 @@ namespace se_CodeFirst_3.Controllers.api
                 return BadRequest(ModelState);
             }
 
-            db.Order_Details.Add(order_Detail);
-            db.SaveChanges();
+            var product = (from item in db.Products
+                           where item.Id == order_Detail.ProductId
+                           select item).SingleOrDefault();
 
-            return CreatedAtRoute("DefaultApi", new { id = order_Detail.Id }, order_Detail);
+            if (product.UnitsInStock >= order_Detail.Quantity)
+            {
+                db.Order_Details.Add(order_Detail);
+
+                //now we have to update products table too:
+                product.UnitsInStock = product.UnitsInStock - order_Detail.Quantity;
+                db.Entry(product).State = EntityState.Modified;
+
+                db.SaveChanges();
+
+                return CreatedAtRoute("DefaultApi", new { id = order_Detail.Id }, order_Detail);
+            }
+            else
+            {
+                return BadRequest(ModelState + "تعداد کالاها نمی تواند از موجودی بیشتر باشد");
+            }
+
         }
 
         // DELETE: api/Order_Detail/5
@@ -96,6 +132,15 @@ namespace se_CodeFirst_3.Controllers.api
             }
 
             db.Order_Details.Remove(order_Detail);
+
+            //now we have to update products table too:
+            var product = (from item in db.Products
+                           where item.Id == order_Detail.ProductId
+                           select item).SingleOrDefault();
+
+            product.UnitsInStock = product.UnitsInStock + order_Detail.Quantity;
+            db.Entry(product).State = EntityState.Modified;
+
             db.SaveChanges();
 
             return Ok(order_Detail);

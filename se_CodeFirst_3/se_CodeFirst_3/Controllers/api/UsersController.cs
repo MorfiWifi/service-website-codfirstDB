@@ -12,6 +12,12 @@ using se_CodeFirst_3.Models;
 
 namespace se_CodeFirst_3.Controllers.api
 {
+
+#if DEBUG
+
+#else
+    [Authorize(Roles = "Administrator")]
+#endif 
     public class UsersController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -32,7 +38,23 @@ namespace se_CodeFirst_3.Controllers.api
                 return NotFound();
             }
 
-            return Ok(applicationUser);
+            var finalSalary = applicationUser.Salary +
+                applicationUser.OverTime * 40 +
+                applicationUser.Benefits -
+                applicationUser.AbsentDays * 10;
+
+            UserViewModel userInformation = new UserViewModel
+            {
+                UserName = applicationUser.UserName,
+                Salary = applicationUser.Salary,
+                Benefits = applicationUser.Benefits,
+                AbsentDays = applicationUser.AbsentDays,
+                OverTime = applicationUser.OverTime,
+                FinalSalary = finalSalary,
+                Roles = applicationUser.Roles
+            };
+
+            return Ok(userInformation);
         }
 
         // PUT: api/Users/5

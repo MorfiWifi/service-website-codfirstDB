@@ -1,4 +1,4 @@
-﻿@model se_CodeFirst_3.Models.Customer
+﻿@model se_CodeFirst_3.Models.CustomerViewModel
 
 @{
     ViewBag.Title = "Details";
@@ -6,37 +6,73 @@
 
 <h2>Details</h2>
 
-<div>
-    <h4>Customer</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+<div class="col-sm-6">
+    <table class="table table-condensed table-responsive table-hover table-striped">
+        <tr class="success">
+            <th>اطلاعات مشتری</th>
+            <th></th>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Name)</td>
+            <td>@Html.DisplayFor(model => model.Name)</td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CompanyName)
-        </dt>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.CompanyName)</td>
+            <td>@Html.DisplayFor(model => model.CompanyName)</td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.CompanyName)
-        </dd>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.PhoneNumber)</td>
+            <td>@Html.DisplayFor(model => model.PhoneNumber)</td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Phone)
-        </dt>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.AllProductsPurchased)</td>
+            <td>@Html.DisplayFor(model => model.AllProductsPurchased)</td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.PriceOfAllProductsPurchased)</td>
+            <td>@Html.DisplayFor(model => model.PriceOfAllProductsPurchased)</td>
+        </tr>
+        <tr class="success">
+            <th>لیست سفارش ها</th>
+            <th></th>
+        </tr>
 
-    </dl>
+        @foreach (var item in Model.Orders)
+        {
+            <tr>
+                <td>
+                    [@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().OrderDate),
+                    @Html.DisplayNameFor(model => model.Orders.FirstOrDefault().RequiredDate)]
+                </td>
+                <td>
+                    [@item.OrderDate, @item.RequiredDate ]
+                </td>
+            </tr>
+        }
+
+        @*@foreach (var item in Model.Order_Details)
+        {
+            <tr>
+                <td>@item.Quantity</td>
+            </tr>
+        }
+
+        @foreach (var item in Model.Products)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.UnitPrice</td>
+            </tr>
+        }*@
+
+    </table>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
     @Html.ActionLink("Back to List", "Index")
 </p>

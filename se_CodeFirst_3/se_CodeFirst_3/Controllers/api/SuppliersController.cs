@@ -12,10 +12,15 @@ using se_CodeFirst_3.Models;
 
 namespace se_CodeFirst_3.Controllers.api
 {
+#if DEBUG
+
+#else
+    [Authorize(Roles = "Administrator,Secretary")]
+#endif
     public class SuppliersController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
+        
         // GET: api/Suppliers
         public IQueryable<Supplier> GetSuppliers()
         {
@@ -23,16 +28,34 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // GET: api/Suppliers/5
-        [ResponseType(typeof(Supplier))]
+        [ResponseType(typeof(SupplierInformationViewModel))]
         public IHttpActionResult GetSupplier(int id)
         {
-            Supplier supplier = db.Suppliers.Find(id);
+            var supplier = db.Suppliers.Find(id);
+
             if (supplier == null)
             {
                 return NotFound();
             }
 
-            return Ok(supplier);
+            var unitsInStock = (from item in supplier.Products
+                                select item.UnitsInStock).Sum();
+
+            var price = (from item in supplier.Products
+                         select item.UnitsInStock * item.UnitPrice).Sum();
+
+            SupplierInformationViewModel supplierInformation = new SupplierInformationViewModel
+            {
+                Address = supplier.Address,
+                Name = supplier.Name,
+                CompanyName = supplier.CompanyName,
+                PhoneNumber = supplier.PhoneNumber,
+                Products = supplier.Products,
+                UnitsInStock = unitsInStock,
+                Price = price
+            };
+
+            return Ok(supplierInformation);
         }
 
         // PUT: api/Suppliers/5
