@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<se_CodeFirst_3.Models.Customer>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "لیست مشتری ها";
 }
 
 <h2>Index</h2>
@@ -20,7 +20,9 @@
         <th>
             @Html.DisplayNameFor(model => model.PhoneNumber)
         </th>
-        <th></th>
+        <th>
+            @Html.ActionLink("نمایش همه", "Index", "Customers", new { includeDeletedItems = true }, null)
+        </th>
     </tr>
 
 @foreach (var item in Model) {

@@ -1,143 +1,83 @@
 ﻿@model se_CodeFirst_3.Models.ApplicationUser
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "حذف کاربر";
 }
 
-<h2>Delete</h2>
+<div class="col-sm-offset-3 col-sm-6 table-responsive ahk-style-for-delete-page">
+    <h2 class="page-title page-title-delete">@ViewBag.Title</h2>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>ApplicationUser</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <table class="table table-condensed table-striped table-bordered">
+        <tr>
+            <th>ویژگی</th>
+            <th>مقدار</th>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.UserName)
+            </td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.Email)
-        </dd>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Email)
+            </td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.EmailConfirmed)
-        </dt>
+        <tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Salary)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Salary)
+            </td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.EmailConfirmed)
-        </dd>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Benefits)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Benefits)
+            </td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PasswordHash)
-        </dt>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.OverTime)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.OverTime)
+            </td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.PasswordHash)
-        </dd>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.AbsentDays)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.AbsentDays)
+            </td>
+        </tr>
+    </table>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.SecurityStamp)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.SecurityStamp)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PhoneNumberConfirmed)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TwoFactorEnabled)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TwoFactorEnabled)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.LockoutEndDateUtc)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LockoutEndDateUtc)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.LockoutEnabled)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LockoutEnabled)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AccessFailedCount)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AccessFailedCount)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UserName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.UserName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Salary)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Salary)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AbsentDays)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AbsentDays)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.OverTime)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.OverTime)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Benefits)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Benefits)
-        </dd>
-    </dl>
-
-    @using (Html.BeginForm()) {
+@using (Html.BeginForm("Delete", "Users", new { Id = ViewBag.UserId }, FormMethod.Post))
+{
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <input type="submit" value="حذف برای همیشه" class="btn btn-danger" /> |
+            <button type="button" class="btn btn-default" data-dismiss="modal">بستن</button>
         </div>
     }
 </div>
+
+    

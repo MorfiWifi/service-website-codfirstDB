@@ -23,11 +23,22 @@ namespace se_CodeFirst_3.Controllers
         }
 
         // GET: Customers
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(bool? includeDeletedItems)
         {
-            List<Customer> customers = await helper.GetListOfItems<Customer>(basePath);
+            bool castedIncludeDeletedItems = includeDeletedItems.HasValue ? includeDeletedItems.Value : false;
+            if (castedIncludeDeletedItems)
+            {
+                List<Customer> customers = await helper.GetListOfItems<Customer>("api/allCustomers");
 
-            return View(customers);
+                return View(customers);
+            }
+            else
+            {
+                List<Customer> customers = await helper.GetListOfItems<Customer>(basePath);
+
+                return View(customers);
+            }
+            
         }
 
         // GET: Customers/Details/5
@@ -87,7 +98,7 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,CompanyName,PhoneNumber")] Customer customer)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,CompanyName,PhoneNumber,IsDeleted")] Customer customer)
         {
             if (ModelState.IsValid)
             {

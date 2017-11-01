@@ -7,9 +7,11 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
+    @* Setting Favicon: *@
+    <link rel="icon" href="@Url.Content("~/Content/Images/logo_icon.png")" />
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top" id="navbar-styles">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -17,28 +19,44 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+                @*<div class="navbar-brand">
+                        <img src="~/Content/Images/logo_icon.png" class="logo-in-navbar"/>
+                    </div>*@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("خانه", "Index", "Home", new { area = "" }, null)</li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown">
+                            بقیه
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("مقالات", "Blog", "Home", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("آموزش ها", "Help", "Home", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("درباره ما", "AboutUs", "Home", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("تماس با ما", "ContactUs", "Home", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("لاگ ها", "Index", "Home", new { area = "" }, null)</li>
+                        </ul>
+                    </li>
                     <li>@Html.ActionLink("کاربران", "Index", "Users", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("تهیه کنندگان", "Index", "Suppliers", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("تولیدکنندگان", "Index", "Suppliers", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("کالا ها", "Index", "Products", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("سفارشات", "Index", "Orders", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("قراردادها", "Index", "Contracts", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("Order_Details", "Index", "Order_Detail", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("تماس های ورودی", "Index", "IncomingCalls", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("مشتری ها", "Index", "Customers", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("قراردادها", "Index", "Contracts", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("سفارشات", "Index", "Orders", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("جزئیات قراردادها", "Index", "Order_Detail", new { area = "" }, null)</li>
                     <li>
                         @if (HttpContext.Current.Session["loginToken"] == null)
                         {
-                            @Html.ActionLink("ورود", "LogIn", "Home", new { area = "" }, null)
+                            @Html.ActionLink(" ورود", "LogIn", "Home", new { area = "" }, new { @class = "glyphicon glyphicon-log-in" })
                         }
                         else
                         {
-                            @Html.ActionLink("خروج", "LogOut", "Home", new { area = "" }, null)
+                            @Html.ActionLink("خروج", "LogOut", "Home", new { area = "" }, new { @class = "glyphicon glyphicon-log-out" })
                         }
                     </li>
                 </ul>
@@ -49,12 +67,52 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            @* Statusbar Messages Configuration: *@
+
+            @if (TempData["successful"] != null)
+            {
+                <div id="messageBoxAtFooter">
+                    @if (Boolean.Parse(TempData["successful"].ToString()) == true)
+                    {
+                        <div id="successfulMessageBox" class="navbar-fixed-bottom">
+                            @TempData["message"]
+                        </div>
+                    }
+                    else if (Boolean.Parse(TempData["successful"].ToString()) == false)
+                    {
+                        <div id="failureMessageBox" class="navbar-fixed-bottom">
+                            @TempData["message"]
+                        </div>
+                    }
+
+                </div>
+            }
+
+            <p>@*&copy; @DateTime.Now.Year - کسری صنعت ژینو*@</p>
         </footer>
     </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+    <script>
+        $(document).ready(function () {
+            $('li.active').removeClass('active');
+            $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
+
+            $('#failureMessageBox').on("show", function () {
+                $(this).slideUp("slow");
+            });
+
+
+            //$('#failureMessageBox').show(function () {
+            //    $(this).hide("fast");
+            //    $(this).slideUp("slow");
+            //})
+
+        });
+
+    </script>
 </body>
 </html>

@@ -13,8 +13,8 @@ namespace se_CodeFirst_3.Helper
 {
     public class ConnectToWebApiHelper : IConnectToWebApiHelper
     {
-        //private string baseUrl = "http://localhost:46810/";
-        private string baseUrl = "http://kasrazhino.company/";
+        private string baseUrl = "http://localhost:46810/";
+        //private string baseUrl = "http://kasrazhino.company/";
 
         public HttpClient CreateAndConfigureHttpClient()
         {
@@ -130,6 +130,24 @@ namespace se_CodeFirst_3.Helper
 
         }
 
+        public bool DeleteItem(string path, string id)
+        {
+            var client = CreateAndConfigureHttpClient();
+
+            var deleteTask = client.DeleteAsync(path + id);
+
+            var result = deleteTask.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
         //Authorization Part::
         public Dictionary<string, string> GetTokenDetails(string userName, string password)
         {
@@ -145,7 +163,7 @@ namespace se_CodeFirst_3.Helper
                        {"password", password},
                    };
 
-                    var resp = client.PostAsync("http://localhost:46810/token", new FormUrlEncodedContent(login));
+                    var resp = client.PostAsync(baseUrl + "token", new FormUrlEncodedContent(login));
                     resp.Wait(TimeSpan.FromSeconds(10));
 
                     if (resp.IsCompleted)

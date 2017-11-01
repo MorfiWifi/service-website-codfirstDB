@@ -262,6 +262,7 @@
     <Compile Include="Controllers\api\Order_DetailController.cs" />
     <Compile Include="Controllers\api\OtherFunctionsController.cs" />
     <Compile Include="Controllers\api\ProductsController.cs" />
+    <Compile Include="Controllers\api\RolesController.cs" />
     <Compile Include="Controllers\api\SuppliersController.cs" />
     <Compile Include="Controllers\api\UsersController.cs" />
     <Compile Include="Controllers\ContractsController.cs" />
@@ -271,6 +272,7 @@
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\Order_DetailController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
+    <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\SuppliersController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
@@ -280,6 +282,7 @@
     </Compile>
     <Compile Include="Helper\ConnectToWebApiHelper.cs" />
     <Compile Include="Helper\IConnectToWebApiHelper.cs" />
+    <Compile Include="Helper\ProperMessagesHelper.cs" />
     <Compile Include="Helper\UsefulMethodsHelper.cs" />
     <Compile Include="Migrations\201710142041082_Initial.cs" />
     <Compile Include="Migrations\201710142041082_Initial.Designer.cs">
@@ -377,6 +380,18 @@
     <Compile Include="Migrations\201710192122546_AddMoreColumnsToUser1.Designer.cs">
       <DependentUpon>201710192122546_AddMoreColumnsToUser1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710280941441_SafeDelete1.cs" />
+    <Compile Include="Migrations\201710280941441_SafeDelete1.Designer.cs">
+      <DependentUpon>201710280941441_SafeDelete1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710281752509_None1.cs" />
+    <Compile Include="Migrations\201710281752509_None1.Designer.cs">
+      <DependentUpon>201710281752509_None1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710281849364_ChangeRegisterBindingModel1.cs" />
+    <Compile Include="Migrations\201710281849364_ChangeRegisterBindingModel1.Designer.cs">
+      <DependentUpon>201710281849364_ChangeRegisterBindingModel1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -390,6 +405,7 @@
     <Compile Include="Models\Order_Detail.cs" />
     <Compile Include="Models\Order_DetailViewModel.cs" />
     <Compile Include="Models\Product.cs" />
+    <Compile Include="Models\RoleViewModel.cs" />
     <Compile Include="Models\Supplier.cs" />
     <Compile Include="Models\SupplierInformationViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
@@ -403,6 +419,8 @@
     <Content Include="Content\ahk-custom-styles.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\logo_icon.png" />
+    <Content Include="Content\nprogress.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -444,7 +462,6 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
-    <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\angular-animate.js" />
@@ -475,11 +492,9 @@
     <None Include="Properties\PublishProfiles\a.pubxml" />
     <None Include="Properties\PublishProfiles\amir hossein.pubxml" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
-    <Content Include="Scripts\jquery-1.12.4.js" />
-    <Content Include="Scripts\jquery-1.12.4.min.js" />
     <Content Include="Scripts\jquery-1.12.4.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -489,6 +504,7 @@
     <Content Include="Scripts\knockout-3.2.0.debug.js" />
     <Content Include="Scripts\knockout-3.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\nprogress.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Web.config">
@@ -535,8 +551,6 @@
     <Content Include="Views\Customers\Details.cshtml" />
     <Content Include="Views\Customers\Edit.cshtml" />
     <Content Include="Views\Customers\Index.cshtml" />
-    <Content Include="Views\Users\Create.cshtml" />
-    <Content Include="Views\Users\Delete.cshtml" />
     <Content Include="Views\Users\Details.cshtml" />
     <Content Include="Views\Users\Edit.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
@@ -552,6 +566,18 @@
     <Content Include="Views\Order_Detail\Index.cshtml" />
     <Content Include="Views\Order_Detail\Create.cshtml" />
     <Content Include="Views\Order_Detail\Edit.cshtml" />
+    <Content Include="Views\Suppliers\_Create.cshtml" />
+    <Content Include="Views\Home\AboutUs.cshtml" />
+    <Content Include="Views\Home\Blog.cshtml" />
+    <Content Include="Views\Home\ContactUS.cshtml" />
+    <Content Include="Views\Home\Help.cshtml" />
+    <Content Include="Views\Users\Delete.cshtml" />
+    <Content Include="Views\Users\Create.cshtml" />
+    <Content Include="Views\Roles\Create.cshtml" />
+    <Content Include="Views\Roles\Delete.cshtml" />
+    <Content Include="Views\Roles\Details.cshtml" />
+    <Content Include="Views\Roles\Edit.cshtml" />
+    <Content Include="Views\Roles\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -635,6 +661,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710192122546_AddMoreColumnsToUser1.resx">
       <DependentUpon>201710192122546_AddMoreColumnsToUser1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710280941441_SafeDelete1.resx">
+      <DependentUpon>201710280941441_SafeDelete1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710281752509_None1.resx">
+      <DependentUpon>201710281752509_None1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710281849364_ChangeRegisterBindingModel1.resx">
+      <DependentUpon>201710281849364_ChangeRegisterBindingModel1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

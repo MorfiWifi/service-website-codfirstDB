@@ -15,6 +15,8 @@ namespace se_CodeFirst_3.Controllers
     public class SuppliersController : Controller
     {
         ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
+        ProperMessagesHelper messageHelper = new ProperMessagesHelper();
+
         string basePath = "api/suppliers/";
         public SuppliersController()
         {
@@ -22,11 +24,21 @@ namespace se_CodeFirst_3.Controllers
         }
 
         // GET: Suppliers
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(bool? includeDeletedItems)
         {
-            List<Supplier> suppliers = await helper.GetListOfItems<Supplier>(basePath);
+            bool castedIncludeDeletedItems = includeDeletedItems.HasValue ? includeDeletedItems.Value : false;
+            if (castedIncludeDeletedItems)
+            {
+                List<Supplier> suppliers = await helper.GetListOfItems<Supplier>("api/allSuppliers");
 
-            return View(suppliers);
+                return View(suppliers);
+            }
+            else
+            {
+                List<Supplier> suppliers = await helper.GetListOfItems<Supplier>(basePath);
+
+                return View(suppliers);
+            }
         }
 
         // GET: Suppliers/Details/5
@@ -65,9 +77,11 @@ namespace se_CodeFirst_3.Controllers
             if (ModelState.IsValid)
             {
                 helper.CreateItem<Supplier>(basePath, supplier);
+                SuccessfulInsert(supplier.Name);
                 return RedirectToAction("Index");
             }
 
+            Failure();
             return View(supplier);
         }
 
@@ -91,13 +105,15 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,CompanyName,Name,Address,PhoneNumber")] Supplier supplier)
+        public ActionResult Edit([Bind(Include = "Id,CompanyName,Name,Address,PhoneNumber,IsDeleted")] Supplier supplier)
         {
             if (ModelState.IsValid)
             {
                 helper.ChangeItem<Supplier>(basePath + supplier.Id, supplier);
+                SuccessfulChange(supplier.Name);
                 return RedirectToAction("Index");
             }
+            Failure();
             return View(supplier);
         }
 
@@ -113,16 +129,48 @@ namespace se_CodeFirst_3.Controllers
             {
                 return HttpNotFound();
             }
+
+            //we want to use the below id in post method later:
+            ViewBag.SupplierId = id;
             return View(supplier);
         }
 
         // POST: Suppliers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
+            SuccessfulDelete((await helper.GetItem<Supplier>(basePath + id)).Name);
             helper.DeleteItem(basePath, id);
             return RedirectToAction("Index");
+        }
+
+        public void SuccessfulInsert(string item)
+        {
+            TempData.Clear();
+            TempData.Add("message", messageHelper.SuccessfulInsert(item));
+            TempData.Add("successful", true);
+        }
+
+        public void SuccessfulDelete(string item)
+        {
+            TempData.Clear();
+            TempData.Add("message", messageHelper.SuccessfulDelete(item));
+            TempData.Add("successful", true);
+        }
+
+        public void SuccessfulChange(string item)
+        {
+            TempData.Clear();
+            TempData.Add("message", messageHelper.SuccessfulChange(item));
+            TempData.Add("successful", true);
+        }
+
+        public void Failure()
+        {
+            TempData.Clear();
+            TempData.Add("message", messageHelper.Failure());
+            TempData.Add("successful", false);
         }
 
     }

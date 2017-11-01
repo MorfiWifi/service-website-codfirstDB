@@ -20,9 +20,17 @@ namespace se_CodeFirst_3.Controllers.api
     public class SuppliersController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        
+
         // GET: api/Suppliers
         public IQueryable<Supplier> GetSuppliers()
+        {
+            return from item in db.Suppliers
+                   where item.IsDeleted == false
+                   select item;
+        }
+
+        [Route("api/AllSuppliers")]
+        public IQueryable<Supplier> GetAllSuppliers()
         {
             return db.Suppliers;
         }

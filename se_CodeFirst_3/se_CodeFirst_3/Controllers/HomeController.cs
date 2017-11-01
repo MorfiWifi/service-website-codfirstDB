@@ -1,4 +1,6 @@
-﻿using se_CodeFirst_3.Helper;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using se_CodeFirst_3.Helper;
 using se_CodeFirst_3.Models;
 using System;
 using System.Collections.Generic;
@@ -35,7 +37,14 @@ namespace se_CodeFirst_3.Controllers
             var c6 = pc.GetMonth(datetime);
             var c7 = pc.GetSecond(datetime);
 
-            var user = db.Users.Find(1);
+            //var user = db.Users.Find(1);
+
+            var userStore = new UserStore<ApplicationUser>(db);
+            var userManager = new UserManager<ApplicationUser>(userStore);
+
+            var bb = userManager.GetRoles((from item in db.Users
+                                  where item.UserName == "admin"
+                                  select item.Id).SingleOrDefault());
 
             return View(supplier.Products);
         }
@@ -71,12 +80,13 @@ namespace se_CodeFirst_3.Controllers
                 Dictionary<string, string> token = helper.GetTokenDetails(logInViewModel.UserName, logInViewModel.Password);
                 HttpContext.Session["loginToken"] = token.Values.ElementAt(0);
                 ViewBag.Title = Session["loginToken"];
+                return RedirectToAction("Index");
             }
             else
             {
-                ViewBag.Title = "B";
+                ViewBag.Title = "خطا در ورود کاربر";
             }
-            return View();
+            return View(logInViewModel);
         }
 
         [HttpGet]
@@ -91,5 +101,36 @@ namespace se_CodeFirst_3.Controllers
 
             return RedirectToAction("LogIn");
         }
+
+        [HttpGet]
+        public ActionResult AboutUs()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Blog()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult ContactUS()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Help()
+        {
+            return View();
+        }
+
+        //TODO
+        //[HttpPost]
+        //public ActionResult ContactUs()
+        //{
+
+        //}
     }
 }

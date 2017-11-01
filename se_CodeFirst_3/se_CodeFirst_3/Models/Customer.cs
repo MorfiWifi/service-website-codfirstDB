@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel;
 
 namespace se_CodeFirst_3.Models
 {
@@ -23,6 +24,10 @@ namespace se_CodeFirst_3.Models
         [Required(ErrorMessage = "شماره تماس نمی تواند خالی باشد.")]
         [Display(Name = "شماره تماس")]
         public int PhoneNumber { get; set; }
+
+        [DefaultValue(false)]
+        [Display(Name = "حذف شده؟")]
+        public bool IsDeleted { get; set; }
 
         //Navigation Properties:
         public virtual ICollection<Order> Orders { get; set; }

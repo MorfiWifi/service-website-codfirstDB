@@ -27,6 +27,6 @@ namespace se_CodeFirst_3.Models
         public int FinalSalary { get; set; }
 
         [Display(Name = "نقش کاربری")]
-        public ICollection<IdentityUserRole> Roles { get; set; }
+        public IList<string> Roles { get; set; }
     }
 }

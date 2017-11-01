@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
@@ -23,6 +24,10 @@ namespace se_CodeFirst_3.Models
 
         [Display(Name = "آدرس")]
         public string Address { get; set; }
+
+        [DefaultValue(false)]
+        [Display(Name = "حذف شده؟")]
+        public bool IsDeleted { get; set; }
 
         //Navigation Properties:
         public virtual ICollection<Product> Products { get; set; }

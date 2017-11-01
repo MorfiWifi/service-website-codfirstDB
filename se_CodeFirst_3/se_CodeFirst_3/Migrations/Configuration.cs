@@ -14,7 +14,7 @@ namespace se_CodeFirst_3.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;// true;
         }
 
         protected override void Seed(se_CodeFirst_3.Models.ApplicationDbContext context)

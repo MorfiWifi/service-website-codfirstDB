@@ -24,6 +24,14 @@ namespace se_CodeFirst_3.Controllers.api
         // GET: api/Customers
         public IQueryable<Customer> GetCustomers()
         {
+            return from item in db.Customers
+                   where item.IsDeleted == false
+                   select item;
+        }
+
+        [Route("api/AllCustomers")]
+        public IQueryable<Customer> GetAllCustomers()
+        {
             return db.Customers;
         }
 
@@ -135,6 +143,19 @@ namespace se_CodeFirst_3.Controllers.api
 
             return Ok(customer);
         }
+
+        // Delete: api/Customers/SafeDelete/5
+        //[ResponseType(typeof(Customer))]
+        //public IHttpActionResult SafeDeleteCustomer(int id)
+        //{
+        //    Customer customer = db.Customers.Find(id);
+        //    if (customer == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    customer.IsDeleted = 
+        //}
 
         protected override void Dispose(bool disposing)
         {

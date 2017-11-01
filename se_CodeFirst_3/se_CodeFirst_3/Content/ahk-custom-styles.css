@@ -22,3 +22,235 @@ html {
 table {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+#messageBoxAtFooter {
+    /*width: 100%;
+    height: 40px;
+    background-color: rgba(228, 228, 228, 0.38);
+    border-top: 1px solid rgb(216, 216, 216);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: rgb(51, 51, 51);
+    padding-right: 15px;
+    vertical-align: central !important;
+    visibility: hidden;*/
+    height: 40px;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(228, 228, 228, 0.38);
+    border-top: 1px solid rgb(216, 216, 216);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: rgb(51, 51, 51);
+}
+
+#failureMessageBox {
+    width: 100%;
+    height: 40px;
+    background-color: rgba(255, 151, 151, 0.38);
+    border-top: 1px solid rgb(202, 54, 54);
+    transition-duration: 0.5s;
+}
+
+#successfulMessageBox {
+    width: 100%;
+    height: 40px;
+    background-color: rgba(189, 255, 64, 0.33);
+    border-top: 1px solid green;
+    transition-duration: 0.5s;
+}
+
+li {
+    float: right !important;
+}
+
+.logo-in-navbar {
+    max-width: 30px;
+    max-height: 30px;
+}
+
+#navbar-styles {
+    border-bottom: 4px solid rgb(0, 122, 204);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    background-color: rgb(30, 30, 30);
+}
+
+    #navbar-styles div div ul li a {
+        color: rgb(255, 255, 255);
+    }
+
+    #navbar-styles div div ul li {
+        transition: 0.3s;
+    }
+
+li.active a {
+    background-color: rgb(0, 122, 204) !important;
+}
+
+#navbar-styles div div ul li:hover {
+    background-color: rgb(0, 122, 204);
+    transition: 0.3s;
+}
+
+ul.dropdown-menu {
+    background-color: rgb(30, 30, 30);
+}
+
+    ul.dropdown-menu li {
+        width: 100%;
+        min-height: 30px;
+    }
+
+.page-title {
+    margin-top: 60px;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: rgb(70, 183, 70);
+    color: white;
+    min-height: 50px;
+    vertical-align: bottom !important;
+    border-left: 4px solid rgb(255, 148, 0);
+    border-right: 4px solid rgb(255, 148, 0);
+}
+
+.page-title-index {
+    color: white;
+}
+
+.page-title-create {
+    background-color: rgb(35, 123, 199);
+    color: white;
+    border-left: 4px solid rgb(255, 148, 0);
+    border-right: 4px solid rgb(255, 148, 0);
+}
+
+.page-title-change {
+    background-color: rgb(245, 164, 51);
+    color: white;
+    border-left: 4px solid rgb(0, 122, 204);
+    border-right: 4px solid rgb(0, 122, 204);
+}
+
+.page-title-delete {
+    background-color: rgb(220, 66, 61);
+    color: white;
+    border-left: 4px solid rgb(0, 122, 204);
+    border-right: 4px solid rgb(0, 122, 204);
+}
+
+.page-title-details {
+    background-color: rgb(91, 192, 222);
+    color: white;
+    border-left: 4px solid rgb(0, 122, 204);
+    border-right: 4px solid rgb(0, 122, 204);
+}
+
+.page-title-search {
+    background-color: rgb(203, 62, 0);
+    color: white;
+    border-left: 4px solid rgb(0, 122, 204);
+    border-right: 4px solid rgb(0, 122, 204);
+}
+
+.page-title-admin-panel {
+    margin-bottom: 5px;
+    background-color:rgb(77, 77, 77);
+    color: rgb(255, 148, 0);
+}
+
+.page-title-login {
+    background-color:rgb(0, 122, 204);
+    color: rgb(255, 255, 255);
+}
+
+input[type=number] {
+    direction: ltr;
+}
+
+.ahk-style-for-delete-page {
+    min-height: 300px;
+    background-color: rgb(0, 53, 92);
+    padding-bottom: 15px;
+}
+
+#containerForAdminPanel {
+    border: 1px solid rgb(219, 219, 219);
+    min-height: 400px;
+    margin-top: 0px;
+    padding-top: 5px !important;
+    margin-top: 0px !important;
+}
+
+
+
+
+/* Changing Bootstrap Styles Here:: */
+
+.btn {
+    font-family: 'B Yekan';
+}
+
+.table tr th {
+    text-align: center !important;
+}
+
+.table tr td {
+    text-align: center !important;
+}
+
+
+/* Home/Index */
+
+.display_block {
+    display: block;
+}
+
+.handler_no_decoration {
+    text-decoration: none;
+}
+
+    .handler_no_decoration:hover {
+        text-decoration: none;
+    }
+
+    .handler_no_decoration:focus {
+        text-decoration: none;
+    }
+
+.center_text {
+    text-align: center;
+}
+
+.no_border_radius {
+    border-radius: 0px !important;
+}
+
+.no_padding {
+    padding: 0px !important;
+}
+
+.no_margin {
+    margin: 0px !important;
+}
+
+.panel {
+    color: rgb(255, 255, 255);
+    border: 1px solid rgb(0, 166, 255);
+    border-bottom: 0px;
+    background-color: rgb(30, 30, 30);
+}
+
+.panel-heading {
+    color: rgb(255, 148, 0);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.one_pixel_border_bottom {
+    border-bottom: 1px solid rgb(0, 166, 255);
+}
+
+a.list-group-item {
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 1px solid rgb(0, 122, 204);
+}
