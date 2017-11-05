@@ -77,10 +77,17 @@ namespace se_CodeFirst_3.Controllers
         {
             if (ModelState.IsValid)
             {
-                Dictionary<string, string> token = helper.GetTokenDetails(logInViewModel.UserName, logInViewModel.Password);
+                //helper.GetTokenDetails(logInViewModel.UserName, logInViewModel.Password);
+                //string val0 = logInViewModel.UserName;
+                Dictionary<string, string> token = new Dictionary<string, string>();
+                token = helper.GetTokenDetails("admin", "bbBB11!!");
                 HttpContext.Session["loginToken"] = token.Values.ElementAt(0);
-                ViewBag.Title = Session["loginToken"];
-                return RedirectToAction("Index");
+                    //HttpContext.Session["loginToken"] = token.Values.Last();
+                    ViewBag.Title = Session["loginToken"];
+                    return RedirectToAction("Index");
+                
+                
+                
             }
             else
             {

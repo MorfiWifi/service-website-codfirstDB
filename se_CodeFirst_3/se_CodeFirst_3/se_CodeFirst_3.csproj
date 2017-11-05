@@ -392,6 +392,10 @@
     <Compile Include="Migrations\201710281849364_ChangeRegisterBindingModel1.Designer.cs">
       <DependentUpon>201710281849364_ChangeRegisterBindingModel1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711051109263_zero_down.cs" />
+    <Compile Include="Migrations\201711051109263_zero_down.Designer.cs">
+      <DependentUpon>201711051109263_zero_down.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -670,6 +674,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710281849364_ChangeRegisterBindingModel1.resx">
       <DependentUpon>201710281849364_ChangeRegisterBindingModel1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711051109263_zero_down.resx">
+      <DependentUpon>201711051109263_zero_down.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
