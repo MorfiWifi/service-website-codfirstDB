@@ -1,0 +1,129 @@
+﻿@model se_CodeFirst_3.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "تغییر سطوح دسترسی";
+}
+
+<link href="~/Content/SimpleSwitch.css" rel="stylesheet" />
+
+<h2 class="page-title page-title-index"><span class="glyphicon glyphicon-list"></span> @ViewBag.Title 
+@Html.DisplayFor(model => model.UserName)
+    </h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" ng-app="ahkSearchApp" ng-controller="ahkSearchCtrl">
+        
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+
+        @{
+            List<se_CodeFirst_3.Models.ClaimViewModel> claims = ViewBag.Claims;
+            List<Microsoft.AspNet.Identity.EntityFramework.IdentityUserClaim> claimsBefore = ViewBag.ClaimsBefore;
+        }
+
+
+        <div class="table-responsive col-sm-offset-3 col-sm-6">
+            <table class="table table-bordered table-condensed table-hover table-striped">
+
+                <tr>
+                    <th>اکشن</th>
+                    <th>سطح دسترسی</th>
+                </tr>
+
+                @{
+                    bool isTrue = true;
+                    Microsoft.AspNet.Identity.EntityFramework.IdentityUserClaim claim2 = new Microsoft.AspNet.Identity.EntityFramework.IdentityUserClaim();
+                }
+
+                @foreach (var item in claims)
+                {
+                    <tr>
+                        <td>@item.Type</td>
+
+                        @foreach (var item2 in claimsBefore)
+                        {
+                            isTrue = true;
+
+                            if (item.Type == item2.ClaimType && item.Value == item2.ClaimValue)
+                            {
+                                <td>
+                                    @item.Value
+                                    <label class="switch switch-green">
+                                        <input type="checkbox" class="switch-input" ng-click="setClaimId(@item.Id)" checked>
+                                        <span class="switch-label" data-on="On" data-off="Off"></span>
+                                        <span class="switch-handle"></span>
+                                    </label>
+                                </td>
+
+                                isTrue = false;
+                                break;
+                            }
+                        }
+
+                        @if (isTrue)
+                        {
+                            <td>
+                                @item.Value
+                                <label class="switch switch-green">
+                                    <input type="checkbox" class="switch-input" ng-click="setClaimId(@item.Id)">
+                                    <span class="switch-label" data-on="On" data-off="Off"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                            </td>
+                        }
+
+
+                        @Html.HiddenFor(model => model.Id)
+
+
+                    </tr>
+
+                }
+            </table>
+
+            <input type="hidden" name="claimId" id="claimId" value="{{claimId}}" />
+            <input type="submit" name="btnSubmit" value="Submit" id="btnToTrigger" style="visibility:hidden" />
+        </div>
+
+    </div>
+
+                    }
+
+
+
+@Scripts.Render("~/bundles/angular")
+@Scripts.Render("~/bundles/jquery")
+
+<script>
+    var app = angular.module('ahkSearchApp', []);
+    app.controller('ahkSearchCtrl', function ($scope, $http) {
+
+        $scope.items = @Html.Raw(Json.Encode(Model));
+
+
+        //Search Variables:
+        $scope.claimId = -1;
+
+        $scope.setClaimId = function(id){
+            $scope.claimId = id;
+            $timeout(function() {
+                angular.element('#btnToTrigger').triggerHandler('click');
+            });
+        };
+
+    });
+
+    $(document).ready(function(){
+        //attention here: this trigger click code have to be after setting the hidden textbox..
+        $('.switch-input').click(function(){
+            $('#btnToTrigger').trigger('click');
+        });
+
+        
+    });
+
+</script>

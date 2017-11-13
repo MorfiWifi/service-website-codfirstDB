@@ -9,35 +9,87 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using se_CodeFirst_3.Models;
+using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers.api
 {
-    [Authorize]
+#if DEBUG
+
+#else
+    [Authorize]//[Authorize(Roles = "Administrator,Secretary,StoreKeeper,Accountant")]
+#endif
     public class SuppliersController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Suppliers
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Supplier", ClaimValue = "Get")]
+#endif
+        [LogApi]
         public IQueryable<Supplier> GetSuppliers()
+        {
+            var a = RequestContext.Principal;
+            return from item in db.Suppliers
+                   where item.IsDeleted == false
+                   select item;
+        }
+
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Supplier", ClaimValue = "Get")]
+#endif
+        [Route("api/AllSuppliers")]
+        [LogApi]
+        public IQueryable<Supplier> GetAllSuppliers()
         {
             return db.Suppliers;
         }
 
         // GET: api/Suppliers/5
-        [ResponseType(typeof(Supplier))]
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Supplier", ClaimValue = "Get")]
+#endif
+        [ResponseType(typeof(SupplierInformationViewModel))]
+        [LogApi]
         public IHttpActionResult GetSupplier(int id)
         {
-            Supplier supplier = db.Suppliers.Find(id);
+            var supplier = db.Suppliers.Find(id);
+
             if (supplier == null)
             {
                 return NotFound();
             }
 
-            return Ok(supplier);
+            var unitsInStock = (from item in supplier.Products
+                                select item.UnitsInStock).Sum();
+
+            var price = (from item in supplier.Products
+                         select item.UnitsInStock * item.UnitPrice).Sum();
+
+            SupplierInformationViewModel supplierInformation = new SupplierInformationViewModel
+            {
+                Address = supplier.Address,
+                Name = supplier.Name,
+                CompanyName = supplier.CompanyName,
+                PhoneNumber = supplier.PhoneNumber,
+                Products = supplier.Products,
+                UnitsInStock = unitsInStock,
+                Price = price
+            };
+
+            return Ok(supplierInformation);
         }
 
         // PUT: api/Suppliers/5
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Supplier", ClaimValue = "Put")]
+#endif
         [ResponseType(typeof(void))]
+        [LogApi]
         public IHttpActionResult PutSupplier(int id, Supplier supplier)
         {
             if (!ModelState.IsValid)
@@ -72,7 +124,12 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // POST: api/Suppliers
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Supplier", ClaimValue = "Post")]
+#endif
         [ResponseType(typeof(Supplier))]
+        [LogApi]
         public IHttpActionResult PostSupplier(Supplier supplier)
         {
             if (!ModelState.IsValid)
@@ -87,7 +144,12 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // DELETE: api/Suppliers/5
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Supplier", ClaimValue = "Delete")]
+#endif
         [ResponseType(typeof(Supplier))]
+        [LogApi]
         public IHttpActionResult DeleteSupplier(int id)
         {
             Supplier supplier = db.Suppliers.Find(id);

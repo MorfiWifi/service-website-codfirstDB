@@ -29,6 +29,9 @@ namespace se_CodeFirst_3
                   "~/Scripts/knockout-{version}.js",
                   "~/Scripts/app.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/angular").Include(
+                        "~/Scripts/angular.js"));
+
 
         }
     }

@@ -1,51 +1,157 @@
 ﻿@model IEnumerable<se_CodeFirst_3.Models.Order>
+@Scripts.Render("~/bundles/angular")
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "لیست سفارشات";
 }
 
-<h2>Index</h2>
+<div id="mainContainer">
+    <div ng-app="ahkSearchApp" ng-controller="ahkSearchCtrl" class="col-sm-12">
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Content)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.OrderDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RequiredDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ShippedDate)
-        </th>
-        <th></th>
-    </tr>
+        <div class="col-sm-4 col-sm-push-8">
+            <h2 class="page-title page-title-search"><span class="glyphicon glyphicon-search"></span> جست و جو</h2>
+            
+            <div class="table-responsive">
+                <table class="table table-condensed table-striped">
+                    <tr>
+                        <td>متن سفارش: </td>
+                        <td><input class="form-control" type="text" name="contentFilter" ng-model="contentFilter" autofocus /></td>
+                    </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Content)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OrderDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.RequiredDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ShippedDate)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+                    <tr>
+                        <td>نام مشتری: </td>
+                        <td>
+                            <input class="form-control form-horizontal" type="text" name="customerFilter" ng-model="customerFilter" />
+                        </td>
+                    </tr>
 
-</table>
+                    <tr>
+                        <td>تاریخ سفارش: </td>
+                        <td>
+                            <input class="form-control form-horizontal" type="text" name="orderDateFilter" ng-model="orderDateFilter" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>تاریخ تحویل: </td>
+                        <td>
+                            <input class="form-control form-horizontal" type="text" dir="ltr" name="requiredDateFilter" ng-model="requiredDateFilter" />
+                        </td>
+                    </tr>
+                </table>
+
+
+            </div>
+
+        </div>
+
+        <div class="col-sm-8 col-sm-pull-4">
+
+            <h2 class="page-title page-title-index"><span class="glyphicon glyphicon-list"></span> @ViewBag.Title</h2>
+
+            <p>
+                <a class="btn btn-primary" href="~/Orders/Create"><span class="glyphicon glyphicon-plus"></span> افزودن</a>
+                <a class="btn btn-success" href="~/Contracts/Create"><span class="glyphicon glyphicon-plus"></span> افزودن متن قرارداد</a>
+                <a class="btn btn-success" href="~/Order_Detail/Create"><span class="glyphicon glyphicon-plus"></span> افزودن جزئیات قرارداد</a>
+            </p>
+            <div class="table-responsive">
+                <table class="table table-hover table-responsive table-striped table-bordered">
+                    <tr>
+                        <th ng-click="ahkSortBy('contentFilter')" ng-dblclick="ahkSortBy('contentFilter', 'true')">
+                            @Html.DisplayNameFor(model => model.Contract.Content)
+                        </th>
+                        <th ng-click="ahkSortBy('customerFilter')" ng-dblclick="ahkSortBy('customerFilter', 'true')">
+                            <span class="glyphicon glyphicon-user"></span>
+                            @Html.DisplayNameFor(model => model.Customer.Name)
+                        </th>
+                        <th ng-click="ahkSortBy('orderDateFilter')" ng-dblclick="ahkSortBy('orderDateFilter', 'true')">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                            @Html.DisplayNameFor(model => model.OrderDate)
+                        </th>
+                        <th ng-click="ahkSortBy('requiredDateFilter')" ng-dblclick="ahkSortBy('requiredDateFilter', 'true')">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                            @Html.DisplayNameFor(model => model.RequiredDate)
+                        </th>
+                        <th></th>
+                    </tr>
+                                                            @*
+                                            Contract.Content:contentFilter,
+        x.Customer.Name:customerFilter,  *@
+                    <tr ng-repeat="x in items | orderBy:sortParameter : reverseOrder | filter : {OrderDate:orderDateFilter, RequiredDate:requiredDateFilter}">
+                        <td>{{x.Contract.Content}}</td>
+                        <td>{{x.Customer.Name}}</td>
+                        <td dir="ltr">{{x.OrderDate | date : 'yyyy/MM/dd hh:mm:ss' }}</td>
+                        <td dir="ltr">{{x.RequiredDate | date : 'yyyy/MM/dd hh:mm:ss' }}</td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" href="~/Orders/Edit/{{x.Id}}"><span class="glyphicon glyphicon-edit"></span> </a>
+                            <a class="btn btn-sm btn-info" href="~/Orders/Details/{{x.Id}}"><span class="glyphicon glyphicon-list-alt"></span></a>
+                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                                    href="~/Orders/Delete/{{x.Id}}"
+                                    data-target="#confirmItemDeleteModal{{x.Id}}">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+
+                            <!-- Modal -->
+                            <div id="confirmItemDeleteModal{{x.Id}}" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            @*<h4 class="modal-title" >از حذف عنصر انتخاب شده، مطمئن هستید؟</h4>*@
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                @*@{
+                                                        Html.RenderPartial("Delete", );
+                                                    }*@
+                                                <a class="btn btn-sm btn-danger" href="~/Orders/Delete/{{x.Id}}">حذف</a>
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var app = angular.module('ahkSearchApp', []);
+        app.controller('ahkSearchCtrl', function ($scope, $http) {
+
+            $scope.items = @Html.Raw(Json.Encode(Model));
+        
+            for (var i = 0; i < $scope.items.length; i++) {
+                $scope.items[i].OrderDate = new Date(parseInt($scope.items[i].OrderDate.substr(6)));
+                $scope.items[i].RequiredDate = new Date(parseInt($scope.items[i].RequiredDate.substr(6)));
+            }
+
+            //Search Variables:
+            $scope.contentFilter = "";
+            $scope.customerFilter = "";
+            $scope.orderDateFilter = "";
+            $scope.requiredDateFilter = "";
+
+            $scope.ahkSortBy = function (x) {
+                $scope.sortParameter = x;
+                $scope.reverseOrder = reverseOrder;
+            };
+
+            $scope.ahkSortBy = function (x, reverseOrder) {
+                $scope.sortParameter = x;
+                $scope.reverseOrder = reverseOrder;
+            };
+
+        });
+    </script>
+</div>
+

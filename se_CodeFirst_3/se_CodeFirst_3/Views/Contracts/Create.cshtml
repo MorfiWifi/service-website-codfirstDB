@@ -1,0 +1,65 @@
+﻿@model se_CodeFirst_3.Models.Contract
+
+@{
+    ViewBag.Title = "افزودن متن قرارداد جدید";
+}
+
+<h2 class="page-title page-title-create">@ViewBag.Title</h2>
+<div class="col-sm-offset-2 col-sm-8 table-responsive" ng-app="createItemApp" ng-controller="createItemCtrl">
+    @using (Html.BeginForm("Create", "Contracts", FormMethod.Post, new { name = "ahkform" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <input type="text" style="visibility:hidden" name="stayOnCreatePage" value="false" ng-model="stayOnCreatePage" />
+
+        <table class="table table-condensed table-striped table-bordered">
+            <tr>
+                <th>ویژگی</th>
+                <th>مقدار</th>
+            </tr>
+            <tr>
+                <td>@Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "control-label" })</td>
+                <td>
+                    <textarea name="Content" class="form-control col-sm-6 col-sm-offset-3" autofocus style="min-height:300px;" required="required" ng-model="Content"></textarea>
+                    @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+                    <span class="show-error" ng-show="ahkform.Content.$dirty && ahkform.Content.$invalid">
+                        <span ng-show="ahkform.Content.$error.required" class="glyphicon glyphicon-remove" title="این فیلد نمی تواند خالی باشد."></span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.Content.$dirty">
+                        <span ng-hide="ahkform.Content.$error.required" class="glyphicon glyphicon-check"></span>
+                    </span>
+                </td>
+            </tr>
+        </table>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn btn-primary"
+                            ng-disabled="ahkform.Content.$invalid">
+                        <span class="glyphicon glyphicon-plus"></span> افزودن
+                    </button>
+
+                    <button ng-mousedown="changeStayOnCreatePage()" class="btn btn-primary" type="submit"
+                            ng-disabled="ahkform.Content.$invalid">
+                        <span class="glyphicon glyphicon-plus"></span> افزودن و ماندن
+                    </button>
+                    <a href="~/Contracts/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
+                </div>
+            </div>
+            }
+</div>
+
+<script>
+
+    var app = angular.module('createItemApp', []);
+    app.controller('createItemCtrl', function ($scope, $http) {
+        $scope.stayOnCreatePage = false;
+        $scope.changeStayOnCreatePage = function () {
+            $scope.stayOnCreatePage = true;
+        };
+    });
+
+
+</script>
