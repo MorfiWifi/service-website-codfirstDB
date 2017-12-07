@@ -1,9 +1,6 @@
 namespace se_CodeFirst_3.Migrations
 {
-    using Microsoft.AspNet.Identity;
-    using Microsoft.AspNet.Identity.EntityFramework;
     using Models;
-    using Helper;
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
@@ -14,7 +11,7 @@ namespace se_CodeFirst_3.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;// true;
+            AutomaticMigrationsEnabled = false;
         }
 
         protected override void Seed(se_CodeFirst_3.Models.ApplicationDbContext context)
@@ -42,23 +39,6 @@ namespace se_CodeFirst_3.Migrations
 
             //suppliers.ForEach(item => context.Suppliers.Add(item));
             //context.SaveChanges();
-
-            //var roleStore = new RoleStore<IdentityRole>(context);
-            //var roleManager = new RoleManager<IdentityRole>(roleStore);
-
-            //await roleManager.CreateAsync(new IdentityRole { Name = "Administrator" });
-
-            //var userStore = new UserStore<ApplicationUser>(context);
-            //var userManager = new UserManager<ApplicationUser>(userStore);
-
-            //var user = new ApplicationUser { UserName = "admin" };
-            //await userManager.CreateAsync(user);
-            //await userManager.AddToRoleAsync(user.Id, "Administrator");
-
-            //UsefulMethodsHelper methodsHelper = new UsefulMethodsHelper();
-            ////methodsHelper.InitializationOfUsersPasswordAndRoles(context);
-
-            //methodsHelper.FillClaimsTable(context);
 
 
         }

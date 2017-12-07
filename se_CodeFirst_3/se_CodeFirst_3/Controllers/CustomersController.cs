@@ -8,45 +8,17 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using se_CodeFirst_3.Models;
-using se_CodeFirst_3.Helper;
-using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers
 {
-#if DEBUG
-
-#else
-    [RedirectIfNotAuthorized]
-#endif
     public class CustomersController : Controller
     {
-        ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
-        NotificationProviderHelper notificationHelper;
-
-        string basePath = "api/customers/";
-        public CustomersController()
-        {
-            basePath = "api/customers/";
-            notificationHelper = new NotificationProviderHelper(this);
-        }
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Customers
-        public async Task<ActionResult> Index(bool? includeDeletedItems)
+        public async Task<ActionResult> Index()
         {
-            bool castedIncludeDeletedItems = includeDeletedItems.HasValue ? includeDeletedItems.Value : false;
-            if (castedIncludeDeletedItems)
-            {
-                List<Customer> customers = await helper.GetListOfItems<Customer>("api/allCustomers");
-
-                return View(customers);
-            }
-            else
-            {
-                List<Customer> customers = await helper.GetListOfItems<Customer>(basePath);
-
-                return View(customers);
-            }
-            
+            return View(await db.Customers.ToListAsync());
         }
 
         // GET: Customers/Details/5
@@ -56,12 +28,12 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CustomerViewModel customerInformation = await helper.GetItem<CustomerViewModel>(basePath + id);
-            if (customerInformation == null)
+            Customer customer = await db.Customers.FindAsync(id);
+            if (customer == null)
             {
                 return HttpNotFound();
             }
-            return View(customerInformation);
+            return View(customer);
         }
 
         // GET: Customers/Create
@@ -75,25 +47,15 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,CompanyName,PhoneNumber")] Customer customer, bool? stayOnCreatePage)
+        public async Task<ActionResult> Create([Bind(Include = "Id,Name,CompanyName,Phone")] Customer customer)
         {
-            bool castedStayOnCreatePage = stayOnCreatePage.HasValue ? stayOnCreatePage.Value : false;
-
             if (ModelState.IsValid)
             {
-                helper.CreateItem<Customer>(basePath, customer);
-                notificationHelper.SuccessfulInsert(customer.Name);
-                if (castedStayOnCreatePage == true)
-                {
-                    return RedirectToAction("Create");
-                }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
+                db.Customers.Add(customer);
+                await db.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
 
-            notificationHelper.FailureInsert(customer.Name);
             return View(customer);
         }
 
@@ -104,7 +66,7 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = await helper.GetItem<Customer>(basePath + id);
+            Customer customer = await db.Customers.FindAsync(id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -117,16 +79,14 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,CompanyName,PhoneNumber,IsDeleted")] Customer customer)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,CompanyName,Phone")] Customer customer)
         {
             if (ModelState.IsValid)
             {
-                helper.ChangeItem<Customer>(basePath + customer.Id, customer);
-                notificationHelper.SuccessfulChange(customer.Name);
+                db.Entry(customer).State = EntityState.Modified;
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-
-            notificationHelper.FailureChange(customer.Name);
             return View(customer);
         }
 
@@ -137,7 +97,7 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = await helper.GetItem<Customer>(basePath + id);
+            Customer customer = await db.Customers.FindAsync(id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -150,10 +110,19 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<Customer>(basePath + id)).Name);
-            helper.DeleteItem(basePath, id);
+            Customer customer = await db.Customers.FindAsync(id);
+            db.Customers.Remove(customer);
+            await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }

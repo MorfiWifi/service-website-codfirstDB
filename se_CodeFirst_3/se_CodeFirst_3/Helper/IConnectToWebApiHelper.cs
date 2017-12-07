@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,8 +13,5 @@ namespace se_CodeFirst_3.Helper
         T CreateItem<T>(string path, T incomingCall);
         T ChangeItem<T>(string path, T incomingCall);
         bool DeleteItem(string path, int id);
-        Task<Dictionary<string, string>> GetTokenDetails(string userName, string password);
-        bool LogOut(string path);
-        HttpClient CreateAndConfigureHttpClient();
     }
 }

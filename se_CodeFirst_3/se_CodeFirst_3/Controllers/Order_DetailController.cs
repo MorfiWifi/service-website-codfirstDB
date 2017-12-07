@@ -8,36 +8,17 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using se_CodeFirst_3.Models;
-using se_CodeFirst_3.Helper;
-using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers
 {
-#if DEBUG
-
-#else
-    [RedirectIfNotAuthorized]
-#endif
     public class Order_DetailController : Controller
     {
-        ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
-        NotificationProviderHelper notificationHelper;
-
-        string basePath = "api/Order_Detail/";
-        public Order_DetailController()
-        {
-            basePath = "api/Order_Detail/";
-            notificationHelper = new NotificationProviderHelper(this);
-        }
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Order_Detail
         public async Task<ActionResult> Index()
         {
-            //var order_Details = db.Order_Details.Include(o => o.Order).Include(o => o.Product);
-            //return View(await order_Details.ToListAsync());
-            List<Order_Detail> orders = await helper.GetListOfItems<Order_Detail>(basePath);
-
-            return View(orders);
+            return View(await db.Order_Details.ToListAsync());
         }
 
         // GET: Order_Detail/Details/5
@@ -47,7 +28,7 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Order_Detail order_Detail = await helper.GetItem<Order_Detail>(basePath + id);
+            Order_Detail order_Detail = await db.Order_Details.FindAsync(id);
             if (order_Detail == null)
             {
                 return HttpNotFound();
@@ -56,10 +37,8 @@ namespace se_CodeFirst_3.Controllers
         }
 
         // GET: Order_Detail/Create
-        public async Task<ActionResult> Create()
+        public ActionResult Create()
         {
-            ViewBag.OrderId = new SelectList(await helper.GetListOfItems<Order>("api/orders/"), "Id", "Id");
-            ViewBag.ProductId = new SelectList(await helper.GetListOfItems<Product>("api/products/"), "Id", "Name");
             return View();
         }
 
@@ -68,39 +47,15 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Quantity,ProductId,OrderId")] Order_Detail order_Detail, bool? stayOnCreatePage)
+        public async Task<ActionResult> Create([Bind(Include = "Id,UnitPrice,Quantity,Discount")] Order_Detail order_Detail)
         {
-            bool castedStayOnCreatePage = stayOnCreatePage.HasValue ? stayOnCreatePage.Value : false;
-
             if (ModelState.IsValid)
             {
-                Order_Detail od = helper.CreateItem<Order_Detail>(basePath, order_Detail);
-
-                if (od == null)
-                {
-                    notificationHelper.CustomFailureMessage("تعداد کالاها نمی تواند از موجودی بیشتر باشد.");
-
-                    ViewBag.OrderId = new SelectList(await helper.GetListOfItems<Order>("api/orders/"), "Id", "Id");
-                    ViewBag.ProductId = new SelectList(await helper.GetListOfItems<Product>("api/products/"), "Id", "Name");
-
-                    return View(order_Detail);
-                }
-
-                notificationHelper.SuccessfulInsert(order_Detail.Id.ToString());
-                if (castedStayOnCreatePage == true)
-                {
-                    return RedirectToAction("Create");
-                }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
+                db.Order_Details.Add(order_Detail);
+                await db.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
 
-            ViewBag.OrderId = new SelectList(await helper.GetListOfItems<Order>("api/orders/"), "Id", "Id");
-            ViewBag.ProductId = new SelectList(await helper.GetListOfItems<Product>("api/products/"), "Id", "Name");
-
-            notificationHelper.FailureInsert(order_Detail.Id.ToString());
             return View(order_Detail);
         }
 
@@ -111,13 +66,11 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Order_Detail order_Detail = await helper.GetItem<Order_Detail>(basePath + id);
+            Order_Detail order_Detail = await db.Order_Details.FindAsync(id);
             if (order_Detail == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.OrderId = new SelectList(await helper.GetListOfItems<Order>("api/orders/"), "Id", "Id");
-            ViewBag.ProductId = new SelectList(await helper.GetListOfItems<Product>("api/products/"), "Id", "Name");
             return View(order_Detail);
         }
 
@@ -126,18 +79,14 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Quantity,ProductId,OrderId")] Order_Detail order_Detail)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,UnitPrice,Quantity,Discount")] Order_Detail order_Detail)
         {
             if (ModelState.IsValid)
             {
-                helper.ChangeItem<Order_Detail>(basePath + order_Detail.Id, order_Detail);
-                notificationHelper.SuccessfulChange(order_Detail.Id.ToString());
+                db.Entry(order_Detail).State = EntityState.Modified;
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.OrderId = new SelectList(await helper.GetListOfItems<Order>("api/orders/"), "Id", "Id");
-            ViewBag.ProductId = new SelectList(await helper.GetListOfItems<Product>("api/products/"), "Id", "Name");
-
-            notificationHelper.FailureChange(order_Detail.Id.ToString());
             return View(order_Detail);
         }
 
@@ -148,7 +97,7 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Order_Detail order_Detail = await helper.GetItem<Order_Detail>(basePath + id);
+            Order_Detail order_Detail = await db.Order_Details.FindAsync(id);
             if (order_Detail == null)
             {
                 return HttpNotFound();
@@ -161,10 +110,19 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<Order_Detail>(basePath + id)).Id.ToString());
-            helper.DeleteItem(basePath, id);
+            Order_Detail order_Detail = await db.Order_Details.FindAsync(id);
+            db.Order_Details.Remove(order_Detail);
+            await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }

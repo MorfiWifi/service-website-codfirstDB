@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
-using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace se_CodeFirst_3.Models
 {
@@ -35,41 +34,20 @@ namespace se_CodeFirst_3.Models
 
     public class RegisterBindingModel
     {
-        public string Id { get; set; }
         [Required]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
         [Required]
-        //[StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
 
-
-        //Some Changes here:
-        //[DataType(DataType.Password)]
-        //[Display(Name = "Confirm password")]
-        //[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        //public string ConfirmPassword { get; set; }
-
-        [Display(Name = "حقوق")]
-        [Range(0, int.MaxValue, ErrorMessage = "حقوق نمی تواند منفی باشد.")]
-        public int Salary { get; set; }
-
-        [Display(Name = "مزایا")]
-        [Range(0, int.MaxValue, ErrorMessage = "مزایا نمی تواند منفی باشد.")]
-        public int Benefits { get; set; }
-
-        [Display(Name = "نقش کاربری")]
-        public string Role { get; set; }
-
-        [Display(Name = "غیبت")]
-        public int AbsentDays { get; set; }
-
-        [Display(Name = "اضافه کاری")]
-        public int OverTime { get; set; }
-
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
     }
 
     public class RegisterExternalBindingModel

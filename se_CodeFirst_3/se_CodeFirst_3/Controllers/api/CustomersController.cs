@@ -9,47 +9,22 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using se_CodeFirst_3.Models;
-using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers.api
 {
-#if DEBUG
-
-#else
-    [Authorize]//[Authorize(Roles = "Administrator,Secretary")]
-#endif
+    [Authorize]
     public class CustomersController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Customers
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "Customer", ClaimValue = "Get")]
-#endif
         public IQueryable<Customer> GetCustomers()
-        {
-            return from item in db.Customers
-                   where item.IsDeleted == false
-                   select item;
-        }
-
-        [Route("api/AllCustomers")]
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "Customer", ClaimValue = "Get")]
-#endif
-        public IQueryable<Customer> GetAllCustomers()
         {
             return db.Customers;
         }
 
         // GET: api/Customers/5
         [ResponseType(typeof(Customer))]
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "Customer", ClaimValue = "Get")]
-#endif
         public IHttpActionResult GetCustomer(int id)
         {
             Customer customer = db.Customers.Find(id);
@@ -58,44 +33,10 @@ namespace se_CodeFirst_3.Controllers.api
                 return NotFound();
             }
 
-            var allProductsPurchased = (from item in customer.Orders
-                                        join item2 in db.Order_Details on item.Id equals item2.OrderId
-                                        select item2.Quantity).Sum();
-
-            var priceOfAllProductsPurchased = (from item in customer.Orders
-                                               join item2 in db.Order_Details on item.Id equals item2.OrderId
-                                               join item3 in db.Products on item2.ProductId equals item3.Id
-                                               select item3.UnitPrice * item2.Quantity).Sum();
-
-            var products = from item in customer.Orders
-                           join item2 in db.Order_Details on item.Id equals item2.OrderId
-                           join item3 in db.Products on item2.ProductId equals item3.Id
-                           select item3;
-
-            var order_details = from item in customer.Orders
-                                join item2 in db.Order_Details on item.Id equals item2.OrderId
-                                select item2;
-
-            CustomerViewModel customerInformation = new CustomerViewModel
-            {
-                Name = customer.Name,
-                Orders = customer.Orders,
-                CompanyName = customer.CompanyName,
-                PhoneNumber = customer.PhoneNumber,
-                AllProductsPurchased = allProductsPurchased,
-                PriceOfAllProductsPurchased = priceOfAllProductsPurchased,
-                Products = products,
-                Order_Details = order_details
-            };
-
-            return Ok(customerInformation);
+            return Ok(customer);
         }
 
         // PUT: api/Customers/5
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "Customer", ClaimValue = "Put")]
-#endif
         [ResponseType(typeof(void))]
         public IHttpActionResult PutCustomer(int id, Customer customer)
         {
@@ -131,10 +72,6 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // POST: api/Customers
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "Customer", ClaimValue = "Post")]
-#endif
         [ResponseType(typeof(Customer))]
         public IHttpActionResult PostCustomer(Customer customer)
         {
@@ -150,10 +87,6 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // DELETE: api/Customers/5
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "Customer", ClaimValue = "Delete")]
-#endif
         [ResponseType(typeof(Customer))]
         public IHttpActionResult DeleteCustomer(int id)
         {
@@ -168,19 +101,6 @@ namespace se_CodeFirst_3.Controllers.api
 
             return Ok(customer);
         }
-
-        // Delete: api/Customers/SafeDelete/5
-        //[ResponseType(typeof(Customer))]
-        //public IHttpActionResult SafeDeleteCustomer(int id)
-        //{
-        //    Customer customer = db.Customers.Find(id);
-        //    if (customer == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    customer.IsDeleted = 
-        //}
 
         protected override void Dispose(bool disposing)
         {

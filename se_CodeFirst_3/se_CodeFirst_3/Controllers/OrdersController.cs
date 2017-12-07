@@ -8,43 +8,17 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using se_CodeFirst_3.Models;
-using se_CodeFirst_3.Helper;
-using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers
 {
-#if DEBUG
-
-#else
-    [RedirectIfNotAuthorized]
-#endif
     public class OrdersController : Controller
     {
-        ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
-        NotificationProviderHelper notificationHelper;
-        UsefulMethodsHelper methodHelper;
-
-        string basePath = "api/orders/";
-        public OrdersController()
-        {
-            basePath = "api/orders/";
-            notificationHelper = new NotificationProviderHelper(this);
-            methodHelper = new UsefulMethodsHelper();
-        }
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Orders
         public async Task<ActionResult> Index()
         {
-            List<Order> orders = await helper.GetListOfItems<Order>(basePath);
-
-            //using PersianDates::
-            foreach (var item in orders)
-            {
-                item.OrderDate = methodHelper.ConvertDateTimeToPersian(item.OrderDate);
-                item.RequiredDate = methodHelper.ConvertDateTimeToPersian(item.RequiredDate);
-            }
-
-            return View(orders);
+            return View(await db.Orders.ToListAsync());
         }
 
         // GET: Orders/Details/5
@@ -54,28 +28,17 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Order order = await helper.GetItem<Order>(basePath + id);
+            Order order = await db.Orders.FindAsync(id);
             if (order == null)
             {
                 return HttpNotFound();
             }
-
-            //using PersianDates::
-            order.OrderDate = methodHelper.ConvertDateTimeToPersian(order.OrderDate);
-            order.RequiredDate = methodHelper.ConvertDateTimeToPersian(order.RequiredDate);
-
-
             return View(order);
         }
 
         // GET: Orders/Create
-        public async Task<ActionResult> Create()
+        public ActionResult Create()
         {
-            ViewBag.ContractId = new SelectList(await helper.GetListOfItems<Contract>("api/contracts/"), "Id", "Content");
-            ViewBag.CustomerId = new SelectList(await helper.GetListOfItems<Customer>("api/customers/"), "Id", "Name");
-
-            ViewBag.ContractsList = await helper.GetListOfItems<Contract>("api/contracts/");
-            ViewBag.CustomersList = await helper.GetListOfItems<Customer>("api/customers/");
             return View();
         }
 
@@ -84,38 +47,15 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,OrderDate,RequiredDate,CustomerId,ContractId")] Order order, bool? stayOnCreatePage)
+        public async Task<ActionResult> Create([Bind(Include = "Id,Content,OrderDate,RequiredDate,ShippedDate")] Order order)
         {
-            bool castedStayOnCreatePage = stayOnCreatePage.HasValue ? stayOnCreatePage.Value : false;
-
-            var convertedOrderDateTime = methodHelper.ConvertDateTimeToGregorian(order.OrderDate);
-            var convertedRequiredDateTime = methodHelper.ConvertDateTimeToGregorian(order.RequiredDate);
-
-            order.OrderDate = convertedOrderDateTime;
-            order.RequiredDate = convertedRequiredDateTime;
-
-
             if (ModelState.IsValid)
             {
-                helper.CreateItem<Order>(basePath, order);
-                notificationHelper.SuccessfulInsert(order.Id.ToString());
-                if (castedStayOnCreatePage == true)
-                {
-                    return RedirectToAction("Create");
-                }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
+                db.Orders.Add(order);
+                await db.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
 
-            ViewBag.ContractId = new SelectList(await helper.GetListOfItems<Contract>("api/contracts/"), "Id", "Content");
-            ViewBag.CustomerId = new SelectList(await helper.GetListOfItems<Customer>("api/customers/"), "Id", "Name");
-
-            ViewBag.ContractsList = await helper.GetListOfItems<Contract>("api/contracts/");
-            ViewBag.CustomersList = await helper.GetListOfItems<Customer>("api/customers/");
-
-            notificationHelper.FailureInsert(order.Id.ToString());
             return View(order);
         }
 
@@ -126,17 +66,11 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Order order = await helper.GetItem<Order>(basePath + id);
+            Order order = await db.Orders.FindAsync(id);
             if (order == null)
             {
                 return HttpNotFound();
             }
-
-            order.OrderDate = methodHelper.ConvertDateTimeToPersian(order.OrderDate);
-            order.RequiredDate = methodHelper.ConvertDateTimeToPersian(order.RequiredDate);
-
-            ViewBag.ContractId = new SelectList(await helper.GetListOfItems<Contract>("api/contracts/"), "Id", "Content");
-            ViewBag.CustomerId = new SelectList(await helper.GetListOfItems<Customer>("api/customers/"), "Id", "Name");
             return View(order);
         }
 
@@ -145,18 +79,14 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,OrderDate,RequiredDate,CustomerId,ContractId")] Order order)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Content,OrderDate,RequiredDate,ShippedDate")] Order order)
         {
             if (ModelState.IsValid)
             {
-                helper.ChangeItem<Order>(basePath + order.Id, order);
-                notificationHelper.SuccessfulChange(order.Id.ToString());
+                db.Entry(order).State = EntityState.Modified;
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.ContractId = new SelectList(await helper.GetListOfItems<Contract>("api/contracts/"), "Id", "Content");
-            ViewBag.CustomerId = new SelectList(await helper.GetListOfItems<Customer>("api/customers/"), "Id", "Name");
-
-            notificationHelper.FailureChange(order.Id.ToString());
             return View(order);
         }
 
@@ -167,16 +97,11 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Order order = await helper.GetItem<Order>(basePath + id);
+            Order order = await db.Orders.FindAsync(id);
             if (order == null)
             {
                 return HttpNotFound();
             }
-
-            //using PersianDates::
-            order.OrderDate = methodHelper.ConvertDateTimeToPersian(order.OrderDate);
-            order.RequiredDate = methodHelper.ConvertDateTimeToPersian(order.RequiredDate);
-
             return View(order);
         }
 
@@ -185,10 +110,19 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<Order>(basePath + id)).Id.ToString());
-            helper.DeleteItem(basePath, id);
+            Order order = await db.Orders.FindAsync(id);
+            db.Orders.Remove(order);
+            await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }
