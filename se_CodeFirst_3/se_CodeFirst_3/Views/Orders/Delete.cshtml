@@ -1,56 +1,64 @@
 ﻿@model se_CodeFirst_3.Models.Order
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "حذف سفارش";
 }
 
-<h2>Delete</h2>
+<div class="col-sm-offset-3 col-sm-6 table-responsive ahk-style-for-delete-page">
+    <h2 class="page-title page-title-delete"><span class="glyphicon glyphicon-remove"></span> @ViewBag.Title</h2>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Order</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Content)
-        </dt>
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <table class="table table-condensed table-striped table-bordered">
+        <tr>
+            <th>ویژگی</th>
+            <th>مقدار</th>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Contract.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Contract.Content)
+            </td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.Content)
-        </dd>
+        <tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Customer.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Customer.Name)
+            </td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.OrderDate)
-        </dt>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.OrderDate)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.OrderDate)
+            </td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.OrderDate)
-        </dd>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.RequiredDate)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.RequiredDate)
+            </td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.RequiredDate)
-        </dt>
+    </table>
 
-        <dd>
-            @Html.DisplayFor(model => model.RequiredDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ShippedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ShippedDate)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm("Delete", "Orders", FormMethod.Post))
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> حذف برای همیشه</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-eye-close"></span> بستن</button>
         </div>
     }
 </div>

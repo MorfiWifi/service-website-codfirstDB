@@ -1,45 +1,140 @@
 ﻿@model IEnumerable<se_CodeFirst_3.Models.Customer>
+@Scripts.Render("~/bundles/angular")
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "لیست مشتری ها";
 }
 
-<h2>Index</h2>
+<div id="mainContainer">
+    <div ng-app="ahkCustomerApp" ng-controller="ahkCustomerCtrl" class="col-sm-12">
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CompanyName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Phone)
-        </th>
-        <th></th>
-    </tr>
+        <div class="col-sm-4 col-sm-push-8">
+            <h2 class="page-title page-title-search"><span class="glyphicon glyphicon-search"></span> جست و جو</h2>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CompanyName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Phone)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+            <div class="table-responsive">
+                <table class="table table-condensed table-striped">
+                    <tr>
+                        <td>نام: </td>
+                        <td><input class="form-control" type="text" name="nameFilter" ng-model="nameFilter" autofocus /></td>
+                    </tr>
 
-</table>
+                    <tr>
+                        <td>نام شرکت: </td>
+                        <td>
+                            <input class="form-control form-horizontal" type="text" name="companyNameFilter" ng-model="companyNameFilter" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>شماره تلفن: </td>
+                        <td>
+                            <input class="form-control form-horizontal" type="text" name="phoneNumberFilter" ng-model="phoneNumberFilter" />
+                        </td>
+                    </tr>
+
+                </table>
+
+
+            </div>
+
+        </div>
+
+        <div class="col-sm-8 col-sm-pull-4">
+
+            <h2 class="page-title page-title-index"><span class="glyphicon glyphicon-list"></span> @ViewBag.Title</h2>
+
+            <p>
+                <a class="btn btn-primary" href="~/Customers/Create"><span class="glyphicon glyphicon-plus"></span> افزودن</a>
+            </p>
+
+            <div class="table-responsive">
+                <table class="table table-hover table-responsive table-striped table-bordered">
+                    <tr>
+                        <th ng-click="ahkSortBy('nameFilter')" ng-dblclick="ahkSortBy('nameFilter', 'true')">
+                            <span class="glyphicon glyphicon-user"></span>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th ng-click="ahkSortBy('companyNameFilter')" ng-dblclick="ahkSortBy('companyNameFilter', 'true')">
+                            @Html.DisplayNameFor(model => model.CompanyName)
+                        </th>
+                        <th ng-click="ahkSortBy('phoneNumberFilter')" ng-dblclick="ahkSortBy('phoneNumberFilter', 'true')">
+                            <span class="glyphicon glyphicon-phone"></span>
+                            @Html.DisplayNameFor(model => model.PhoneNumber)
+                        </th>
+                        <th>
+                            @Html.ActionLink("نمایش همه", "Index", "Customers", new { includeDeletedItems = true }, null)
+                        </th>
+                    </tr>
+                    <tr ng-repeat="x in items | orderBy:sortParameter : reverseOrder | filter : {Name:nameFilter, CompanyName:companyNameFilter, PhoneNumber:phoneNumberFilter}">
+                        <td>{{x.Name}}</td>
+                        <td>{{x.CompanyName}}</td>
+                        <td>{{x.PhoneNumber}}</td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" href="~/Customers/Edit/{{x.Id}}"><span class="glyphicon glyphicon-edit"></span> </a>
+                            <a class="btn btn-sm btn-info" href="~/Customers/Details/{{x.Id}}"><span class="glyphicon glyphicon-list-alt"></span></a>
+                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                                    href="~/Customers/Delete/{{x.Id}}"
+                                    data-target="#confirmItemDeleteModal{{x.Id}}">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+
+                            <!-- Modal -->
+                            <div id="confirmItemDeleteModal{{x.Id}}" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            @*<h4 class="modal-title" >از حذف عنصر انتخاب شده، مطمئن هستید؟</h4>*@
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                @*@{
+                                                        Html.RenderPartial("Delete", );
+                                                    }*@
+                                                <a class="btn btn-sm btn-danger" href="~/Customers/Delete/{{x.Id}}">حذف</a>
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<script>
+    var customerApp = angular.module('ahkCustomerApp', []);
+    customerApp.controller('ahkCustomerCtrl', function ($scope, $http) {
+
+        $scope.items = @Html.Raw(Json.Encode(Model));
+
+        //Search Variables:
+        $scope.nameFilter = "";
+        $scope.companyNameFilter = "";
+        $scope.phoneNumberFilter = "";
+
+        $scope.ahkSortBy = function (x) {
+            $scope.sortParameter = x;
+            $scope.reverseOrder = reverseOrder;
+        };
+
+        $scope.ahkSortBy = function (x, reverseOrder) {
+            $scope.sortParameter = x;
+            $scope.reverseOrder = reverseOrder;
+        };
+
+    });
+</script>
+

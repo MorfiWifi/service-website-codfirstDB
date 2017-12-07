@@ -9,21 +9,34 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using se_CodeFirst_3.Models;
+using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers.api
 {
-    [Authorize]
+#if DEBUG
+
+#else
+    [Authorize]//[Authorize(Roles = "Administrator,Secretary,StoreKeeper,Accountant")]
+#endif
     public class ProductsController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Products
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Product", ClaimValue = "Get")]
+#endif
         public IQueryable<Product> GetProducts()
         {
             return db.Products;
         }
 
         // GET: api/Products/5
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Product", ClaimValue = "Get")]
+#endif
         [ResponseType(typeof(Product))]
         public IHttpActionResult GetProduct(int id)
         {
@@ -37,6 +50,10 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // PUT: api/Products/5
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Product", ClaimValue = "Put")]
+#endif
         [ResponseType(typeof(void))]
         public IHttpActionResult PutProduct(int id, Product product)
         {
@@ -72,6 +89,10 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // POST: api/Products
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Product", ClaimValue = "Post")]
+#endif
         [ResponseType(typeof(Product))]
         public IHttpActionResult PostProduct(Product product)
         {
@@ -79,7 +100,8 @@ namespace se_CodeFirst_3.Controllers.api
             {
                 return BadRequest(ModelState);
             }
-
+            //first, we have to set the supplier for prodoct; otherwise, EF create new Supplier in DB. is that what we want?no
+            //product.Supplier = db.Suppliers.Find(product.Supplier.Id);
             db.Products.Add(product);
             db.SaveChanges();
 
@@ -87,6 +109,10 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // DELETE: api/Products/5
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Product", ClaimValue = "Delete")]
+#endif
         [ResponseType(typeof(Product))]
         public IHttpActionResult DeleteProduct(int id)
         {

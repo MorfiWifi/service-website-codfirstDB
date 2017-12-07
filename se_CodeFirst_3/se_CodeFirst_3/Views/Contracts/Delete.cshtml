@@ -1,0 +1,35 @@
+﻿@model se_CodeFirst_3.Models.Contract
+
+@{
+    ViewBag.Title = "حذف متن قرارداد";
+}
+
+<div class="col-sm-offset-3 col-sm-6 table-responsive ahk-style-for-delete-page">
+    <h2 class="page-title page-title-delete"><span class="glyphicon glyphicon-remove"></span> @ViewBag.Title</h2>
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <table class="table table-condensed table-striped table-bordered">
+        <tr>
+            <th>ویژگی</th>
+            <th>مقدار</th>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Content)
+            </td>
+        </tr>
+        </table>
+
+        @using (Html.BeginForm("Delete", "Contracts", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> حذف برای همیشه</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-eye-close"></span> بستن</button>
+            </div>
+        }
+</div>
