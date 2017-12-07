@@ -10,25 +10,17 @@ using System.Web.Mvc;
 using se_CodeFirst_3.Models;
 using se_CodeFirst_3.Helper;
 using Microsoft.AspNet.Identity.EntityFramework;
-using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers
 {
-#if DEBUG
-
-#else
-    [RedirectIfNotAuthorized]
-#endif
     public class RolesController : Controller
     {
         ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
-        NotificationProviderHelper notificationHelper;
 
         string basePath = "api/roles/";
         public RolesController()
         {
             basePath = "api/roles/";
-            notificationHelper = new NotificationProviderHelper(this);
         }
 
         // GET: Roles
@@ -65,24 +57,14 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Name")] IdentityRole identityRole, bool? stayOnCreatePage)
+        public async Task<ActionResult> Create([Bind(Include = "Id,Name")] IdentityRole identityRole)
         {
-            bool castedStayOnCreatePage = stayOnCreatePage.HasValue ? stayOnCreatePage.Value : false;
             if (ModelState.IsValid)
             {
                 helper.CreateItem<IdentityRole>(basePath, identityRole);
-                notificationHelper.SuccessfulInsert(identityRole.Name);
-                if (castedStayOnCreatePage == true)
-                {
-                    return RedirectToAction("Create");
-                }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
+                return RedirectToAction("Index");
             }
 
-            notificationHelper.FailureInsert(identityRole.Name);
             return View(identityRole);
         }
 
@@ -111,11 +93,8 @@ namespace se_CodeFirst_3.Controllers
             if (ModelState.IsValid)
             {
                 helper.ChangeItem<IdentityRole>(basePath + identityRole.Id, identityRole);
-                notificationHelper.SuccessfulChange(identityRole.Name);
                 return RedirectToAction("Index");
             }
-
-            notificationHelper.FailureChange(identityRole.Name);
             return View(identityRole);
         }
 
@@ -139,7 +118,6 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(string id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<IdentityRole>(basePath + id)).Name);
             helper.DeleteItem(basePath, id);
             return RedirectToAction("Index");
         }

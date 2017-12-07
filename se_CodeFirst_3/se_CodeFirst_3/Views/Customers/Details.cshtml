@@ -4,10 +4,10 @@
     ViewBag.Title = "اطلاعات مشتری";
 }
 
-<h2 class="page-title page-title-details"><span class="glyphicon glyphicon-list-alt"></span> @ViewBag.Title</h2>
+<h2>Details</h2>
 
-<div class="col-sm-offset-2 col-sm-8 table-responsive">
-    <table class="table table-hover table-bordered table-striped">
+<div class="col-sm-6">
+    <table class="table table-condensed table-responsive table-hover table-striped">
         <tr class="success">
             <th>اطلاعات مشتری</th>
             <th></th>
@@ -55,6 +55,24 @@
             </tr>
         }
 
+        @*@foreach (var item in Model.Order_Details)
+        {
+            <tr>
+                <td>@item.Quantity</td>
+            </tr>
+        }
+
+        @foreach (var item in Model.Products)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.UnitPrice</td>
+            </tr>
+        }*@
+
     </table>
 </div>
-<a href="~/Customers/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
+<p>
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
+    @Html.ActionLink("Back to List", "Index")
+</p>

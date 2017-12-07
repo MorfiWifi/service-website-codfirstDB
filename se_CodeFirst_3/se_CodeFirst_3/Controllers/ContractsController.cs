@@ -9,25 +9,17 @@ using System.Web;
 using System.Web.Mvc;
 using se_CodeFirst_3.Models;
 using se_CodeFirst_3.Helper;
-using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers
 {
-#if DEBUG
-
-#else
-    [RedirectIfNotAuthorized]
-#endif
     public class ContractsController : Controller
     {
         ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
-        NotificationProviderHelper notificationHelper;
 
         string basePath = "api/contracts/";
         public ContractsController()
         {
             basePath = "api/contracts/";
-            notificationHelper = new NotificationProviderHelper(this);
         }
 
         // GET: Contracts
@@ -64,25 +56,14 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Content")] Contract contract, bool? stayOnCreatePage)
+        public async Task<ActionResult> Create([Bind(Include = "Id,Content")] Contract contract)
         {
-            bool castedStayOnCreatePage = stayOnCreatePage.HasValue ? stayOnCreatePage.Value : false;
-
             if (ModelState.IsValid)
             {
                 helper.CreateItem<Contract>(basePath, contract);
-                notificationHelper.SuccessfulInsert(contract.Id.ToString());
-                if (castedStayOnCreatePage == true)
-                {
-                    return RedirectToAction("Create");
-                }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
+                return RedirectToAction("Index");
             }
 
-            notificationHelper.FailureInsert(contract.Id.ToString());
             return View(contract);
         }
 
@@ -111,11 +92,8 @@ namespace se_CodeFirst_3.Controllers
             if (ModelState.IsValid)
             {
                 helper.ChangeItem<Contract>(basePath + contract.Id, contract);
-                notificationHelper.SuccessfulChange(contract.Id.ToString());
                 return RedirectToAction("Index");
             }
-
-            notificationHelper.FailureChange(contract.Id.ToString());
             return View(contract);
         }
 
@@ -139,8 +117,8 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<Contract>(basePath + id)).Id.ToString());
             helper.DeleteItem(basePath, id);
+
             return RedirectToAction("Index");
         }
 

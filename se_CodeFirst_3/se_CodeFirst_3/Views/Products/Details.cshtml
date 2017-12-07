@@ -4,36 +4,48 @@
     ViewBag.Title = "اطلاعات محصول";
 }
 
-<h2 class="page-title page-title-details"><span class="glyphicon glyphicon-list-alt"></span> @ViewBag.Title</h2>
+<h2>Details</h2>
 
-<div class="col-sm-offset-2 col-sm-8 table-responsive">
-    <table class="table table-hover table-bordered table-striped">
-        <tr class="success">
-            <th>اطلاعات محصول</th>
-            <th></th>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(model => model.Name)</td>
-            <td>@Html.DisplayFor(model => model.Name)</td>
-        </tr>
+<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Supplier.CompanyName)
+        </dt>
 
-        <tr>
-            <td>@Html.DisplayNameFor(model => model.UnitPrice)</td>
-            <td>@Html.DisplayFor(model => model.UnitPrice)</td>
-        </tr>
+        <dd>
+            @Html.DisplayFor(model => model.Supplier.CompanyName)
+        </dd>
 
-        <tr>
-            <td>@Html.DisplayNameFor(model => model.UnitsInStock)</td>
-            <td>@Html.DisplayFor(model => model.UnitsInStock)</td>
-        </tr>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
 
-        <tr>
-            <td>@Html.DisplayNameFor(model => model.Supplier.CompanyName)</td>
-            <td>@Html.DisplayFor(model => model.Supplier.CompanyName)</td>
-        </tr>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
 
-    </table>
+        <dt>
+            @Html.DisplayNameFor(model => model.UnitPrice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UnitPrice)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UnitsInStock)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UnitsInStock)
+        </dd>
+
+
+    </dl>
 </div>
-
-<a href="~/products/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
-
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

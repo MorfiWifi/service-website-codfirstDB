@@ -1,105 +1,52 @@
 ﻿@model se_CodeFirst_3.Models.IncomingCall
 
-@{
+@{ 
     ViewBag.Title = "افزودن تماس ورودی";
 }
 
-<link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/bootstrap.css" rel="stylesheet" />
-<link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.css" rel="stylesheet" />
-<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/jquery-3.1.0.js"></script>
-<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/bootstrap.js"></script>
-<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/MdBootstrapPersianDateTimePicker/jalaali.js"></script>
-<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.js"></script>
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Message, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Message, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Message, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
-<h2 class="page-title page-title-create"><span class="glyphicon glyphicon-plus"></span> @ViewBag.Title</h2>
-<div class="col-sm-offset-2 col-sm-8 table-responsive" ng-app="createItemApp" ng-controller="createItemCtrl">
-    @using (Html.BeginForm("Create", "IncomingCalls", FormMethod.Post, new { name = "ahkform", novalidate = "novalidate" }))
-    {
-        @Html.AntiForgeryToken()
-
-        <input type="text" style="visibility:hidden" name="stayOnCreatePage" value="false" ng-model="stayOnCreatePage" />
-
-        <table class="table table-condensed table-striped table-bordered">
-            <tr>
-                <th>ویژگی</th>
-                <th>مقدار</th>
-                <th>درستی</th>
-            </tr>
-
-            <tr>
-                <td>@Html.LabelFor(model => model.Message, htmlAttributes: new { @class = "control-label" })</td>
-                <td>
-                    @Html.EditorFor(model => model.Message, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus", required = "required", ng_model = "Message" } })
-                    @Html.ValidationMessageFor(model => model.Message, "", new { @class = "text-danger" })
-                </td>
-                <td>
-                    <span class="show-error" ng-show="ahkform.Message.$dirty && ahkform.Message.$invalid">
-                        <span ng-show="ahkform.Message.$error.required" class="glyphicon glyphicon-remove" title="این فیلد نمی تواند خالی باشد."></span>
-                    </span>
-                    <span class="show-success" ng-show="ahkform.Message.$dirty">
-                        <span ng-hide="ahkform.Message.$error.required" class="glyphicon glyphicon-check"></span>
-                    </span>
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label" })
-                </td>
-                <td>
-                    <div class="input-group" dir="ltr" style="max-width:280px;">
-                        <span class="glyphicon glyphicon-calendar input-group-addon" id="input1" data-MdDateTimePicker="true" data-TargetSelector="#input1" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
-                        <input type="text" name="Date" class="form-control" id="textBoxInputId" required = "required" ng-model = "Date" />
-                    </div>
-                </td>
-                <td>
-                    <span class="show-error" ng-show="ahkform.Date.$dirty && ahkform.Date.$invalid">
-                        <span ng-show="ahkform.Date.$error.required" class="glyphicon glyphicon-remove" title="این فیلد نمی تواند خالی باشد."></span>
-                    </span>
-                    <span class="show-success" ng-show="ahkform.Date.$dirty">
-                        <span ng-hide="ahkform.Date.$error.required" class="glyphicon glyphicon-check"></span>
-                    </span>
-                </td>
-            </tr>
-
-        </table>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
+                
+                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <button type="submit" value="افزودن" class="btn btn-primary"
-                        >
-                @* ng-disabled="ahkform.Message.$invalid || ahkform.Date.$invalid" *@
-                <span class="glyphicon glyphicon-plus"></span> افزودن</button>
-                <a href="~/IncomingCalls/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
+                <input type="submit" value="افزودن" class="btn btn-primary" />
             </div>
         </div>
-    }
+    </div>
+}
 
-</div>
+<input type="text" name="" value="" id="my_txtbox" class="date-picker"/>
 
-<script type="text/javascript">
+<script src="~/Scripts/jquery-1.12.4.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+<link href="~/Content/themes/base/minified/jquery-ui.min.css" />
 
-    $('#input1').MdPersianDateTimePicker({
-        Placement: 'left',
-        Trigger: 'click',
-        EnableTimePicker: true,
-        TargetSelector: '#textBoxInputId',
-        GroupId: '',
-        ToDate: false,
-        FromDate: false,
-        DisableBeforeToday: true,
-        Disabled: false,
-        Format: 'yyyy/MM/dd HH:mm:ss',
-        IsGregorian: false,
-        EnglishNumber: true,
+<script>
+    $(document).ready(function () {
+        // This will make every element with the class "date-picker" into a DatePicker element
+        $('.date-picker').datepicker();
+        alert("A");
     });
-
-    var app = angular.module('createItemApp', []);
-    app.controller('createItemCtrl', function ($scope, $http) {
-        $scope.stayOnCreatePage = false;
-        $scope.changeStayOnCreatePage = function () {
-            $scope.stayOnCreatePage = true;
-        };
-    });
-    
 </script>
+

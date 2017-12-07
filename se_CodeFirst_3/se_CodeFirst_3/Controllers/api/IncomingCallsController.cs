@@ -9,37 +9,25 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using se_CodeFirst_3.Models;
-using se_CodeFirst_3.Helper;
-using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers.api
 {
 #if DEBUG
 
 #else
-    [Authorize]
+    [Authorize(Roles = "Administrator,Secretary")]
 #endif
-
     public class IncomingCallsController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/IncomingCalls
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "IncomingCall", ClaimValue = "Get")]
-#endif
-
         public IQueryable<IncomingCall> GetIncomingCalls()
         {
             return db.IncomingCalls;
         }
 
         // GET: api/IncomingCalls/5
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "IncomingCall", ClaimValue = "Get")]
-#endif
         [ResponseType(typeof(IncomingCall))]
         public IHttpActionResult GetIncomingCall(int id)
         {
@@ -53,10 +41,6 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // PUT: api/IncomingCalls/5
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "IncomingCall", ClaimValue = "Put")]
-#endif
         [ResponseType(typeof(void))]
         public IHttpActionResult PutIncomingCall(int id, IncomingCall incomingCall)
         {
@@ -92,10 +76,6 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // POST: api/IncomingCalls
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "IncomingCall", ClaimValue = "Post")]
-#endif
         [ResponseType(typeof(IncomingCall))]
         public IHttpActionResult PostIncomingCall(IncomingCall incomingCall)
         {
@@ -111,10 +91,6 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // DELETE: api/IncomingCalls/5
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "IncomingCall", ClaimValue = "Delete")]
-#endif
         [ResponseType(typeof(IncomingCall))]
         public IHttpActionResult DeleteIncomingCall(int id)
         {

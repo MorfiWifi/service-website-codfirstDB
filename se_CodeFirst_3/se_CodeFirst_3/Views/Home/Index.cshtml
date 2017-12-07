@@ -2,7 +2,7 @@
 
 
 
-<h2 class="page-title page-title-admin-panel"><span class="glyphicon glyphicon-list"></span> پنل مدیریت</h2>
+<h2 class="page-title page-title-admin-panel">پنل مدیریت</h2>
 <div class="col-sm-12" id="containerForAdminPanel">
     <div class="panel-group col-sm-4" id="accordion1" dir="rtl">
 
@@ -12,7 +12,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion1" href="#div3">
-                        <span class="glyphicon glyphicon-tasks"></span> مدیریت کالاها
+                        مدیریت کالاها
                     </a>
                 </div>
             </div>
@@ -31,7 +31,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion1" href="#div4">
-                        <span class="glyphicon glyphicon-tasks"></span> مدیریت تماس های ورودی
+                        مدیریت تماس های ورودی
                     </a>
                 </div>
             </div>
@@ -50,7 +50,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion1" href="#div7">
-                        <span class="glyphicon glyphicon-tasks"></span> مدیریت قراردادها
+                        مدیریت قراردادها
                     </a>
                 </div>
             </div>
@@ -69,7 +69,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion1" href="#div8">
-                        <span class="glyphicon glyphicon-tasks"></span> مدیریت سفارش ها
+                        مدیریت سفارش ها
                     </a>
                 </div>
             </div>
@@ -88,7 +88,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion1" href="#div9">
-                        <span class="glyphicon glyphicon-tasks"></span> مدیریت جزئیات سفارش
+                        مدیریت جزئیات سفارش
                     </a>
                 </div>
             </div>
@@ -110,7 +110,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion2" href="#div2">
-                        <span class="glyphicon glyphicon-tasks"></span> مدیریت تولیدکنندگان
+                        مدیریت تولیدکنندگان
                     </a>
                 </div>
             </div>
@@ -129,7 +129,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion2" href="#div5">
-                        <span class="glyphicon glyphicon-tasks"></span> مدیریت مشتری ها
+                        مدیریت مشتری ها
                     </a>
                 </div>
             </div>
@@ -151,7 +151,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion3" href="#div1">
-                        <span class="glyphicon glyphicon-tasks"></span> مدیریت کاربران
+                        مدیریت کاربران
                     </a>
                 </div>
             </div>
@@ -170,14 +170,15 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion3" href="#div10">
-                        <span class="glyphicon glyphicon-tasks"></span> مدیریت نقش های کاربری
+                        مدیریت نقش های کاربری
                     </a>
                 </div>
             </div>
             <div id="div10" class="collapse panel-collapse">
                 <div class="panel-body">
                     <div class="list-group">
-                        @Html.ActionLink("مدیریت سطوح دسترسی", "Index", "Claims", new { area = "" }, new { @class = "list-group-item" })
+                        @Html.ActionLink("لیست نقش های کاربری", "Index", "Roles", new { area = "" }, new { @class = "list-group-item" })
+                        @Html.ActionLink("افزودن نقش کاربری", "Create", "Roles", new { area = "" }, new { @class = "list-group-item" })
                     </div>
                 </div>
             </div>

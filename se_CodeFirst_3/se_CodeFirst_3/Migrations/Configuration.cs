@@ -14,7 +14,7 @@ namespace se_CodeFirst_3.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;// true;
+            AutomaticMigrationsEnabled = true;// true;
         }
 
         protected override void Seed(se_CodeFirst_3.Models.ApplicationDbContext context)
@@ -56,10 +56,7 @@ namespace se_CodeFirst_3.Migrations
             //await userManager.AddToRoleAsync(user.Id, "Administrator");
 
             //UsefulMethodsHelper methodsHelper = new UsefulMethodsHelper();
-            ////methodsHelper.InitializationOfUsersPasswordAndRoles(context);
-
-            //methodsHelper.FillClaimsTable(context);
-
+            //methodsHelper.InitializationOfUsersPasswordAndRoles(context);
 
         }
     }

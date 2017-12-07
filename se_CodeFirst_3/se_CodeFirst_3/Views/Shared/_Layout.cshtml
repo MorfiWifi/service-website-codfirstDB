@@ -1,165 +1,118 @@
-﻿@if (ViewBag.IsPjaxRequest ?? false)
-{
-    <title>@ViewBag.Title</title>
-    @RenderBody()
-    return;
-}
-
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-    @Scripts.Render("~/bundles/angular")
 
     @* Setting Favicon: *@
     <link rel="icon" href="@Url.Content("~/Content/Images/logo_icon.png")" />
-
-    @* Material Design References Here: *@
-    <!--Import Google Icon Font-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!--Import materialize.css-->
-    <link type="text/css" rel="stylesheet" href="~/Plugins/materialize/css/materialize.css" media="screen,projection" />
-    @Styles.Render("~/Content/css")
-
-
-    <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
 </head>
 <body>
-    <div id="allMainContainer">
-        <div class="navbar navbar-inverse navbar-fixed-top" id="navbar-styles">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
-                    @*<div class="navbar-brand">
-                            <img src="~/Content/Images/logo_icon.png" class="logo-in-navbar"/>
-                        </div>*@
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>@Html.ActionLink("خانه", "Index", "Home", new { area = "" }, null)</li>
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown">
-                                بقیه
-                                <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("مقالات", "Blog", "Home", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("آموزش ها", "Help", "Home", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("درباره ما", "AboutUs", "Home", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("تماس با ما", "ContactUs", "Home", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("لاگ ها", "Index", "Home", new { area = "" }, null)</li>
-                            </ul>
-                        </li>
-                        <li>@Html.ActionLink("کاربران", "Index", "Users", new { area = "" }, null)</li>
-                        <li>@Html.ActionLink("دسترسی", "Index", "Claims", new { area = "" }, null)</li>
-                        <li>@Html.ActionLink("تولیدکنندگان", "Index", "Suppliers", new { area = "" }, null)</li>
-                        <li>@Html.ActionLink("کالا ها", "Index", "Products", new { area = "" }, null)</li>
-                        <li>@Html.ActionLink("تماس ها", "Index", "IncomingCalls", new { area = "" }, null)</li>
-                        <li>@Html.ActionLink("مشتری ها", "Index", "Customers", new { area = "" }, null)</li>
-                        <li>@Html.ActionLink("قراردادها", "Index", "Contracts", new { area = "" }, null)</li>
-                        <li>@Html.ActionLink("سفارشات", "Index", "Orders", new { area = "" }, null)</li>
-                        <li>@Html.ActionLink("جزئیات قراردادها", "Index", "Order_Detail", new { area = "" }, null)</li>
-
-
-                    </ul>
-                    <ul class="nav navbar-nav navbar-left">
-                        <li>
-                            @if (HttpContext.Current.Session["loginToken"] == null)
-                            {
-                                @Html.ActionLink(" ورود", "LogIn", "Home", new { area = "" }, new { @class = "glyphicon glyphicon-log-in" })
-                            }
-                            else
-                            {
-                                @Html.ActionLink(" خروج", "LogOut", "Home", new { area = "" }, new { @class = "glyphicon glyphicon-log-out" })
-                            }
-                        </li>
-                    </ul>
-                </div>
+    <div class="navbar navbar-inverse navbar-fixed-top" id="navbar-styles">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+                @*<div class="navbar-brand">
+                        <img src="~/Content/Images/logo_icon.png" class="logo-in-navbar"/>
+                    </div>*@
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("خانه", "Index", "Home", new { area = "" }, null)</li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown">
+                            بقیه
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("مقالات", "Blog", "Home", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("آموزش ها", "Help", "Home", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("درباره ما", "AboutUs", "Home", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("تماس با ما", "ContactUs", "Home", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("لاگ ها", "Index", "Home", new { area = "" }, null)</li>
+                        </ul>
+                    </li>
+                    <li>@Html.ActionLink("کاربران", "Index", "Users", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("تولیدکنندگان", "Index", "Suppliers", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("کالا ها", "Index", "Products", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("تماس های ورودی", "Index", "IncomingCalls", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("مشتری ها", "Index", "Customers", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("قراردادها", "Index", "Contracts", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("سفارشات", "Index", "Orders", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("جزئیات قراردادها", "Index", "Order_Detail", new { area = "" }, null)</li>
+                    <li>
+                        @if (HttpContext.Current.Session["loginToken"] == null)
+                        {
+                            @Html.ActionLink(" ورود", "LogIn", "Home", new { area = "" }, new { @class = "glyphicon glyphicon-log-in" })
+                        }
+                        else
+                        {
+                            @Html.ActionLink("خروج", "LogOut", "Home", new { area = "" }, new { @class = "glyphicon glyphicon-log-out" })
+                        }
+                    </li>
+                </ul>
             </div>
         </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            @* Statusbar Messages Configuration: *@
 
-
-
-
-        <div class="container body-content">
-            @RenderBody()
-            <hr />
-            <footer>
-                @* Statusbar Messages Configuration: *@
-
-                @if (TempData["successful"] != null)
+            @if (TempData["successful"] != null)
             {
-                    @*<div id="messageBoxAtFooter">
-                            @if (Boolean.Parse(TempData["successful"].ToString()) == true)
-                            {
-                                <div id="successfulMessageBox" class="navbar-fixed-bottom">
-                                    @TempData["message"]
-                                </div>
-                            }
-                            else if (Boolean.Parse(TempData["successful"].ToString()) == false)
-                            {
-                                <div id="failureMessageBox" class="navbar-fixed-bottom">
-                                    @TempData["message"]
-                                </div>
-                            }
+                <div id="messageBoxAtFooter">
+                    @if (Boolean.Parse(TempData["successful"].ToString()) == true)
+                    {
+                        <div id="successfulMessageBox" class="navbar-fixed-bottom">
+                            @TempData["message"]
+                        </div>
+                    }
+                    else if (Boolean.Parse(TempData["successful"].ToString()) == false)
+                    {
+                        <div id="failureMessageBox" class="navbar-fixed-bottom">
+                            @TempData["message"]
+                        </div>
+                    }
 
-                        </div>*@
-                }
-
-                <p>@*&copy; @DateTime.Now.Year - کسری صنعت ژینو*@</p>
-            </footer>
-        </div>
-
-        @Scripts.Render("~/bundles/jquery")
-        <script type="text/javascript" src="~/Plugins/materialize/js/materialize.js"></script>
-        @Scripts.Render("~/bundles/bootstrap")
-        @RenderSection("scripts", required: false)
-
-
-        <script type="text/javascript">
-
-            /*
-                Material Designs:
-            */
-            var showMessageBox = @Html.Raw(Json.Encode(TempData["successful"]));
-            if (showMessageBox == true) {
-                Materialize.toast(@Html.Raw(Json.Encode(TempData["message"])), 4000, "toast-successful")
-            }
-            else if (showMessageBox == false) {
-                Materialize.toast(@Html.Raw(Json.Encode(TempData["message"])), 4000, "toast-failure")
+                </div>
             }
 
-            $(document).ready(function () {
+            <p>@*&copy; @DateTime.Now.Year - کسری صنعت ژینو*@</p>
+        </footer>
+    </div>
 
-                $('li.active').removeClass('active');
-                $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
 
-                //$(window).scroll(function () {
-                //    if ($(window).scrollTop() > 80) {
-                //        $('.page-title').addClass("navbar-fixed-top");
-                //        $('.page-title').css("background-color", "rgba(22, 21, 21, 0.80)");
-                //    }
-                //    if ($(window).scrollTop() <= 80) {
-                //        $('.page-title').removeClass("navbar-fixed-top");
-                //        $('.page-title').css("background-color", "rgba(22, 21, 21, 0.92)");
-                //    }
-                //});
+    <script>
+        $(document).ready(function () {
+            $('li.active').removeClass('active');
+            $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
 
-
+            $('#failureMessageBox').on("show", function () {
+                $(this).slideUp("slow");
             });
 
-        </script>
-    </div>
+
+            //$('#failureMessageBox').show(function () {
+            //    $(this).hide("fast");
+            //    $(this).slideUp("slow");
+            //})
+
+        });
+
+    </script>
 </body>
 </html>

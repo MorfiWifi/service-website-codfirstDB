@@ -11,42 +11,22 @@ using System.Threading.Tasks;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using se_CodeFirst_3.Helper;
-using System.Globalization;
-using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers
 {
-#if DEBUG
-
-#else
-    [RedirectIfNotAuthorized]
-#endif
+    
     public class IncomingCallsController : Controller
     {
+        ApplicationDbContext db = new ApplicationDbContext();
         ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
-        NotificationProviderHelper notificationHelper;
-        UsefulMethodsHelper methodHelper;
-
-        string basePath = "api/incomingCalls/";
-        public IncomingCallsController()
-        {
-            basePath = "api/incomingCalls/";
-            notificationHelper = new NotificationProviderHelper(this);
-            methodHelper = new UsefulMethodsHelper();
-        }
 
         // GET: IncomingCalls
+
         public async Task<ActionResult> Index()
         {
             List<IncomingCall> incomingCalls = new List<IncomingCall>();
 
-            incomingCalls = await helper.GetListOfItems<IncomingCall>(basePath);
-
-            //using PersianDates::
-            foreach (var item in incomingCalls)
-            {
-                item.Date = methodHelper.ConvertDateTimeToPersian(item.Date);
-            }
+            incomingCalls = await helper.GetListOfItems<IncomingCall>("api/incomingcalls");
 
             return View(incomingCalls);
         }
@@ -59,16 +39,12 @@ namespace se_CodeFirst_3.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var incomingCall = await helper.GetItem<IncomingCall>(basePath + id);
+            var incomingCall = await helper.GetItem<IncomingCall>("api/incomingcalls/" + id);
 
             if (incomingCall == null)
             {
                 return HttpNotFound();
             }
-
-            //using PersianDates::
-            incomingCall.Date = methodHelper.ConvertDateTimeToPersian(incomingCall.Date);
-
             return View(incomingCall);
         }
 
@@ -83,29 +59,14 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Message,Date")] IncomingCall incomingCall, bool? stayOnCreatePage)
+        public ActionResult Create([Bind(Include = "Id,Message,Date")] IncomingCall incomingCall)
         {
-            bool castedStayOnCreatePage = stayOnCreatePage.HasValue ? stayOnCreatePage.Value : false;
-
-            var convertedDateTime = methodHelper.ConvertDateTimeToGregorian(incomingCall.Date);
-
-            incomingCall.Date = convertedDateTime;
-
             if (ModelState.IsValid)
             {
-                helper.CreateItem<IncomingCall>(basePath, incomingCall);
-                notificationHelper.SuccessfulInsert(incomingCall.Message);
-                if (castedStayOnCreatePage == true)
-                {
-                    return RedirectToAction("Create");
-                }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
+                helper.CreateItem<IncomingCall>("api/incomingcalls/", incomingCall);
+                return RedirectToAction("Index");
             }
 
-            notificationHelper.FailureInsert(incomingCall.Message);
             return View(incomingCall);
         }
 
@@ -116,14 +77,11 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            IncomingCall incomingCall = await helper.GetItem<IncomingCall>(basePath + id);
+            IncomingCall incomingCall = await helper.GetItem<IncomingCall>("api/incomingcalls/"+ id);
             if (incomingCall == null)
             {
                 return HttpNotFound();
             }
-
-            incomingCall.Date = methodHelper.ConvertDateTimeToPersian(incomingCall.Date);
-
             return View(incomingCall);
         }
 
@@ -134,18 +92,11 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Message,Date")] IncomingCall incomingCall)
         {
-            var convertedDateTime = methodHelper.ConvertDateTimeToGregorian(incomingCall.Date);
-
-            incomingCall.Date = convertedDateTime;
-
             if (ModelState.IsValid)
             {
-                var returningIncomingCall = helper.ChangeItem<IncomingCall>(basePath + incomingCall.Id, incomingCall);
-                notificationHelper.SuccessfulChange(incomingCall.Message);
+                var returningIncomingCall = helper.ChangeItem<IncomingCall>("api/incomingcalls/" + incomingCall.Id, incomingCall);
                 return RedirectToAction("Index");
             }
-
-            notificationHelper.FailureChange(incomingCall.Message);
             return View(incomingCall);
         }
 
@@ -156,25 +107,20 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            IncomingCall incomingCall = await helper.GetItem<IncomingCall>(basePath + id);
+            IncomingCall incomingCall = await helper.GetItem<IncomingCall>("api/incomingcalls/" + id);
             if (incomingCall == null)
             {
                 return HttpNotFound();
             }
-
-            //using PersianDates::
-            incomingCall.Date = methodHelper.ConvertDateTimeToPersian(incomingCall.Date);
-
             return View(incomingCall);
         }
 
         // POST: IncomingCalls/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<IncomingCall>(basePath + id)).Message);
-            helper.DeleteItem(basePath, id);
+            helper.DeleteItem("api/incomingcalls/", id);
             return RedirectToAction("Index");
         }
 

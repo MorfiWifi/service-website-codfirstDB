@@ -35,7 +35,7 @@ namespace se_CodeFirst_3.Models
 
     public class RegisterBindingModel
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         [Required]
         [Display(Name = "Email")]
         public string Email { get; set; }
@@ -63,12 +63,6 @@ namespace se_CodeFirst_3.Models
 
         [Display(Name = "نقش کاربری")]
         public string Role { get; set; }
-
-        [Display(Name = "غیبت")]
-        public int AbsentDays { get; set; }
-
-        [Display(Name = "اضافه کاری")]
-        public int OverTime { get; set; }
 
     }
 

@@ -4,14 +4,13 @@
     ViewBag.Title = "افزودن کاربر جدید";
 }
 
-<h2 class="page-title page-title-create"><span class="glyphicon glyphicon-plus"></span> @ViewBag.Title</h2>
-<div class="col-sm-offset-2 col-sm-8 table-responsive" ng-app="createItemApp" ng-controller="createItemCtrl">
-    @using (Html.BeginForm("Create", "Users", FormMethod.Post, new { name = "ahkform" }))
+<h2 class="page-title page-title-create">@ViewBag.Title</h2>
+<div class="col-sm-offset-2 col-sm-8 table-responsive">
+    @using (Html.BeginForm("Create", "Users", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
 
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <input type="text" style="visibility:hidden" name="stayOnCreatePage" value="false" ng-model="stayOnCreatePage" />
 
         <table class="table table-condensed table-striped table-bordered">
             <tr>
@@ -22,17 +21,10 @@
             <tr>
                 <td>@Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })</td>
                 <td>
-                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus", required = "required", ng_model = "Email" } })
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus" } })
                     @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                 </td>
-                <td>
-                    <span class="show-error" ng-show="ahkform.Email.$dirty && ahkform.Email.$invalid">
-                        <span ng-show="ahkform.Email.$error.required" class="glyphicon glyphicon-remove" title="این فیلد نمی تواند خالی باشد."></span>
-                    </span>
-                    <span class="show-success" ng-show="ahkform.Email.$dirty">
-                        <span ng-hide="ahkform.Email.$error.required" class="glyphicon glyphicon-check"></span>
-                    </span>
-                </td>
+                <td></td>
             </tr>
 
             <tr>
@@ -40,17 +32,10 @@
                     @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
                 </td>
                 <td>
-                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", required = "required", ng_model = "Password" } })
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                 </td>
-                <td>
-                    <span class="show-error" ng-show="ahkform.Password.$dirty && ahkform.Password.$invalid">
-                        <span ng-show="ahkform.Password.$error.required" class="glyphicon glyphicon-remove" title="این فیلد نمی تواند خالی باشد."></span>
-                    </span>
-                    <span class="show-success" ng-show="ahkform.Password.$dirty">
-                        <span ng-hide="ahkform.Password.$error.required" class="glyphicon glyphicon-check"></span>
-                    </span>
-                </td>
+                <td></td>
             </tr>
 
             <tr>
@@ -58,21 +43,10 @@
                     @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label" })
                 </td>
                 <td>
-                    @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control", required = "required", ng_model = "Salary", min = "0" } })
+                    @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
                 </td>
-                <td>
-                    <span class="show-error" ng-show="ahkform.Salary.$dirty && ahkform.Salary.$invalid">
-                        <span ng-show="ahkform.Salary.$error.required" class="glyphicon glyphicon-remove" title="این فیلد نمی تواند خالی باشد."></span>
-                        <span ng-show="ahkform.Salary.$error.number" class="glyphicon glyphicon-remove" title="این فیلد حتما باید عدد باشد."></span>
-                    </span>
-                    <span class="show-error" ng-show="ahkform.Salary.$dirty && ahkform.Salary.$invalid">
-                        <span ng-show="ahkform.Salary.$error.min" class="glyphicon glyphicon-remove" title="یک عدد معتبر وارد کنید."></span>
-                    </span>
-                    <span class="show-success" ng-show="ahkform.Salary.$dirty">
-                        <span ng-hide="ahkform.Salary.$error.required || ahkform.Salary.$error.min" class="glyphicon glyphicon-check"></span>
-                    </span>
-                </td>
+                <td></td>
             </tr>
 
             <tr>
@@ -80,23 +54,13 @@
                     @Html.LabelFor(model => model.Benefits, htmlAttributes: new { @class = "control-label" })
                 </td>
                 <td>
-                    @Html.EditorFor(model => model.Benefits, new { htmlAttributes = new { @class = "form-control", required = "required", ng_model = "Benefits", min = "0" } })
+                    @Html.EditorFor(model => model.Benefits, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Benefits, "", new { @class = "text-danger" })
                 </td>
-                <td>
-                    <span class="show-error" ng-show="ahkform.Benefits.$dirty && ahkform.Benefits.$invalid">
-                        <span ng-show="ahkform.Benefits.$error.required" class="glyphicon glyphicon-remove" title="این فیلد نمی تواند خالی باشد."></span>
-                        <span ng-show="ahkform.Benefits.$error.number" class="glyphicon glyphicon-remove" title="این فیلد حتما باید عدد باشد."></span>
-                    </span>
-                    <span class="show-error" ng-show="ahkform.Benefits.$dirty && ahkform.Benefits.$invalid">
-                        <span ng-show="ahkform.Benefits.$error.min" class="glyphicon glyphicon-remove" title="یک عدد معتبر وارد کنید."></span>
-                    </span>
-                    <span class="show-success" ng-show="ahkform.Benefits.$dirty">
-                        <span ng-hide="ahkform.Benefits.$error.required || ahkform.Benefits.$error.min" class="glyphicon glyphicon-check"></span>
-                    </span>
-                </td>
+                <td></td>
             </tr>
 
+            <tr>
                 @*<div class="form-group">
                         @Html.LabelFor(model => model.Role, htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-10">
@@ -105,9 +69,8 @@
                         </div>
                     </div>*@
 
-            <tr>
                 <td>
-                    @Html.LabelFor(model => model.Role, "Role", htmlAttributes: new { @class = "control-label" })
+                    @Html.LabelFor(model => model.Role, "Role", htmlAttributes: new { @class = "control-label col-md-2" })
                 </td>
                 <td>
                     @Html.DropDownList("Role", null, htmlAttributes: new { @class = "form-control" })
@@ -118,33 +81,9 @@
         </table>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <button type="submit" class="btn btn-primary"
-                        ng-disabled="ahkform.Email.$invalid || ahkform.Password.$invalid ||
-                         ahkform.Salary.$invalid || ahkform.Benefits.$invalid">
-                    <span class="glyphicon glyphicon-plus"></span> افزودن
-                </button>
-
-                <button ng-mousedown="changeStayOnCreatePage()" class="btn btn-primary" type="submit"
-                        ng-disabled="ahkform.Email.$invalid || ahkform.Password.$invalid ||
-                         ahkform.Salary.$invalid || ahkform.Benefits.$invalid">
-                    <span class="glyphicon glyphicon-plus"></span> افزودن و ماندن
-                </button>
-
-                <a href="~/Users" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
+                <input type="submit" value="افزودن" class="btn btn-primary" />
+                @Html.ActionLink("برگشت به لیست", "Index", null, new { @class = "btn btn-default" })
             </div>
         </div>
     }
 </div>
-
-<script>
-
-    var app = angular.module('createItemApp', []);
-    app.controller('createItemCtrl', function ($scope, $http) {
-        $scope.stayOnCreatePage = false;
-        $scope.changeStayOnCreatePage = function () {
-            $scope.stayOnCreatePage = true;
-        };
-    });
-
-
-</script>

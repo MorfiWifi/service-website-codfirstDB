@@ -9,34 +9,25 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using se_CodeFirst_3.Models;
-using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers.api
 {
 #if DEBUG
 
 #else
-    [Authorize]//[Authorize(Roles = "Administrator,Secretary")]
+    [Authorize(Roles = "Administrator,Secretary")]
 #endif
     public class Order_DetailController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Order_Detail
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "Order_Detail", ClaimValue = "Get")]
-#endif
         public IQueryable<Order_Detail> GetOrder_Details()
         {
             return db.Order_Details;
         }
 
         // GET: api/Order_Detail/5
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "Order_Detail", ClaimValue = "Get")]
-#endif
         [ResponseType(typeof(Order_Detail))]
         public IHttpActionResult GetOrder_Detail(int id)
         {
@@ -50,10 +41,6 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // PUT: api/Order_Detail/5
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "Order_Detail", ClaimValue = "Put")]
-#endif
         [ResponseType(typeof(void))]
         public IHttpActionResult PutOrder_Detail(int id, Order_Detail order_Detail)
         {
@@ -103,10 +90,6 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // POST: api/Order_Detail
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "Order_Detail", ClaimValue = "Post")]
-#endif
         [ResponseType(typeof(Order_Detail))]
         public IHttpActionResult PostOrder_Detail(Order_Detail order_Detail)
         {
@@ -139,10 +122,6 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // DELETE: api/Order_Detail/5
-#if DEBUG
-#else
-        [ClaimsAuthorization(ClaimType = "Order_Detail", ClaimValue = "Delete")]
-#endif
         [ResponseType(typeof(Order_Detail))]
         public IHttpActionResult DeleteOrder_Detail(int id)
         {

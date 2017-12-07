@@ -60,10 +60,6 @@ namespace se_CodeFirst_3.Models
         public DbSet<Order> Orders { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Contract> Contracts { get; set; }
-        public DbSet<ClaimViewModel> Claims { get; set; }
-
-        public DbSet<Log> Logs { get; set; }
-
 
         public static ApplicationDbContext Create()
         {

@@ -149,7 +149,7 @@ namespace se_CodeFirst_3.Helper
         }
 
         //Authorization Part::
-        public async Task<Dictionary<string, string>> GetTokenDetails(string userName, string password)
+        public Dictionary<string, string> GetTokenDetails(string userName, string password)
         {
             Dictionary<string, string> tokenDetails = null;
             try
@@ -171,14 +171,6 @@ namespace se_CodeFirst_3.Helper
                         if (resp.Result.Content.ReadAsStringAsync().Result.Contains("access_token"))
                         {
                             tokenDetails = JsonConvert.DeserializeObject<Dictionary<string, string>>(resp.Result.Content.ReadAsStringAsync().Result);
-
-                            //var users = await this.GetListOfItems<ApplicationUser>("api/users");
-
-                            //var userID = (from item in users
-                            //              where item.UserName == userName
-                            //              select item.Id).SingleOrDefault();
-
-                            //HttpContext.Current.Session["logedInUserId"] = userID;
                         }
                     }
                 }

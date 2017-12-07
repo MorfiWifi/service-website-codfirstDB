@@ -1,156 +1,70 @@
 ﻿@model IEnumerable<se_CodeFirst_3.Models.IncomingCall>
-@Scripts.Render("~/bundles/angular")
 
 @{
     ViewBag.Title = "لیست تماس های ورودی";
 }
 
+<h2>Index</h2>
 
-<div id="mainContainer">
-    <div ng-app="ahkSearchApp" ng-controller="ahkSearchCtrl" class="col-sm-12">
+<p>
+    @Html.ActionLink("افزودن", "Create", null, new { @class = "btn btn-primary" })
+</p>
+<div class="col-sm-7">
+    <table class="table table-hover table-responsive table-striped">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Message)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th></th>
+        </tr>
 
-        <div class="col-sm-4 col-sm-push-8">
-            <h2 class="page-title page-title-search"><span class="glyphicon glyphicon-search"></span> جست و جو</h2>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Message)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td ng-app="incomingCallsApp" ng-controller="incomingCallsCtrl">
+                    @Html.ActionLink("تغییر", "Edit", new { id = item.Id }, new { @class = "btn btn-warning" }) |
+                    @Html.ActionLink("جزئیات", "Details", new { id = item.Id }, new { @class = "btn btn-info" }) |
+                    @Html.ActionLink("حذف", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+                </td>
+            </tr>
+        }
 
-            <div class="table-responsive">
-                <table class="table table-condensed table-striped">
-
-                    <tr>
-                        <td>پیام: </td>
-                        <td><input class="form-control" type="text" name="messageFilter" ng-model="messageFilter" autofocus /></td>
-                    </tr>
-
-                    <tr>
-                        <td>تاریخ: </td>
-                        <td>
-                            <input class="form-control form-horizontal" type="text" name="dateFilter" ng-model="dateFilter" />
-                        </td>
-                    </tr>
-
-                </table>
-
-
-            </div>
-
-        </div>
-
-
-        <div class="col-sm-8 col-sm-pull-4">
-
-            <h2 class="page-title page-title-index"><span class="glyphicon glyphicon-list"></span> @ViewBag.Title</h2>
-
-            <p>
-                <a class="btn btn-primary" href="~/IncomingCalls/Create"><span class="glyphicon glyphicon-plus"></span> افزودن</a>
-                <a class="btn btn-success" href="~/Customers/Create"><span class="glyphicon glyphicon-plus"></span> افزودن مشتری</a>
-            </p>
-
-            <div class="table-responsive">
-                <table class="table table-hover table-responsive table-striped table-bordered">
-                    <tr>
-                        <th ng-click="ahkSortBy('messageFilter')" ng-dblclick="ahkSortBy('messageFilter', 'true')">
-                            <span class="glyphicon glyphicon-envelope "></span>
-                            @Html.DisplayNameFor(model => model.Message)
-                        </th>
-                        <th ng-click="ahkSortBy('dateFilter')" ng-dblclick="ahkSortBy('dateFilter', 'true')">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                            @Html.DisplayNameFor(model => model.Date)
-                        </th>
-                        <th></th>
-                    </tr>
-
-                    <tr ng-repeat="x in items | orderBy:sortParameter : reverseOrder | filter : {Message:messageFilter,Date:dateFilter}">
-                        <td>{{x.Message}}</td>
-                        <td dir="ltr">{{x.Date | date : 'yyyy/MM/dd hh:mm:ss' }}</td>
-                        <td>
-                            <a class="btn btn-sm btn-warning" href="~/IncomingCalls/Edit/{{x.Id}}"><span class="glyphicon glyphicon-edit"></span> </a>
-                            <a class="btn btn-sm btn-info" href="~/IncomingCalls/Details/{{x.Id}}"><span class="glyphicon glyphicon-list-alt"></span></a>
-                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
-                                    href="~/IncomingCalls/Delete/{{x.Id}}"
-                                    data-target="#confirmItemDeleteModal{{x.Id}}">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-
-                            <!-- Modal -->
-                            <div id="confirmItemDeleteModal{{x.Id}}" class="modal fade" role="dialog">
-                                <div class="modal-dialog">
-
-                                    <!-- Modal content-->
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            @*<h4 class="modal-title" >از حذف عنصر انتخاب شده، مطمئن هستید؟</h4>*@
-                                        </div>
-                                        <div class="modal-body">
-                                            <div>
-                                                @*@{
-                                                        Html.RenderPartial("Delete", );
-                                                    }*@
-                                                <a class="btn btn-sm btn-danger" href="~/IncomingCalls/Delete/{{x.Id}}">حذف</a>
-
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                </table>
-            </div>
-        </div>
-    </div>
+    </table>
 </div>
 
+@{
+    var justAModelForReferenceViews = new se_CodeFirst_3.Models.IncomingCall();
+}
+
+<div class="col-sm-5">
+    <div id="createIncomingCall">
+        @Html.Partial("~/Views/IncomingCalls/Create.cshtml", justAModelForReferenceViews);
+    </div>
+
+
+    @*<div ng-app="incomingCallsApp" ng-controller="incomingCallsCtrl">
+            {{aa}}
+        </div>*@
+</div>
+
+<script src="~/Scripts/angular.js"></script>
+<script src="~/Scripts/jquery-2.1.1.js"></script>
 
 <script>
-    var app = angular.module('ahkSearchApp', []);
-    app.controller('ahkSearchCtrl', function ($scope, $http) {
 
-        $scope.items = @Html.Raw(Json.Encode(Model));
 
-        for (var i = 0; i < $scope.items.length; i++) {
-            $scope.items[i].Date = new Date(parseInt($scope.items[i].Date.substr(6)));
-        }
-
-        //Search Variables:
-        $scope.messageFilter = "";
-        $scope.dateFilter = "";
-
-        $scope.ahkSortBy = function (x) {
-            $scope.sortParameter = x;
-            $scope.reverseOrder = reverseOrder;
-        };
-
-        $scope.ahkSortBy = function (x, reverseOrder) {
-            $scope.sortParameter = x;
-            $scope.reverseOrder = reverseOrder;
-        };
-
-        //Reset Input Data:
-        $scope.resetDataInSearchFeilds = function () {
-            $scope.messageFilter = "";
-            $scope.dateFilter = "";
-        };//1396/08/17 10:08:42
-
-        $scope.greaterThan = function (prop, val) {
-            return function (item) {
-                return item[prop] >= val;
-            }
-        }
-
-        $scope.lowerThan = function (prop, val) {
-            return function (item) {
-                return item[prop] < val;
-            }
-        }
-
+    var app = angular.module("incomingCallsApp", []);
+    app.controller("incomingCallsCtrl", function ($scope) {
 
     });
+
 </script>
-
-
-
-
-

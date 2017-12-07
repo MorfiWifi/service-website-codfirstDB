@@ -9,25 +9,17 @@ using System.Web;
 using System.Web.Mvc;
 using se_CodeFirst_3.Models;
 using se_CodeFirst_3.Helper;
-using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers
 {
-#if DEBUG
-
-#else
-    [RedirectIfNotAuthorized]
-#endif
     public class CustomersController : Controller
     {
         ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
-        NotificationProviderHelper notificationHelper;
 
         string basePath = "api/customers/";
         public CustomersController()
         {
             basePath = "api/customers/";
-            notificationHelper = new NotificationProviderHelper(this);
         }
 
         // GET: Customers
@@ -75,25 +67,14 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,CompanyName,PhoneNumber")] Customer customer, bool? stayOnCreatePage)
+        public ActionResult Create([Bind(Include = "Id,Name,CompanyName,PhoneNumber")] Customer customer)
         {
-            bool castedStayOnCreatePage = stayOnCreatePage.HasValue ? stayOnCreatePage.Value : false;
-
             if (ModelState.IsValid)
             {
                 helper.CreateItem<Customer>(basePath, customer);
-                notificationHelper.SuccessfulInsert(customer.Name);
-                if (castedStayOnCreatePage == true)
-                {
-                    return RedirectToAction("Create");
-                }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
+                return RedirectToAction("Index");
             }
 
-            notificationHelper.FailureInsert(customer.Name);
             return View(customer);
         }
 
@@ -122,11 +103,8 @@ namespace se_CodeFirst_3.Controllers
             if (ModelState.IsValid)
             {
                 helper.ChangeItem<Customer>(basePath + customer.Id, customer);
-                notificationHelper.SuccessfulChange(customer.Name);
                 return RedirectToAction("Index");
             }
-
-            notificationHelper.FailureChange(customer.Name);
             return View(customer);
         }
 
@@ -150,8 +128,8 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<Customer>(basePath + id)).Name);
             helper.DeleteItem(basePath, id);
+
             return RedirectToAction("Index");
         }
 

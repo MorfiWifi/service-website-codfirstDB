@@ -16,8 +16,7 @@ namespace se_CodeFirst_3.Models
         public string Message { get; set; }
 
         [Display(Name = "تاریخ")]
-        //[FutureDate]
-        [DataType(DataType.Date)]
+        [FutureDate]
         public DateTime Date { get; set; }
 
         //Navigation Properties:

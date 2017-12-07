@@ -65,10 +65,6 @@
     <Reference Include="Microsoft.CSharp">
       <Private>True</Private>
     </Reference>
-    <Reference Include="Pjax.Mvc5, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Pjax.Mvc5.0.1.1\lib\net45\Pjax.Mvc5.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System">
       <Private>True</Private>
     </Reference>
@@ -259,11 +255,9 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountMVCController.cs" />
-    <Compile Include="Controllers\api\ClaimsController.cs" />
     <Compile Include="Controllers\api\ContractsController.cs" />
     <Compile Include="Controllers\api\CustomersController.cs" />
     <Compile Include="Controllers\api\IncomingCallsController.cs" />
-    <Compile Include="Controllers\api\LogsController.cs" />
     <Compile Include="Controllers\api\OrdersController.cs" />
     <Compile Include="Controllers\api\Order_DetailController.cs" />
     <Compile Include="Controllers\api\OtherFunctionsController.cs" />
@@ -271,12 +265,10 @@
     <Compile Include="Controllers\api\RolesController.cs" />
     <Compile Include="Controllers\api\SuppliersController.cs" />
     <Compile Include="Controllers\api\UsersController.cs" />
-    <Compile Include="Controllers\ClaimsController.cs" />
     <Compile Include="Controllers\ContractsController.cs" />
     <Compile Include="Controllers\CustomersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IncomingCallsController.cs" />
-    <Compile Include="Controllers\LogsController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\Order_DetailController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
@@ -284,18 +276,13 @@
     <Compile Include="Controllers\SuppliersController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
-    <Compile Include="Filters\ClaimsAuthorizationAttribute.cs" />
     <Compile Include="Filters\FutureDateAttribute.cs" />
-    <Compile Include="Filters\LogApiAttribute.cs" />
-    <Compile Include="Filters\AuthorizeUser2Attribute.cs" />
-    <Compile Include="Filters\RedirectIfNotAuthorizedAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\ConnectToWebApiHelper.cs" />
     <Compile Include="Helper\IConnectToWebApiHelper.cs" />
-    <Compile Include="Helper\NotificationProviderHelper.cs" />
-    <Compile Include="Helper\SetPermissionAttribute.cs" />
+    <Compile Include="Helper\ProperMessagesHelper.cs" />
     <Compile Include="Helper\UsefulMethodsHelper.cs" />
     <Compile Include="Migrations\201710142041082_Initial.cs" />
     <Compile Include="Migrations\201710142041082_Initial.Designer.cs">
@@ -405,50 +392,19 @@
     <Compile Include="Migrations\201710281849364_ChangeRegisterBindingModel1.Designer.cs">
       <DependentUpon>201710281849364_ChangeRegisterBindingModel1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201711042052116_ClaimBasedAuthorization1.cs" />
-    <Compile Include="Migrations\201711042052116_ClaimBasedAuthorization1.Designer.cs">
-      <DependentUpon>201711042052116_ClaimBasedAuthorization1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711042118455_ClaimBasedAuthorization2.cs" />
-    <Compile Include="Migrations\201711042118455_ClaimBasedAuthorization2.Designer.cs">
-      <DependentUpon>201711042118455_ClaimBasedAuthorization2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711050910315_ClaimBasedAuthorization3.cs" />
-    <Compile Include="Migrations\201711050910315_ClaimBasedAuthorization3.Designer.cs">
-      <DependentUpon>201711050910315_ClaimBasedAuthorization3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711050950528_ClaimBasedAuthorization4.cs" />
-    <Compile Include="Migrations\201711050950528_ClaimBasedAuthorization4.Designer.cs">
-      <DependentUpon>201711050950528_ClaimBasedAuthorization4.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711051003087_ClaimBasedAuthorization5.cs" />
-    <Compile Include="Migrations\201711051003087_ClaimBasedAuthorization5.Designer.cs">
-      <DependentUpon>201711051003087_ClaimBasedAuthorization5.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711051854290_ClaimBasedAuthorization6.cs" />
-    <Compile Include="Migrations\201711051854290_ClaimBasedAuthorization6.Designer.cs">
-      <DependentUpon>201711051854290_ClaimBasedAuthorization6.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711091948225_Logging1.cs" />
-    <Compile Include="Migrations\201711091948225_Logging1.Designer.cs">
-      <DependentUpon>201711091948225_Logging1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711102125553_Logs2.cs" />
-    <Compile Include="Migrations\201711102125553_Logs2.Designer.cs">
-      <DependentUpon>201711102125553_Logs2.cs</DependentUpon>
+    <Compile Include="Migrations\201711051109263_zero_down.cs" />
+    <Compile Include="Migrations\201711051109263_zero_down.Designer.cs">
+      <DependentUpon>201711051109263_zero_down.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\ClaimViewModel.cs" />
     <Compile Include="Models\Contract.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\CustomerViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\IncomingCall.cs" />
-    <Compile Include="Models\Log.cs" />
     <Compile Include="Models\LogInViewModel.cs" />
-    <Compile Include="Models\LogStringViewModel.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Order_Detail.cs" />
     <Compile Include="Models\Order_DetailViewModel.cs" />
@@ -456,12 +412,7 @@
     <Compile Include="Models\RoleViewModel.cs" />
     <Compile Include="Models\Supplier.cs" />
     <Compile Include="Models\SupplierInformationViewModel.cs" />
-    <Compile Include="Models\UserClaimsViewModel.cs" />
-    <Compile Include="Models\UserListViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
-    <Compile Include="Plugins\MD.BootstrapPersianDateTimePicker\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
-    <Compile Include="Plugins\MD.BootstrapPersianDateTimePicker\obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
-    <Compile Include="Plugins\MD.BootstrapPersianDateTimePicker\obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
@@ -474,7 +425,6 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Images\logo_icon.png" />
     <Content Include="Content\nprogress.css" />
-    <Content Include="Content\SimpleSwitch.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -518,80 +468,6 @@
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Plugins\jquery-pjax-master\jquery.pjax.js" />
-    <Content Include="Plugins\jquery-pjax-master\test\evaled.js" />
-    <Content Include="Plugins\jquery-pjax-master\test\favicon.ico" />
-    <Content Include="Plugins\jquery-pjax-master\test\run-qunit.js" />
-    <Content Include="Plugins\jquery-pjax-master\test\unit\fn_pjax.js" />
-    <Content Include="Plugins\jquery-pjax-master\test\unit\helpers.js" />
-    <Content Include="Plugins\jquery-pjax-master\test\unit\pjax.js" />
-    <Content Include="Plugins\jquery-pjax-master\test\unit\pjax_fallback.js" />
-    <Content Include="Plugins\jquery-pjax-master\vendor\jquery-1.12.js" />
-    <Content Include="Plugins\jquery-pjax-master\vendor\jquery-2.2.js" />
-    <Content Include="Plugins\jquery-pjax-master\vendor\jquery-3.2.js" />
-    <Content Include="Plugins\jquery-pjax-master\vendor\qunit.css" />
-    <Content Include="Plugins\jquery-pjax-master\vendor\qunit.js" />
-    <Content Include="Plugins\materialize\css\materialize.css" />
-    <Content Include="Plugins\materialize\css\materialize.min.css" />
-    <Content Include="Plugins\materialize\js\materialize.js" />
-    <Content Include="Plugins\materialize\js\materialize.min.js" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Content\bootstrap-theme.css" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Content\bootstrap-theme.min.css" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Content\bootstrap.css" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Content\bootstrap.min.css" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Content\MD.PersianDateTimePicker1.png" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Content\MD.PersianDateTimePicker2.png" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Content\MdBootstrapPersianDateTimePicker\jquery.Bootstrap-PersianDateTimePicker.css" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Demo\Demo1.html" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Demo\Demo2.html" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Demo\Demo3.html" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Demo\Demo4.html" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Demo\Demo5.html" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Manual\Index.html" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Manual\manul.css" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\MD.BootstrapPersianDateTimePicker.csproj" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Scripts\bootstrap.js" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Scripts\bootstrap.min.js" />
-    <Content Include="Plugins\jquery-pjax-master\.eslintrc" />
-    <Content Include="Plugins\jquery-pjax-master\.gitignore" />
-    <Content Include="Plugins\jquery-pjax-master\.travis.yml" />
-    <Content Include="Plugins\jquery-pjax-master\bower.json" />
-    <Content Include="Plugins\jquery-pjax-master\CONTRIBUTING.md" />
-    <Content Include="Plugins\jquery-pjax-master\Gemfile" />
-    <Content Include="Plugins\jquery-pjax-master\Gemfile.lock" />
-    <Content Include="Plugins\jquery-pjax-master\LICENSE" />
-    <Content Include="Plugins\jquery-pjax-master\package.json" />
-    <Content Include="Plugins\jquery-pjax-master\README.md" />
-    <Content Include="Plugins\jquery-pjax-master\script\bootstrap" />
-    <Content Include="Plugins\jquery-pjax-master\script\server" />
-    <Content Include="Plugins\jquery-pjax-master\script\test" />
-    <Content Include="Plugins\jquery-pjax-master\test\app.rb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\aliens.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\anchor.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\boom.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\boom_sans_pjax.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\dinosaurs.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\double_title.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\empty.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\env.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\fragment.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\hello.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\home.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\layout.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\long.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\nested_title.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\qunit.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\referer.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\scripts.erb" />
-    <Content Include="Plugins\jquery-pjax-master\test\views\timeout.erb" />
-    <None Include="Plugins\MD.BootstrapPersianDateTimePicker\Scripts\jquery-3.1.0.intellisense.js" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Scripts\jquery-3.1.0.js" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Scripts\jquery-3.1.0.min.js" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Scripts\jquery-3.1.0.slim.js" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Scripts\jquery-3.1.0.slim.min.js" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Scripts\MdBootstrapPersianDateTimePicker\jalaali.js" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Scripts\MdBootstrapPersianDateTimePicker\jquery.Bootstrap-PersianDateTimePicker.js" />
     <Content Include="Scripts\angular-animate.js" />
     <Content Include="Scripts\angular-route.js" />
     <Content Include="Scripts\angular.js" />
@@ -617,30 +493,6 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
-    <Content Include="Plugins\materialize\fonts\roboto\Roboto-Bold.woff" />
-    <Content Include="Plugins\materialize\fonts\roboto\Roboto-Bold.woff2" />
-    <Content Include="Plugins\materialize\fonts\roboto\Roboto-Light.woff" />
-    <Content Include="Plugins\materialize\fonts\roboto\Roboto-Light.woff2" />
-    <Content Include="Plugins\materialize\fonts\roboto\Roboto-Medium.woff" />
-    <Content Include="Plugins\materialize\fonts\roboto\Roboto-Medium.woff2" />
-    <Content Include="Plugins\materialize\fonts\roboto\Roboto-Regular.woff" />
-    <Content Include="Plugins\materialize\fonts\roboto\Roboto-Regular.woff2" />
-    <Content Include="Plugins\materialize\fonts\roboto\Roboto-Thin.woff" />
-    <Content Include="Plugins\materialize\fonts\roboto\Roboto-Thin.woff2" />
-    <Content Include="Plugins\materialize\LICENSE" />
-    <Content Include="Plugins\materialize\README.md" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Content\bootstrap-theme.css.map" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Content\bootstrap-theme.min.css.map" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Content\bootstrap.css.map" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Content\bootstrap.min.css.map" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\packages.config" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Scripts\jquery-3.1.0.min.map" />
-    <Content Include="Plugins\MD.BootstrapPersianDateTimePicker\Scripts\jquery-3.1.0.slim.min.map" />
     <None Include="Properties\PublishProfiles\a.pubxml" />
     <None Include="Properties\PublishProfiles\amir hossein.pubxml" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
@@ -730,18 +582,9 @@
     <Content Include="Views\Roles\Details.cshtml" />
     <Content Include="Views\Roles\Edit.cshtml" />
     <Content Include="Views\Roles\Index.cshtml" />
-    <Content Include="Views\Claims\Create.cshtml" />
-    <Content Include="Views\Claims\Index.cshtml" />
-    <Content Include="Views\Logs\Create.cshtml" />
-    <Content Include="Views\Logs\Delete.cshtml" />
-    <Content Include="Views\Logs\Details.cshtml" />
-    <Content Include="Views\Logs\Edit.cshtml" />
-    <Content Include="Views\Logs\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Plugins\MD.BootstrapPersianDateTimePicker\obj\Debug\TempPE\" />
-    <Folder Include="Views\TODO\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -832,29 +675,8 @@
     <EmbeddedResource Include="Migrations\201710281849364_ChangeRegisterBindingModel1.resx">
       <DependentUpon>201710281849364_ChangeRegisterBindingModel1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711042052116_ClaimBasedAuthorization1.resx">
-      <DependentUpon>201711042052116_ClaimBasedAuthorization1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711042118455_ClaimBasedAuthorization2.resx">
-      <DependentUpon>201711042118455_ClaimBasedAuthorization2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711050910315_ClaimBasedAuthorization3.resx">
-      <DependentUpon>201711050910315_ClaimBasedAuthorization3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711050950528_ClaimBasedAuthorization4.resx">
-      <DependentUpon>201711050950528_ClaimBasedAuthorization4.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711051003087_ClaimBasedAuthorization5.resx">
-      <DependentUpon>201711051003087_ClaimBasedAuthorization5.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711051854290_ClaimBasedAuthorization6.resx">
-      <DependentUpon>201711051854290_ClaimBasedAuthorization6.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711091948225_Logging1.resx">
-      <DependentUpon>201711091948225_Logging1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711102125553_Logs2.resx">
-      <DependentUpon>201711102125553_Logs2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201711051109263_zero_down.resx">
+      <DependentUpon>201711051109263_zero_down.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

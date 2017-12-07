@@ -1,39 +1,67 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using se_CodeFirst_3.Filters;
 using se_CodeFirst_3.Helper;
 using se_CodeFirst_3.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 
 namespace se_CodeFirst_3.Controllers
 {
     public class HomeController : Controller
     {
         ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
-        NotificationProviderHelper notificationHelper;
 
-        public HomeController()
-        {
-            notificationHelper = new NotificationProviderHelper(this);
-        }
         public ActionResult Test()
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            var supplier = db.Suppliers.Find(1);
+
+            var a = DateTimeOffset.Now;
+            var a1 = DateTimeOffset.UtcNow;
+            var a2 = DateTimeOffset.MinValue;
+            var a3 = DateTimeOffset.MaxValue;
+
+            System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
+
+            DateTime datetime = new DateTime();
+            datetime = DateTime.Now;
+
+            var c = pc.GetDayOfWeek(datetime);
+            var c2 = pc.GetDayOfMonth(datetime);
+            var c3 = pc.GetDayOfYear(datetime);
+            var c4 = pc.GetHour(datetime);
+            var c5 = pc.GetMinute(datetime);
+            var c6 = pc.GetMonth(datetime);
+            var c7 = pc.GetSecond(datetime);
+
+            //var user = db.Users.Find(1);
+
+            var userStore = new UserStore<ApplicationUser>(db);
+            var userManager = new UserManager<ApplicationUser>(userStore);
+
+            var bb = userManager.GetRoles((from item in db.Users
+                                  where item.UserName == "admin"
+                                  select item.Id).SingleOrDefault());
+
+            return View(supplier.Products);
+        }
+
+        public ActionResult Index()
         {
             return View();
         }
 
-#if DEBUG
+        public ActionResult AdminPanel()
+        {
+            ViewBag.Title = "Admin Panel";
 
-#else
-    [RedirectIfNotAuthorized]
-#endif
-        public ActionResult Index()
+            return View();
+        }
+
+        public ActionResult AdminPanelCustomer()
         {
             return View();
         }
@@ -45,35 +73,26 @@ namespace se_CodeFirst_3.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> LogIn(LogInViewModel logInViewModel)
+        public ActionResult LogIn(LogInViewModel logInViewModel)
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    Dictionary<string, string> token = await helper.GetTokenDetails(logInViewModel.UserName, logInViewModel.Password);
-                    HttpContext.Session["loginToken"] = token.Values.ElementAt(0);
-                    
-                    //5dd9e98e-3048-4e07-a6c5-c9b45460f136
-                    if (HttpContext.Session["lastPageBeforeLogIn"] == null)
-                    {
-                        notificationHelper.CustomSuccessfulMessage("شما با موفقیت وارد شدید");
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        notificationHelper.CustomSuccessfulMessage("شما با موفقیت وارد شدید");
-                        var tempUrl = HttpContext.Session["lastPageBeforeLogIn"];
-                        HttpContext.Session["lastPageBeforeLogIn"] = null;
-                        return Redirect(tempUrl.ToString());
-                    }
-                }
-                catch (Exception)
-                {
-                    notificationHelper.CustomFailureMessage("خطا در ورود:نام کاربری یا رمز عبور اشتباه است");
-                }
+                //helper.GetTokenDetails(logInViewModel.UserName, logInViewModel.Password);
+                //string val0 = logInViewModel.UserName;
+                Dictionary<string, string> token = new Dictionary<string, string>();
+                token = helper.GetTokenDetails("admin", "bbBB11!!");
+                HttpContext.Session["loginToken"] = token.Values.ElementAt(0);
+                    //HttpContext.Session["loginToken"] = token.Values.Last();
+                    ViewBag.Title = Session["loginToken"];
+                    return RedirectToAction("Index");
+                
+                
+                
             }
-
+            else
+            {
+                ViewBag.Title = "خطا در ورود کاربر";
+            }
             return View(logInViewModel);
         }
 
@@ -84,13 +103,9 @@ namespace se_CodeFirst_3.Controllers
 
             if (successful)
             {
-                notificationHelper.CustomSuccessfulMessage("شما با موفقیت خارج شدید");
                 HttpContext.Session["loginToken"] = null;
             }
-            else
-            {
-                notificationHelper.CustomFailureMessage("خطا در خروج");
-            }
+
             return RedirectToAction("LogIn");
         }
 

@@ -4,123 +4,58 @@
     ViewBag.Title = "تغییر سفارش";
 }
 
-<link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/bootstrap.css" rel="stylesheet" />
-<link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.css" rel="stylesheet" />
-<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/jquery-3.1.0.js"></script>
-<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/bootstrap.js"></script>
-<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/MdBootstrapPersianDateTimePicker/jalaali.js"></script>
-<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.js"></script>
+<h2>Edit</h2>
 
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
 
-<h2 class="page-title page-title-change"><span class="glyphicon glyphicon-edit"></span> @ViewBag.Title</h2>
+    <div class="form-horizontal">
+        <h4>Order</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
 
-<div class="col-sm-offset-2 col-sm-8 table-responsive ">
-
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-
-        <div class="form-horizontal">
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            @Html.HiddenFor(model => model.Id)
-
-
-            <table class="table table-condensed table-striped table-bordered">
-                <tr>
-                    <th>ویژگی</th>
-                    <th>مقدار</th>
-                    <th>درستی</th>
-                </tr>
-
-                <tr>
-                    <td>
-                        @Html.LabelFor(model => model.ContractId, "ContractId", htmlAttributes: new { @class = "control-label" })
-                    </td>
-                    <td>
-                        @Html.DropDownList("ContractId", null, htmlAttributes: new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.ContractId, "", new { @class = "text-danger" })
-                    </td>
-                    <td></td>
-                </tr>
-
-                <tr>
-                    <td>
-                        @Html.LabelFor(model => model.CustomerId, "CustomerId", htmlAttributes: new { @class = "control-label" })
-                    </td>
-                    <td>
-                        @Html.DropDownList("CustomerId", null, htmlAttributes: new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
-                    </td>
-                    <td></td>
-                </tr>
-
-                <tr>
-                    <td>
-                        @Html.LabelFor(model => model.OrderDate, htmlAttributes: new { @class = "control-label" })
-                    </td>
-                    <td>
-                        <div class="input-group" dir="ltr" style="max-width:280px;">
-                            <span class="glyphicon glyphicon-calendar input-group-addon" id="input1" data-MdDateTimePicker="true" data-TargetSelector="#input1" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
-                            @Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @class = "form-control", id = "textBoxInputId" } })
-                        </div>
-                        @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
-                    </td>
-                    <td></td>
-                </tr>
-
-                <tr>
-                    <td>
-                        @Html.LabelFor(model => model.RequiredDate, htmlAttributes: new { @class = "control-label" })
-                    </td>
-                    <td>
-                        <div class="input-group" dir="ltr" style="max-width:280px;">
-                            <span class="glyphicon glyphicon-calendar input-group-addon" id="input2" data-MdDateTimePicker="true" data-TargetSelector="#input1" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
-                            @Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @class = "form-control", id = "textBoxInputId2" } })
-                        </div>
-                        @Html.ValidationMessageFor(model => model.RequiredDate, "", new { @class = "text-danger" })
-                    </td>
-                    <td></td>
-                </tr>
-            </table>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> تغییر</button>
-                    <a href="~/Suppliers/Index" type="submit" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
-                </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrderDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
             </div>
         </div>
-    }
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RequiredDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RequiredDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RequiredDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CustomerId, "CustomerId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("CustomerId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ContractId, "ContractId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("ContractId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ContractId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
 </div>
-
-<script type="text/javascript">
-
-    $('#input1').MdPersianDateTimePicker({
-        Placement: 'left',
-        Trigger: 'click',
-        EnableTimePicker: true,
-        TargetSelector: '#textBoxInputId',
-        GroupId: '',
-        ToDate: false,
-        FromDate: false,
-        DisableBeforeToday: true,
-        Disabled: false,
-        Format: 'yyyy/MM/dd HH:mm:ss',
-        IsGregorian: false,
-        EnglishNumber: true,
-    });
-
-    $('#input2').MdPersianDateTimePicker({
-        Placement: 'left',
-        Trigger: 'click',
-        EnableTimePicker: true,
-        TargetSelector: '#textBoxInputId2',
-        GroupId: '',
-        ToDate: false,
-        FromDate: false,
-        DisableBeforeToday: true,
-        Disabled: false,
-        Format: 'yyyy/MM/dd HH:mm:ss',
-        IsGregorian: false,
-        EnglishNumber: true,
-    });
-</script>
