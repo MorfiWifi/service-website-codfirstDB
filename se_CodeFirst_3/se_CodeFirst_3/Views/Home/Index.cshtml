@@ -2,7 +2,7 @@
 
 
 
-<h2 class="page-title page-title-admin-panel">پنل مدیریت</h2>
+<h2 class="page-title page-title-admin-panel"><span class="glyphicon glyphicon-list"></span> پنل مدیریت</h2>
 <div class="col-sm-12" id="containerForAdminPanel">
     <div class="panel-group col-sm-4" id="accordion1" dir="rtl">
 
@@ -12,7 +12,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion1" href="#div3">
-                        مدیریت کالاها
+                        <span class="glyphicon glyphicon-tasks"></span> مدیریت کالاها
                     </a>
                 </div>
             </div>
@@ -31,7 +31,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion1" href="#div4">
-                        مدیریت تماس های ورودی
+                        <span class="glyphicon glyphicon-tasks"></span> مدیریت تماس های ورودی
                     </a>
                 </div>
             </div>
@@ -50,7 +50,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion1" href="#div7">
-                        مدیریت قراردادها
+                        <span class="glyphicon glyphicon-tasks"></span> مدیریت قراردادها
                     </a>
                 </div>
             </div>
@@ -69,7 +69,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion1" href="#div8">
-                        مدیریت سفارش ها
+                        <span class="glyphicon glyphicon-tasks"></span> مدیریت سفارش ها
                     </a>
                 </div>
             </div>
@@ -88,15 +88,34 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion1" href="#div9">
-                        مدیریت جزئیات سفارش
+                        <span class="glyphicon glyphicon-tasks"></span> مدیریت جزئیات سفارش
                     </a>
                 </div>
             </div>
             <div id="div9" class="collapse panel-collapse">
                 <div class="panel-body">
                     <div class="list-group">
-                        @Html.ActionLink("لیست جزئیات سفارش", "Index", "Orders_Details", new { area = "" }, new { @class = "list-group-item" })
-                        @Html.ActionLink("افزودن جزئیات سفارش", "Create", "Orders_Details", new { area = "" }, new { @class = "list-group-item" })
+                        @Html.ActionLink("لیست جزئیات سفارش", "Index", "Orders_Detail", new { area = "" }, new { @class = "list-group-item" })
+                        @Html.ActionLink("افزودن جزئیات سفارش", "Create", "Orders_Detail", new { area = "" }, new { @class = "list-group-item" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- panel 9 -->
+        <div class="panel no_border_radius no_padding no_margin">
+            <div class="panel-heading">
+                <div class="panel-title center_text">
+                    <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion1" href="#div21">
+                        <span class="glyphicon glyphicon-tasks"></span> لاگ ها، تنظیمات
+                    </a>
+                </div>
+            </div>
+            <div id="div21" class="collapse panel-collapse">
+                <div class="panel-body">
+                    <div class="list-group">
+                        @Html.ActionLink("لیست لاگ ها", "Index", "Logs", new { area = "" }, new { @class = "list-group-item" })
+                        @Html.ActionLink("تنظیمات", "Index", "Home", new { area = "" }, new { @class = "list-group-item" })
                     </div>
                 </div>
             </div>
@@ -110,7 +129,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion2" href="#div2">
-                        مدیریت تولیدکنندگان
+                        <span class="glyphicon glyphicon-tasks"></span> مدیریت تولیدکنندگان
                     </a>
                 </div>
             </div>
@@ -129,7 +148,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion2" href="#div5">
-                        مدیریت مشتری ها
+                        <span class="glyphicon glyphicon-tasks"></span> مدیریت مشتری ها
                     </a>
                 </div>
             </div>
@@ -151,7 +170,7 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion3" href="#div1">
-                        مدیریت کاربران
+                        <span class="glyphicon glyphicon-tasks"></span> مدیریت کاربران
                     </a>
                 </div>
             </div>
@@ -170,15 +189,14 @@
             <div class="panel-heading">
                 <div class="panel-title center_text">
                     <a class="display_block handler_no_decoration" data-toggle="collapse" data-parent="#accordion3" href="#div10">
-                        مدیریت نقش های کاربری
+                        <span class="glyphicon glyphicon-tasks"></span> مدیریت نقش های کاربری
                     </a>
                 </div>
             </div>
             <div id="div10" class="collapse panel-collapse">
                 <div class="panel-body">
                     <div class="list-group">
-                        @Html.ActionLink("لیست نقش های کاربری", "Index", "Roles", new { area = "" }, new { @class = "list-group-item" })
-                        @Html.ActionLink("افزودن نقش کاربری", "Create", "Roles", new { area = "" }, new { @class = "list-group-item" })
+                        @Html.ActionLink("مدیریت سطوح دسترسی", "Index", "Claims", new { area = "" }, new { @class = "list-group-item" })
                     </div>
                 </div>
             </div>

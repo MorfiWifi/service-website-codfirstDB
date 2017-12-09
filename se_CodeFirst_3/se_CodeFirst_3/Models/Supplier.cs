@@ -9,6 +9,7 @@ namespace se_CodeFirst_3.Models
 {
     public class Supplier
     {
+        [Display(Name = "شماره تولیدکننده")]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "نام تولید کننده نمی تواند خالی باشد.")]

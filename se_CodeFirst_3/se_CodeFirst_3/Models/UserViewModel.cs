@@ -9,7 +9,10 @@ namespace se_CodeFirst_3.Models
 {
     public class UserViewModel
     {
+        [Display(Name = "نام کاربری")]
         public string UserName { get; set; }
+        [Display(Name = "ایمیل")]
+        public string Email { get; set; }
 
         [Display(Name = "حقوق خالص")]
         public int Salary { get; set; }

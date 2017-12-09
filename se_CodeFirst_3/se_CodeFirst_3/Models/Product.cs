@@ -9,6 +9,7 @@ namespace se_CodeFirst_3.Models
 {
     public class Product
     {
+        [Display(Name = "شماره محصول")]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "نام کالا باید مشخص باشد.")]
@@ -17,10 +18,15 @@ namespace se_CodeFirst_3.Models
 
         //public int QuantityPerUnit { get; set; }
 
-        [Required(ErrorMessage = "قیمت کالا نمی تواند خالی باشد.")]
-        [Display(Name = "قیمت")]
-        [Range(0, int.MaxValue, ErrorMessage = "قیمت نمی تواند منفی باشند.")]
-        public int UnitPrice { get; set; }
+        [Required(ErrorMessage = "قیمت خرید کالا نمی تواند خالی باشد.")]
+        [Display(Name = "قیمت خرید")]
+        [Range(0, int.MaxValue, ErrorMessage = "قیمت خرید نمی تواند منفی باشند.")]
+        public int BuyUnitPrice { get; set; }
+
+        [Required(ErrorMessage = "قیمت فروش کالا نمی تواند خالی باشد.")]
+        [Display(Name = "قیمت فروش")]
+        [Range(0, int.MaxValue, ErrorMessage = "قیمت فروش نمی تواند منفی باشند.")]
+        public int SellUnitPrice { get; set; }
 
         [Required(ErrorMessage = "تعداد کالاها باید مشخص باشد.")]
         [Display(Name = "موجودی انبار")]

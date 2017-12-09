@@ -26,7 +26,7 @@ namespace se_CodeFirst_3.Controllers.api
                                 select item.UnitsInStock).Sum();
 
             var price = (from item in supplier.Products
-                         select item.UnitsInStock * item.UnitPrice).Sum();
+                         select item.UnitsInStock * item.BuyUnitPrice).Sum();
 
             SupplierInformationViewModel supplierInformation = new SupplierInformationViewModel
             {
@@ -41,5 +41,11 @@ namespace se_CodeFirst_3.Controllers.api
 
             return Ok(supplierInformation);
         }
+
+        //[Route("api/Settings/settingName/settingValue")]
+        //public IHttpActionResult PostSetting(string settingName, string settingValue)
+        //{
+
+        //}
     }
 }

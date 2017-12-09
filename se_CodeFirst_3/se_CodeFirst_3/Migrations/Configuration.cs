@@ -14,11 +14,13 @@ namespace se_CodeFirst_3.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;// true;
+            AutomaticMigrationsEnabled = false;// true;
         }
 
         protected override void Seed(se_CodeFirst_3.Models.ApplicationDbContext context)
         {
+            UsefulMethodsHelper methodsHelper = new UsefulMethodsHelper();
+
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
@@ -55,8 +57,10 @@ namespace se_CodeFirst_3.Migrations
             //await userManager.CreateAsync(user);
             //await userManager.AddToRoleAsync(user.Id, "Administrator");
 
-            //UsefulMethodsHelper methodsHelper = new UsefulMethodsHelper();
-            //methodsHelper.InitializationOfUsersPasswordAndRoles(context);
+            ////methodsHelper.InitializationOfUsersPasswordAndRoles(context);
+
+            //methodsHelper.FillClaimsTable(context);
+
 
         }
     }

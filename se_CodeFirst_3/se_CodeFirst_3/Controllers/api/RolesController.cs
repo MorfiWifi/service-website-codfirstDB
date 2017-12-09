@@ -12,6 +12,7 @@ using System.Web.Http.Description;
 using se_CodeFirst_3.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity;
+using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers.api
 {
@@ -20,6 +21,7 @@ namespace se_CodeFirst_3.Controllers.api
 #else
     [Authorize(Roles = "Administrator")]
 #endif
+    [LogApi]
     public class RolesController : ApiController
     {
         private ApplicationDbContext db;

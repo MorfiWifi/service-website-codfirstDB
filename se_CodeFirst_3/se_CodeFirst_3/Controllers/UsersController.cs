@@ -11,24 +11,54 @@ using se_CodeFirst_3.Models;
 using se_CodeFirst_3.Helper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Security.Claims;
+using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers
 {
+#if DEBUG
+
+#else
+    [RedirectIfNotAuthorized]
+#endif
     public class UsersController : Controller
     {
 
         ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
+        NotificationProviderHelper notificationHelper;
+
         string basePath = "/api/users/";
         public UsersController()
         {
             basePath = "/api/users/";
+            notificationHelper = new NotificationProviderHelper(this);
         }
 
         // GET: Users
         public async Task<ActionResult> Index()
         {
             List<ApplicationUser> users = await helper.GetListOfItems<ApplicationUser>(basePath);
+            //List<UserListViewModel> users2 = new List<UserListViewModel>();
 
+            //foreach (var item in users)
+            //{
+            //    var role = new IdentityRole();
+            //    if (item.Roles.Count > 0)
+            //    {
+            //        role = await helper.GetItem<IdentityRole>("api/roles/" + item.Roles.FirstOrDefault().RoleId);
+            //    }
+            //    users2.Add(new UserListViewModel
+            //    {
+            //        Id = item.Id,
+            //        Email = item.Email,
+            //        UserName = item.UserName,
+            //        AbsentDays = item.AbsentDays,
+            //        Salary = item.Salary,
+            //        Benefits = item.Benefits,
+            //        OverTime = item.OverTime,
+            //        Role = role.Name
+            //    });
+            //}
             return View(users);
         }
 
@@ -48,12 +78,9 @@ namespace se_CodeFirst_3.Controllers
         }
 
         // GET: Users/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            var db = new ApplicationDbContext();
-            var roleStore = new RoleStore<IdentityRole>(db);
-            var roleManager = new RoleManager<IdentityRole>(roleStore);
-            ViewBag.Role = new SelectList(roleManager.Roles, "Name", "Name");
+            //ViewBag.Role = new SelectList(await helper.GetListOfItems<IdentityRole>("api/roles/"), "Name", "Name");
 
             return View();
         }
@@ -76,14 +103,25 @@ namespace se_CodeFirst_3.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Email,Password,UserName,Salary,Benefits,Role")] RegisterBindingModel registerBindingModel)
+        public async Task<ActionResult> Create([Bind(Include = "Email,Password,UserName,Salary,Benefits")] RegisterBindingModel registerBindingModel, bool? stayOnCreatePage)
         {
+            bool castedStayOnCreatePage = stayOnCreatePage.HasValue ? stayOnCreatePage.Value : false;
             if (ModelState.IsValid)
             {
                 helper.CreateItem<RegisterBindingModel>("/api/account/register", registerBindingModel);
-                return RedirectToAction("Index");
+                notificationHelper.SuccessfulInsert(registerBindingModel.Email);
+                if (castedStayOnCreatePage == true)
+                {
+                    return RedirectToAction("Create");
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
             }
 
+            //ViewBag.Role = new SelectList(await helper.GetListOfItems<IdentityRole>("api/roles/"), "Name", "Name");
+            notificationHelper.FailureInsert(registerBindingModel.Email);
             return View(registerBindingModel);
         }
 
@@ -94,12 +132,14 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ApplicationUser applicationUser = await helper.GetItem<ApplicationUser>(basePath + id);
-            if (applicationUser == null)
+            RegisterBindingModel registerBindingModel = await helper.GetItem<RegisterBindingModel>(basePath + id);
+            if (registerBindingModel == null)
             {
                 return HttpNotFound();
             }
-            return View(applicationUser);
+
+            //ViewBag.Role = new SelectList(await helper.GetListOfItems<IdentityRole>("api/roles/"), "Name", "Name");
+            return View(registerBindingModel);
         }
 
         // POST: Users/Edit/5
@@ -107,14 +147,19 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName,Salary,AbsentDays,OverTime,Benefits")] ApplicationUser applicationUser)
+        //"Id,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName,Salary,AbsentDays,OverTime,Benefits")
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Email,UserName,Password,Salary,AbsentDays,OverTime,Benefits")] RegisterBindingModel registerBindingModel)
         {
             if (ModelState.IsValid)
             {
-                helper.ChangeItem<ApplicationUser>(basePath + applicationUser.Id, applicationUser);
+                helper.ChangeItem<RegisterBindingModel>(basePath + registerBindingModel.Id, registerBindingModel);
+                notificationHelper.SuccessfulChange(registerBindingModel.Email);
                 return RedirectToAction("Index");
             }
-            return View(applicationUser);
+
+            //ViewBag.Role = new SelectList(await helper.GetListOfItems<IdentityRole>("api/roles/"), "Name", "Name");
+            notificationHelper.FailureChange(registerBindingModel.Email);
+            return View(registerBindingModel);
         }
 
         // GET: Users/Delete/5
@@ -124,7 +169,7 @@ namespace se_CodeFirst_3.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ApplicationUser applicationUser = await helper.GetItem<ApplicationUser>(basePath + id);
+            UserListViewModel applicationUser = await helper.GetItem<UserListViewModel>(basePath + id);
             if (applicationUser == null)
             {
                 return HttpNotFound();
@@ -136,8 +181,9 @@ namespace se_CodeFirst_3.Controllers
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(string id)
+        public async Task<ActionResult> DeleteConfirmed(string id)
         {
+            notificationHelper.SuccessfulDelete((await helper.GetItem<UserListViewModel>(basePath + id)).UserName);
             helper.DeleteItem(basePath, id);
             return RedirectToAction("Index");
         }

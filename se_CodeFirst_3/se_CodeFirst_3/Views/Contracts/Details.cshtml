@@ -4,23 +4,18 @@
     ViewBag.Title = "اطلاعات متن قرارداد";
 }
 
-<h2>Details</h2>
+<h2 class="page-title page-title-details"><span class="glyphicon glyphicon-list-alt"></span> @ViewBag.Title</h2>
 
-<div>
-    <h4>Contract</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Content)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Content)
-        </dd>
-
-    </dl>
+<div class="col-sm-offset-2 col-sm-8 table-responsive">
+    <table class="table table-hover table-bordered table-striped">
+        <tr class="success">
+            <th colspan="2">اطلاعات متن قرارداد</th>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Content)</td>
+            <td>@Html.DisplayFor(model => model.Content)</td>
+        </tr>
+    </table>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+<a href="~/Contracts/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>

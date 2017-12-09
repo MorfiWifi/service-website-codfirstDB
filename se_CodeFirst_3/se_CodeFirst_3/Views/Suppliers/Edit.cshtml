@@ -4,7 +4,7 @@
     ViewBag.Title = "تغییر تولیدکننده";
 }
 
-<h2 class="page-title page-title-change">@ViewBag.Title</h2>
+<h2 class="page-title page-title-change"><span class="glyphicon glyphicon-edit"></span> @ViewBag.Title</h2>
 
 <div class="col-sm-offset-2 col-sm-8 table-responsive ">
     @using (Html.BeginForm())
@@ -63,8 +63,8 @@
         </table>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="تغییر" class="btn btn-warning" />
-                @Html.ActionLink("برگشت به لیست", "Index", null, new { @class = "btn btn-default" })
+                <button type="submit" class="btn btn-warning" ><span class="glyphicon glyphicon-edit"></span> تغییر</button>
+                <a href="~/Suppliers/Index" type="submit" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
             </div>
         </div>
     }

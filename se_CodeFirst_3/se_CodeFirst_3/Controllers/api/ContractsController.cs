@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using se_CodeFirst_3.Models;
+using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers.api
 {
@@ -17,19 +18,28 @@ namespace se_CodeFirst_3.Controllers.api
 #if DEBUG
 
 #else
-    [Authorize(Roles = "Administrator,Secretary")]
-#endif    
+    [Authorize]//[Authorize(Roles = "Administrator,Secretary")]
+#endif
+    [LogApi]
     public class ContractsController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Contracts
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Contract", ClaimValue = "Get")]
+#endif
         public IQueryable<Contract> GetContracts()
         {
             return db.Contracts;
         }
 
         // GET: api/Contracts/5
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Contract", ClaimValue = "Get")]
+#endif
         [ResponseType(typeof(Contract))]
         public async Task<IHttpActionResult> GetContract(int id)
         {
@@ -43,6 +53,10 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // PUT: api/Contracts/5
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Contract", ClaimValue = "Put")]
+#endif
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutContract(int id, Contract contract)
         {
@@ -78,6 +92,10 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // POST: api/Contracts
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Contract", ClaimValue = "Post")]
+#endif
         [ResponseType(typeof(Contract))]
         public async Task<IHttpActionResult> PostContract(Contract contract)
         {
@@ -93,6 +111,10 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // DELETE: api/Contracts/5
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Contract", ClaimValue = "Delete")]
+#endif
         [ResponseType(typeof(Contract))]
         public async Task<IHttpActionResult> DeleteContract(int id)
         {

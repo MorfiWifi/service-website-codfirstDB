@@ -7,13 +7,13 @@ namespace se_CodeFirst_3.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class zero_down : IMigrationMetadata
+    public sealed partial class ClaimBasedAuthorization1 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(zero_down));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ClaimBasedAuthorization1));
         
         string IMigrationMetadata.Id
         {
-            get { return "201711051109263_zero_down"; }
+            get { return "201711042052116_ClaimBasedAuthorization1"; }
         }
         
         string IMigrationMetadata.Source

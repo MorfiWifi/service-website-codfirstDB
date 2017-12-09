@@ -4,13 +4,12 @@
     ViewBag.Title = "اطلاعات مشتری";
 }
 
-<h2>Details</h2>
+<h2 class="page-title page-title-details"><span class="glyphicon glyphicon-list-alt"></span> @ViewBag.Title</h2>
 
-<div class="col-sm-6">
-    <table class="table table-condensed table-responsive table-hover table-striped">
+<div class="col-sm-offset-2 col-sm-8 table-responsive">
+    <table class="table table-hover table-bordered table-striped">
         <tr class="success">
-            <th>اطلاعات مشتری</th>
-            <th></th>
+            <th colspan="2">اطلاعات مشتری</th>
         </tr>
 
         <tr>
@@ -38,8 +37,7 @@
             <td>@Html.DisplayFor(model => model.PriceOfAllProductsPurchased)</td>
         </tr>
         <tr class="success">
-            <th>لیست سفارش ها</th>
-            <th></th>
+            <th colspan="2">لیست سفارش ها</th>
         </tr>
 
         @foreach (var item in Model.Orders)
@@ -49,30 +47,12 @@
                     [@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().OrderDate),
                     @Html.DisplayNameFor(model => model.Orders.FirstOrDefault().RequiredDate)]
                 </td>
-                <td>
+                <td dir="ltr">
                     [@item.OrderDate, @item.RequiredDate ]
                 </td>
             </tr>
         }
 
-        @*@foreach (var item in Model.Order_Details)
-        {
-            <tr>
-                <td>@item.Quantity</td>
-            </tr>
-        }
-
-        @foreach (var item in Model.Products)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.UnitPrice</td>
-            </tr>
-        }*@
-
     </table>
 </div>
-<p>
-    @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<a href="~/Customers/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>

@@ -35,15 +35,15 @@ namespace se_CodeFirst_3.Models
 
     public class RegisterBindingModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
-        [Display(Name = "Email")]
+        [Display(Name = "ایمیل")]
         public string Email { get; set; }
 
         [Required]
         //[StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "پسورد")]
         public string Password { get; set; }
 
 
@@ -63,6 +63,12 @@ namespace se_CodeFirst_3.Models
 
         [Display(Name = "نقش کاربری")]
         public string Role { get; set; }
+
+        [Display(Name = "غیبت")]
+        public int AbsentDays { get; set; }
+
+        [Display(Name = "اضافه کاری")]
+        public int OverTime { get; set; }
 
     }
 

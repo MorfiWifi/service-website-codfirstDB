@@ -1,0 +1,153 @@
+﻿@model se_CodeFirst_3.Models.StatisticsViewModel
+
+@{
+    ViewBag.Title = "Statistics";
+}
+
+<h2 class="page-title page-title-details"><span class="glyphicon glyphicon-list-alt"></span> @ViewBag.Title</h2>
+
+<div class="col-sm-offset-2 col-sm-8 table-responsive">
+    <table class="table table-hover table-bordered table-striped">
+        <tr class="success">
+            <th colspan="2">اطلاعات</th>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.AllSells)</td>
+            <td>@Html.DisplayFor(model => model.AllSells)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.AllBuys)</td>
+            <td>@Html.DisplayFor(model => model.AllBuys)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.AllProfits)</td>
+            <td>@Html.DisplayFor(model => model.AllProfits)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.LastMonthSells)</td>
+            <td>@Html.DisplayFor(model => model.LastMonthSells)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.LastMonthBuys)</td>
+            <td>@Html.DisplayFor(model => model.LastMonthBuys)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.LastMonthProfitss)</td>
+            <td>@Html.DisplayFor(model => model.LastMonthProfitss)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.LastYearSells)</td>
+            <td>@Html.DisplayFor(model => model.LastYearSells)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.LastYearBuys)</td>
+            <td>@Html.DisplayFor(model => model.LastYearBuys)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.LastYearProfits)</td>
+            <td>@Html.DisplayFor(model => model.LastYearProfits)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.CustomDateSells)</td>
+            <td>@Html.DisplayFor(model => model.CustomDateSells)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.CustomDateBuys)</td>
+            <td>@Html.DisplayFor(model => model.CustomDateBuys)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.CustomDateProfits)</td>
+            <td>@Html.DisplayFor(model => model.CustomDateProfits)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.UserCounts)</td>
+            <td>@Html.DisplayFor(model => model.UserCounts)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.UserSalaries)</td>
+            <td>@Html.DisplayFor(model => model.UserSalaries)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.SuppliersCount)</td>
+            <td>@Html.DisplayFor(model => model.SuppliersCount)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.CustomersCount)</td>
+            <td>@Html.DisplayFor(model => model.CustomersCount)</td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                [@Html.DisplayNameFor(model => model.Suppliers.FirstOrDefault().SupplierCompanyName),
+                @Html.DisplayNameFor(model => model.Suppliers.FirstOrDefault().ProductsCount),
+                @Html.DisplayNameFor(model => model.Suppliers.FirstOrDefault().MoneySpent)]
+            </td>
+        </tr>
+        @foreach (var item in Model.Suppliers)
+        {
+            <tr>
+                <td colspan="2" dir="ltr">
+                    [@item.SupplierCompanyName, @item.ProductsCount, @item.MoneySpent]
+                </td>
+            </tr>
+        }
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                [@Html.DisplayNameFor(model => model.Customers.FirstOrDefault().CustomerName),
+                @Html.DisplayNameFor(model => model.Customers.FirstOrDefault().ProductsCount),
+                @Html.DisplayNameFor(model => model.Customers.FirstOrDefault().ProfitsGained)]
+            </td>
+        </tr>
+        @foreach (var item in Model.Customers)
+        {
+            <tr>
+                <td colspan="2" dir="ltr">
+                    [@item.CustomerName, @item.ProductsCount, @item.ProfitsGained]
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+<div>
+    <h4>StatisticsViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomersCount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CustomersCount)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

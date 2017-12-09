@@ -5,22 +5,16 @@
 }
 
 
-<h2 class="page-title page-title-details">@ViewBag.Title</h2>
+<h2 class="page-title page-title-details"><span class="glyphicon glyphicon-list-alt"></span> @ViewBag.Title</h2>
 
-<div class="col-sm-offset-2 col-sm-8 table-responsive">
+<div class="col-sm-offset-2 col-sm-8 table-responsive" id="content-for-print">
     <table class="table table-hover table-bordered table-striped">
         <tr class="success">
-            <th>اطلاعات کاربر</th>
-            <th></th>
+            <th colspan="2">اطلاعات کاربر</th>
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(model => model.UserName)</td>
             <td>@Html.DisplayFor(model => model.UserName)</td>
-        </tr>
-
-        <tr>
-            <td>@Html.DisplayNameFor(model => model.Roles)</td>
-            <td>@Html.DisplayFor(model => model.Roles)</td>
         </tr>
 
         <tr>
@@ -51,7 +45,24 @@
     </table>
 </div>
 
+<a href="~/Users/" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
+<button href="#" class="btn btn-success" id="printPage"><span class="glyphicon glyphicon-print"></span> پرینت</button>
 
-<p>
-    @Html.ActionLink("Back to List", "Index")
-</p>
+@Scripts.Render("~/bundles/jquery")
+<script>
+    $(document).ready(function () {
+
+        $('#printPage').click(function () {
+
+            var contentBeforePrint = document.getElementById('content-for-print').innerHTML;
+            var originalContent = document.body.innerHTML;
+
+            document.body.innerHTML = contentBeforePrint;
+
+            window.print();
+
+            document.body.innerHTML = originalContent;
+        });
+
+    });
+</script>
