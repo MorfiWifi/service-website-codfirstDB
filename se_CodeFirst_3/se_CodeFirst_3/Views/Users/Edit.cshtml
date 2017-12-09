@@ -1,4 +1,4 @@
-﻿@model se_CodeFirst_3.Models.ApplicationUser
+﻿@model se_CodeFirst_3.Models.RegisterBindingModel
 
 @{
     ViewBag.Title = "تغییر کاربر";
@@ -22,11 +22,22 @@
 
             <tr>
                 <td>
-                    @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label" })
+                    @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
                 </td>
                 <td>
-                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                 </td>
                 <td></td>
             </tr>
@@ -38,6 +49,17 @@
                 <td>
                     @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
+                </td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Benefits, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.Benefits, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Benefits, "", new { @class = "text-danger" })
                 </td>
                 <td></td>
             </tr>
@@ -64,16 +86,16 @@
                 <td></td>
             </tr>
 
-            <tr>
+            @*<tr>
                 <td>
-                    @Html.LabelFor(model => model.Benefits, htmlAttributes: new { @class = "control-label" })
+                    @Html.LabelFor(model => model.Role, "Role", htmlAttributes: new { @class = "control-label col-md-2" })
                 </td>
                 <td>
-                    @Html.EditorFor(model => model.Benefits, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Benefits, "", new { @class = "text-danger" })
+                    @Html.DropDownList("Role", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-danger" })
                 </td>
-                <td></td>
-            </tr>
+            </tr>*@
+
         </table>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

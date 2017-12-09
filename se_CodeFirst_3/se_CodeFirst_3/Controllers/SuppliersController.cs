@@ -9,18 +9,25 @@ using System.Web.Mvc;
 using se_CodeFirst_3.Models;
 using se_CodeFirst_3.Helper;
 using System.Threading.Tasks;
+using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers
 {
+#if DEBUG
+
+#else
+    [RedirectIfNotAuthorized]
+#endif
     public class SuppliersController : Controller
     {
         ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
-        ProperMessagesHelper messageHelper = new ProperMessagesHelper();
+        NotificationProviderHelper notificationHelper;
 
         string basePath = "api/suppliers/";
         public SuppliersController()
         {
             basePath = "api/suppliers/";
+            notificationHelper = new NotificationProviderHelper(this);
         }
 
         // GET: Suppliers
@@ -72,16 +79,26 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CompanyName,Name,Address,PhoneNumber")] Supplier supplier)
+        public ActionResult Create([Bind(Include = "Id,CompanyName,Name,Address,PhoneNumber")] Supplier supplier, bool? stayOnCreatePage)
         {
+            bool castedStayOnCreatePage = stayOnCreatePage.HasValue ? stayOnCreatePage.Value : false;
+            //bool castedStayOnCreatePageAndKeepInputsDatas = stayOnCreatePageAndKeepInputsDatas.HasValue ? stayOnCreatePageAndKeepInputsDatas.Value : false;
+
             if (ModelState.IsValid)
             {
                 helper.CreateItem<Supplier>(basePath, supplier);
-                SuccessfulInsert(supplier.Name);
-                return RedirectToAction("Index");
+                notificationHelper.SuccessfulInsert(supplier.Name);
+                if (castedStayOnCreatePage == true)
+                {
+                    return RedirectToAction("Create");
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
             }
 
-            Failure();
+            notificationHelper.FailureInsert(supplier.Name);
             return View(supplier);
         }
 
@@ -110,10 +127,10 @@ namespace se_CodeFirst_3.Controllers
             if (ModelState.IsValid)
             {
                 helper.ChangeItem<Supplier>(basePath + supplier.Id, supplier);
-                SuccessfulChange(supplier.Name);
+                notificationHelper.SuccessfulChange(supplier.Name);
                 return RedirectToAction("Index");
             }
-            Failure();
+            notificationHelper.FailureChange(supplier.Name);
             return View(supplier);
         }
 
@@ -140,38 +157,40 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            SuccessfulDelete((await helper.GetItem<Supplier>(basePath + id)).Name);
+            notificationHelper.SuccessfulDelete((await helper.GetItem<Supplier>(basePath + id)).Name);
             helper.DeleteItem(basePath, id);
             return RedirectToAction("Index");
         }
 
-        public void SuccessfulInsert(string item)
-        {
-            TempData.Clear();
-            TempData.Add("message", messageHelper.SuccessfulInsert(item));
-            TempData.Add("successful", true);
-        }
+        //public async Task<ActionResult> Delete()
+        //{
+        //    List<Supplier> suppliers = new List<Supplier>();
+        //    foreach (var item in idOfItemsForMultipleDelete.Split(','))
+        //    {
+        //        Supplier supplier = await helper.GetItem<Supplier>(basePath + item);
+        //        if (supplier == null)
+        //        {
+        //            return HttpNotFound();
+        //        }
+        //        suppliers.Add(supplier);
+        //    }
 
-        public void SuccessfulDelete(string item)
-        {
-            TempData.Clear();
-            TempData.Add("message", messageHelper.SuccessfulDelete(item));
-            TempData.Add("successful", true);
-        }
+        //    //we want to use the below id in post method later:
+        //    ViewBag.SuppliersIds = idOfItemsForMultipleDelete;
+        //    return View(suppliers);
+        //}
 
-        public void SuccessfulChange(string item)
-        {
-            TempData.Clear();
-            TempData.Add("message", messageHelper.SuccessfulChange(item));
-            TempData.Add("successful", true);
-        }
-
-        public void Failure()
-        {
-            TempData.Clear();
-            TempData.Add("message", messageHelper.Failure());
-            TempData.Add("successful", false);
-        }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //[Route("Suppliers/DeleteMultiple/{idOfItemsForMultipleDelete}")]
+        //public async Task<ActionResult> DeleteConfirmed(string idOfItemsForMultipleDelete)
+        //{
+        //    var a = idOfItemsForMultipleDelete;
+        //    return RedirectToAction("Index");
+        //    //notificationHelper.SuccessfulDelete((await helper.GetItem<Supplier>(basePath + id)).Name);
+        //    //helper.DeleteItem(basePath, id);
+        //    //return RedirectToAction("Index");
+        //}
 
     }
 }

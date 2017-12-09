@@ -2,58 +2,158 @@
 
 @{
     ViewBag.Title = "افزودن محصول";
+
+    IEnumerable<se_CodeFirst_3.Models.Supplier> suppliersList = ViewBag.SuppliersList;
 }
 
-<h2>Create</h2>
+<h2 class="page-title page-title-create"><span class="glyphicon glyphicon-plus"></span> @ViewBag.Title</h2>
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+<div class="col-sm-8 items-list-in-create-page">
+    <div>
+        @Html.Partial("~/Views/Suppliers/Index.cshtml", suppliersList);
+    </div>
+</div>
 
-    <div class="form-horizontal">
-        <h4>Product</h4>
-        <hr />
+<div class="col-sm-4 table-responsive" ng-app="ahkSearchApp" ng-controller="createItemCtrl" id="second-app-in-one-page">
+    @using (Html.BeginForm("Create", "Products", FormMethod.Post, new { name = "ahkform" }))
+    {
+        @Html.AntiForgeryToken()
+
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        <input type="text" style="visibility:hidden" name="stayOnCreatePage" value="false" ng-model="stayOnCreatePage" />
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.UnitPrice, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.UnitPrice, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.UnitPrice, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        <table class="table table-condensed table-striped table-bordered">
+            <tr>
+                <th>ویژگی</th>
+                <th>مقدار</th>
+                <th>درستی</th>
+            </tr>
+            <tr>
+                <td>@Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })</td>
+                <td>
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus", required = "required", ng_model = "Name" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.Name.$dirty && ahkform.Name.$invalid">
+                        <span ng-show="ahkform.Name.$error.required" class="glyphicon glyphicon-remove" title="این فیلد نمی تواند خالی باشد."></span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.Name.$dirty">
+                        <span ng-hide="ahkform.Name.$error.required" class="glyphicon glyphicon-check"></span>
+                    </span>
+                </td>
+            </tr>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.UnitsInStock, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.UnitsInStock, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.UnitsInStock, "", new { @class = "text-danger" })
-            </div>
-        </div>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.BuyUnitPrice, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.BuyUnitPrice, new { htmlAttributes = new { @class = "form-control", required = "required", ng_model = "UnitPrice", min = "0" } })
+                    @Html.ValidationMessageFor(model => model.BuyUnitPrice, "", new { @class = "text-danger" })
+                </td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.BuyUnitPrice.$dirty && ahkform.BuyUnitPrice.$invalid">
+                        <span ng-show="ahkform.BuyUnitPrice.$error.required" class="glyphicon glyphicon-remove" title="این فیلد نمی تواند خالی باشد."></span>
+                        <span ng-show="ahkform.BuyUnitPrice.$error.number" class="glyphicon glyphicon-remove" title="این فیلد حتما باید عدد باشد."></span>
+                    </span>
+                    <span class="show-error" ng-show="ahkform.BuyUnitPrice.$dirty && ahkform.BuyUnitPrice.$invalid">
+                        <span ng-show="ahkform.BuyUnitPrice.$error.min" class="glyphicon glyphicon-remove" title="یک عدد معتبر وارد کنید."></span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.BuyUnitPrice.$dirty">
+                        <span ng-hide="ahkform.BuyUnitPrice.$error.required || ahkform.BuyUnitPrice.$error.min" class="glyphicon glyphicon-check"></span>
+                    </span>
+                </td>
+            </tr>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.SupplierId, "SupplierId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("SupplierId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.SupplierId, "", new { @class = "text-danger" })
-            </div>
-        </div>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SellUnitPrice, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.SellUnitPrice, new { htmlAttributes = new { @class = "form-control", required = "required", ng_model = "SellUnitPrice", min = "0" } })
+                    @Html.ValidationMessageFor(model => model.SellUnitPrice, "", new { @class = "text-danger" })
+                </td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.SellUnitPrice.$dirty && ahkform.SellUnitPrice.$invalid">
+                        <span ng-show="ahkform.SellUnitPrice.$error.required" class="glyphicon glyphicon-remove" title="این فیلد نمی تواند خالی باشد."></span>
+                        <span ng-show="ahkform.SellUnitPrice.$error.number" class="glyphicon glyphicon-remove" title="این فیلد حتما باید عدد باشد."></span>
+                    </span>
+                    <span class="show-error" ng-show="ahkform.SellUnitPrice.$dirty && ahkform.SellUnitPrice.$invalid">
+                        <span ng-show="ahkform.SellUnitPrice.$error.min" class="glyphicon glyphicon-remove" title="یک عدد معتبر وارد کنید."></span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.SellUnitPrice.$dirty">
+                        <span ng-hide="ahkform.SellUnitPrice.$error.required || ahkform.SellUnitPrice.$error.min" class="glyphicon glyphicon-check"></span>
+                    </span>
+                </td>
+            </tr>
 
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.UnitsInStock, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.UnitsInStock, new { htmlAttributes = new { @class = "form-control", required = "required", ng_model = "UnitsInStock", min = "0" } })
+                    @Html.ValidationMessageFor(model => model.UnitsInStock, "", new { @class = "text-danger" })
+                </td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.UnitsInStock.$dirty && ahkform.UnitsInStock.$invalid">
+                        <span ng-show="ahkform.UnitsInStock.$error.required" class="glyphicon glyphicon-remove" title="این فیلد نمی تواند خالی باشد."></span>
+                        <span ng-show="ahkform.UnitsInStock.$error.number" class="glyphicon glyphicon-remove" title="این فیلد حتما باید عدد باشد."></span>
+                    </span>
+                    <span class="show-error" ng-show="ahkform.UnitsInStock.$dirty && ahkform.UnitsInStock.$invalid">
+                        <span ng-show="ahkform.UnitsInStock.$error.min" class="glyphicon glyphicon-remove" title="یک عدد معتبر وارد کنید."></span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.UnitsInStock.$dirty">
+                        <span ng-hide="ahkform.UnitsInStock.$error.required || ahkform.UnitsInStock.$error.min" class="glyphicon glyphicon-check"></span>
+                    </span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SupplierId, "تولیدکننده", htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    @Html.DropDownList("SupplierId", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SupplierId, "", new { @class = "text-danger" })
+                </td>
+                <td></td>
+            </tr>
+        </table>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <button type="submit" value="افزودن" class="btn btn-primary"
+                        ng-disabled="ahkform.Name.$invalid || ahkform.UnitPrice.$invalid || ahkform.UnitsInStock.$invalid 
+                         || ahkform.SellUnitPrice.$invalid">
+                    <span class="glyphicon glyphicon-plus"></span> افزودن
+                </button>
+
+                <button ng-mousedown="changeStayOnCreatePage()" class="btn btn-primary" type="submit"
+                        ng-disabled="ahkform.Name.$invalid || ahkform.UnitPrice.$invalid || ahkform.UnitsInStock.$invalid
+                        || ahkform.SellUnitPrice.$invalid">
+                    <span class="glyphicon glyphicon-plus"></span> افزودن و ماندن
+                </button>
+
+                <a href="~/Products/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
             </div>
         </div>
-    </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
+    }
 </div>
+
+<script>
+
+    var app = angular.module('createItemApp', []);
+    app.controller('createItemCtrl', function ($scope, $http) {
+        $scope.stayOnCreatePage = false;
+        $scope.changeStayOnCreatePage = function () {
+            $scope.stayOnCreatePage = true;
+        };
+    });
+
+
+    //very important: we can not have 2 angular app in one single page, se we have to use angular.bootstrap...
+    angular.bootstrap(document.getElementById("second-app-in-one-page"), ['createItemApp']);
+
+</script>
+

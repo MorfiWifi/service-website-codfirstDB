@@ -9,25 +9,35 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using se_CodeFirst_3.Models;
+using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers.api
 {
 #if DEBUG
 
 #else
-    [Authorize(Roles = "Administrator,Secretary,StoreKeeper,Accountant")]
+    [Authorize]//[Authorize(Roles = "Administrator,Secretary,StoreKeeper,Accountant")]
 #endif
+    [LogApi]
     public class ProductsController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Products
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Product", ClaimValue = "Get")]
+#endif
         public IQueryable<Product> GetProducts()
         {
             return db.Products;
         }
 
         // GET: api/Products/5
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Product", ClaimValue = "Get")]
+#endif
         [ResponseType(typeof(Product))]
         public IHttpActionResult GetProduct(int id)
         {
@@ -41,6 +51,10 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // PUT: api/Products/5
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Product", ClaimValue = "Put")]
+#endif
         [ResponseType(typeof(void))]
         public IHttpActionResult PutProduct(int id, Product product)
         {
@@ -76,6 +90,10 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // POST: api/Products
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Product", ClaimValue = "Post")]
+#endif
         [ResponseType(typeof(Product))]
         public IHttpActionResult PostProduct(Product product)
         {
@@ -92,6 +110,10 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // DELETE: api/Products/5
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Product", ClaimValue = "Delete")]
+#endif
         [ResponseType(typeof(Product))]
         public IHttpActionResult DeleteProduct(int id)
         {

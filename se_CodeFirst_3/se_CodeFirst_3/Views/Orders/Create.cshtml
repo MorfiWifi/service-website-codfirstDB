@@ -1,59 +1,152 @@
-﻿@model se_CodeFirst_3.Models.Order
+﻿
+@model se_CodeFirst_3.Models.Order
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/angular")
 
 @{
     ViewBag.Title = "افزودن سفارش";
 }
 
-<h2>Create</h2>
+<link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.css" rel="stylesheet" />
+<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/jquery-3.1.0.js"></script>
+<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/bootstrap.js"></script>
+<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/MdBootstrapPersianDateTimePicker/jalaali.js"></script>
+<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.js"></script>
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+<h2 class="page-title page-title-create"><span class="glyphicon glyphicon-plus"></span> @ViewBag.Title</h2>
 
-    <div class="form-horizontal">
-        <h4>Order</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.OrderDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.RequiredDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.RequiredDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.RequiredDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CustomerId, "CustomerId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("CustomerId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ContractId, "ContractId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("ContractId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.ContractId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
+@{
+    IEnumerable<se_CodeFirst_3.Models.Contract> contractsList = ViewBag.ContractsList;
+    IEnumerable<se_CodeFirst_3.Models.Customer> customersList = ViewBag.CustomersList;
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
+<div class="col-sm-8" >
+    @*<div style="max-height:200px;height:200px;overflow:scroll;">
+        @Html.Partial("~/Views/Contracts/Index.cshtml", contractsList);
+    </div>*@
+
+    <div >
+        @Html.Partial("~/Views/Customers/Index.cshtml", customersList);
+    </div>
 </div>
+
+<div class="col-sm-4 table-responsive">
+    @using (Html.BeginForm("Create", "Orders", FormMethod.Post))
+            {
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <input type="text" style="visibility:hidden" name="stayOnCreatePage" value="false" ng-model="stayOnCreatePage" />
+
+        <table class="table table-condensed table-striped table-bordered">
+            <tr>
+                <th>ویژگی</th>
+                <th>مقدار</th>
+                <th>درستی</th>
+            </tr>
+            <tr>
+                <td>@Html.LabelFor(model => model.ContractId, "قرارداد", htmlAttributes: new { @class = "control-label" })</td>
+                <td>
+                    @Html.DropDownList("ContractId", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.ContractId, "", new { @class = "text-danger" })
+                </td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.CustomerId, "مشتری", htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    @Html.DropDownList("CustomerId", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
+                </td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.OrderDate, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    <div class="input-group" dir="ltr" style="max-width:280px;">
+                        <span class="glyphicon glyphicon-calendar input-group-addon" id="input1" data-MdDateTimePicker="true" data-TargetSelector="#input1" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
+                        @Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @class = "form-control", id = "textBoxInputId" } })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
+                </td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.RequiredDate, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    <div class="input-group" dir="ltr" style="max-width:280px;">
+                        <span class="glyphicon glyphicon-calendar input-group-addon" id="input2" data-MdDateTimePicker="true" data-TargetSelector="#input1" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
+                        @Html.EditorFor(model => model.RequiredDate, new { htmlAttributes = new { @class = "form-control", id = "textBoxInputId2" } })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.RequiredDate, "", new { @class = "text-danger" })
+                </td>
+                <td></td>
+            </tr>
+        </table>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button type="submit" value="افزودن" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> افزودن</button>
+                        <a href="~/Orders/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
+                        <a href="~/Contracts/Create" class="btn btn-sm btn-success" style="margin-top: 4px;"><span class="glyphicon glyphicon-plus"></span> افزودن متن قرارداد</a>
+                    </div>
+                </div>
+    }
+</div>
+
+
+
+<script type="text/javascript">
+
+    $('#input1').MdPersianDateTimePicker({
+        Placement: 'left',
+        Trigger: 'click',
+        EnableTimePicker: true,
+        TargetSelector: '#textBoxInputId',
+        GroupId: '',
+        ToDate: false,
+        FromDate: false,
+        DisableBeforeToday: true,
+        Disabled: false,
+        Format: 'yyyy/MM/dd HH:mm:ss',
+        IsGregorian: false,
+        EnglishNumber: true,
+    });
+
+    $('#input2').MdPersianDateTimePicker({
+        Placement: 'left',
+        Trigger: 'click',
+        EnableTimePicker: true,
+        TargetSelector: '#textBoxInputId2',
+        GroupId: '',
+        ToDate: false,
+        FromDate: false,
+        DisableBeforeToday: true,
+        Disabled: false,
+        Format: 'yyyy/MM/dd HH:mm:ss',
+        IsGregorian: false,
+        EnglishNumber: true,
+    });
+</script>
+
+<script>
+
+    var app = angular.module('createItemApp', []);
+    app.controller('createItemCtrl', function ($scope, $http) {
+        $scope.stayOnCreatePage = false;
+        $scope.changeStayOnCreatePage = function () {
+            $scope.stayOnCreatePage = true;
+        };
+    });
+
+
+</script>

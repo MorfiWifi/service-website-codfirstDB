@@ -9,7 +9,8 @@
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
-    
+
+    <input type="text" style="visibility:hidden" name="stayOnCreatePage" value="false" ng-model="stayOnCreatePage" />
     <div class="form-horizontal">
         <h4>RoleViewModel</h4>
         <hr />
@@ -33,3 +34,15 @@
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
+<script>
+
+    var app = angular.module('createItemApp', []);
+    app.controller('createItemCtrl', function ($scope, $http) {
+        $scope.stayOnCreatePage = false;
+        $scope.changeStayOnCreatePage = function () {
+            $scope.stayOnCreatePage = true;
+        };
+    });
+
+
+</script>

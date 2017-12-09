@@ -12,6 +12,7 @@ namespace se_CodeFirst_3.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "شماره مشتری")]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "نام مشتری نمی تواند خالی باشد.")]

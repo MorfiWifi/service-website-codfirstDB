@@ -8,6 +8,7 @@ namespace se_CodeFirst_3.Models
 {
     public class Contract
     {
+        [Display(Name = "شماره قرارداد")]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "متن قرارداد نمی تواند خالی باشد.")]

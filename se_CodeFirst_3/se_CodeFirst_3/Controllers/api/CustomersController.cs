@@ -9,19 +9,25 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using se_CodeFirst_3.Models;
+using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers.api
 {
 #if DEBUG
 
 #else
-    [Authorize(Roles = "Administrator,Secretary")]
+    [Authorize]//[Authorize(Roles = "Administrator,Secretary")]
 #endif
+    [LogApi]
     public class CustomersController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Customers
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Customer", ClaimValue = "Get")]
+#endif
         public IQueryable<Customer> GetCustomers()
         {
             return from item in db.Customers
@@ -30,6 +36,10 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         [Route("api/AllCustomers")]
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Customer", ClaimValue = "Get")]
+#endif
         public IQueryable<Customer> GetAllCustomers()
         {
             return db.Customers;
@@ -37,6 +47,10 @@ namespace se_CodeFirst_3.Controllers.api
 
         // GET: api/Customers/5
         [ResponseType(typeof(Customer))]
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Customer", ClaimValue = "Get")]
+#endif
         public IHttpActionResult GetCustomer(int id)
         {
             Customer customer = db.Customers.Find(id);
@@ -52,7 +66,7 @@ namespace se_CodeFirst_3.Controllers.api
             var priceOfAllProductsPurchased = (from item in customer.Orders
                                                join item2 in db.Order_Details on item.Id equals item2.OrderId
                                                join item3 in db.Products on item2.ProductId equals item3.Id
-                                               select item3.UnitPrice * item2.Quantity).Sum();
+                                               select item3.BuyUnitPrice * item2.Quantity).Sum();
 
             var products = from item in customer.Orders
                            join item2 in db.Order_Details on item.Id equals item2.OrderId
@@ -79,6 +93,10 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // PUT: api/Customers/5
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Customer", ClaimValue = "Put")]
+#endif
         [ResponseType(typeof(void))]
         public IHttpActionResult PutCustomer(int id, Customer customer)
         {
@@ -114,6 +132,10 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // POST: api/Customers
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Customer", ClaimValue = "Post")]
+#endif
         [ResponseType(typeof(Customer))]
         public IHttpActionResult PostCustomer(Customer customer)
         {
@@ -129,6 +151,10 @@ namespace se_CodeFirst_3.Controllers.api
         }
 
         // DELETE: api/Customers/5
+#if DEBUG
+#else
+        [ClaimsAuthorization(ClaimType = "Customer", ClaimValue = "Delete")]
+#endif
         [ResponseType(typeof(Customer))]
         public IHttpActionResult DeleteCustomer(int id)
         {

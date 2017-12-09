@@ -4,48 +4,40 @@
     ViewBag.Title = "اطلاعات محصول";
 }
 
-<h2>Details</h2>
+<h2 class="page-title page-title-details"><span class="glyphicon glyphicon-list-alt"></span> @ViewBag.Title</h2>
 
-<div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Supplier.CompanyName)
-        </dt>
+<div class="col-sm-offset-2 col-sm-8 table-responsive">
+    <table class="table table-hover table-bordered table-striped">
+        <tr class="success">
+            <th colspan="2">اطلاعات محصول</th>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Name)</td>
+            <td>@Html.DisplayFor(model => model.Name)</td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.Supplier.CompanyName)
-        </dd>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.BuyUnitPrice)</td>
+            <td>@Html.DisplayFor(model => model.BuyUnitPrice)</td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.SellUnitPrice)</td>
+            <td>@Html.DisplayFor(model => model.SellUnitPrice)</td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.UnitsInStock)</td>
+            <td>@Html.DisplayFor(model => model.UnitsInStock)</td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.UnitPrice)
-        </dt>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Supplier.CompanyName)</td>
+            <td>@Html.DisplayFor(model => model.Supplier.CompanyName)</td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.UnitPrice)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UnitsInStock)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.UnitsInStock)
-        </dd>
-
-
-    </dl>
+    </table>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+<a href="~/products/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
+

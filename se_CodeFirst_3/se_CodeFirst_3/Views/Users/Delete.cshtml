@@ -1,11 +1,11 @@
-﻿@model se_CodeFirst_3.Models.ApplicationUser
+﻿@model se_CodeFirst_3.Models.UserListViewModel
 
 @{
     ViewBag.Title = "حذف کاربر";
 }
 
 <div class="col-sm-offset-3 col-sm-6 table-responsive ahk-style-for-delete-page">
-    <h2 class="page-title page-title-delete">@ViewBag.Title</h2>
+    <h2 class="page-title page-title-delete"><span class="glyphicon glyphicon-remove"></span> @ViewBag.Title</h2>
 
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <table class="table table-condensed table-striped table-bordered">
@@ -69,13 +69,13 @@
         </tr>
     </table>
 
-@using (Html.BeginForm("Delete", "Users", new { Id = ViewBag.UserId }, FormMethod.Post))
-{
+    @using (Html.BeginForm("Delete", "Users", new { Id = ViewBag.UserId }, FormMethod.Post))
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="حذف برای همیشه" class="btn btn-danger" /> |
-            <button type="button" class="btn btn-default" data-dismiss="modal">بستن</button>
+            <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> حذف برای همیشه</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-eye-close"></span> بستن</button>
         </div>
     }
 </div>

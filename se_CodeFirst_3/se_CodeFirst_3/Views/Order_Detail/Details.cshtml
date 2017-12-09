@@ -4,40 +4,28 @@
     ViewBag.Title = "اطلاعات جزئیات سفارش";
 }
 
-<h2>Details</h2>
+<h2 class="page-title page-title-details"><span class="glyphicon glyphicon-list-alt"></span> @ViewBag.Title</h2>
 
-<div>
-    <h4>Order_Detail</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Order.Id)
-        </dt>
+<div class="col-sm-offset-2 col-sm-8 table-responsive" id="content-for-print">
+    <table class="table table-hover table-bordered table-striped">
+        <tr class="success">
+            <th colspan="2">اطلاعات جزئیات سفارش</th>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.OrderId)</td>
+            <td>@Html.DisplayFor(model => model.OrderId)</td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.Order.Id)
-        </dd>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Product.Name)</td>
+            <td>@Html.DisplayFor(model => model.Product.Name)</td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Product.Name)
-        </dt>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Quantity)</td>
+            <td>@Html.DisplayFor(model => model.Quantity)</td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.Product.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Quantity)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Quantity)
-        </dd>
-
-
-    </dl>
+    </table>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<a href="~/Order_Detail/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>

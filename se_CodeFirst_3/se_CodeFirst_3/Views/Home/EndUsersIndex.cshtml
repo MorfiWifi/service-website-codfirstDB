@@ -1,0 +1,126 @@
+﻿@model IEnumerable<se_CodeFirst_3.Models.Product>
+
+@{
+    ViewBag.Title = "لیست محصولات وبسایت";
+}
+
+<div ng-app="ahkSearchApp" ng-controller="ahkSearchCtrl" class="col-sm-12">
+
+    <div class="col-sm-4 col-sm-push-8">
+        <h2 class="page-title page-title-search">
+            <span class="glyphicon glyphicon-search"></span> جست و جو
+            <button class="btn btn-success" ng-click="resetDataInSearchFeilds()"><span class="glyphicon glyphicon-refresh"></span></button>
+        </h2>
+        <div class="table-responsive">
+            <table class="table table-condensed table-striped">
+                <tr>
+                    <td>نام کالا: </td>
+                    <td><input class="form-control" type="text" name="nameFilter" ng-model="nameFilter" autofocus /></td>
+                </tr>
+
+                <tr>
+                    <td>
+                        حداقل @Html.DisplayNameFor(model => model.UnitPrice)
+                        <input class="form-control form-horizontal" type="text" name="minUnitPriceFilter" ng-model="minUnitPriceFilter" dir="ltr" />
+                    </td>
+                    <td>
+                        حداکثر @Html.DisplayNameFor(model => model.UnitPrice)
+                        <input class="form-control form-horizontal" type="text" name="maxUnitPriceFilter" ng-model="maxUnitPriceFilter" dir="ltr" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        حداقل @Html.DisplayNameFor(model => model.UnitsInStock)
+                        <input class="form-control form-horizontal" type="text" name="minUnitsInStockFilter" ng-model="minUnitsInStockFilter" dir="ltr" />
+                    </td>
+                    <td>
+                        حداکثر @Html.DisplayNameFor(model => model.UnitsInStock)
+                        <input class="form-control form-horizontal" type="text" name="maxUnitsInStockFilter" ng-model="maxUnitsInStockFilter" dir="ltr" />
+                    </td>
+                </tr>
+
+            </table>
+
+
+        </div>
+    </div>
+
+    <div class="col-sm-8 col-sm-pull-4">
+
+        <h2 class="page-title page-title-index"><span class="glyphicon glyphicon-list"></span> @ViewBag.Title</h2>
+
+        <div class="plans">
+            <div ng-repeat="x in items | orderBy:sortParameter : reverseOrder | filter : {Name:nameFilter, UnitPrice:unitPriceFilter, UnitsInStock:unitsInStockFilter}
+                         | filter : greaterThan('UnitPrice', minUnitPriceFilter)
+                         | filter : lowerThan('UnitPrice', maxUnitPriceFilter)
+                         | filter : greaterThan('UnitsInStock', minUnitsInStockFilter)
+                         | filter : lowerThan('UnitsInStock', maxUnitsInStockFilter)">
+                <div class="plan col-sm-3">
+                    <h3 class="plan-title"><span class="plan-unit">@Html.DisplayNameFor(model => model.Name)</span> {{x.Name}}</h3>
+                    <p class="plan-price"><span class="plan-unit">@Html.DisplayNameFor(model => model.UnitPrice)</span> {{x.UnitPrice}} </p>
+                    <p class="plan-price"><span class="plan-unit">@Html.DisplayNameFor(model => model.UnitsInStock)</span> {{x.UnitsInStock}} </p>
+                </div>
+
+                @*@foreach (var item in Model)
+                    {
+                        <div class="plan">
+                            <h3 class="plan-title"><span class="plan-unit">@Html.DisplayNameFor(model => model.Name)</span> @Html.DisplayFor(modelItem => item.Name)</h3>
+                            <p class="plan-price"><span class="plan-unit">@Html.DisplayNameFor(model => model.UnitPrice)</span> @Html.DisplayFor(modelItem => item.UnitPrice) </p>
+                            <p class="plan-price"><span class="plan-unit">@Html.DisplayNameFor(model => model.UnitsInStock)</span> @Html.DisplayFor(modelItem => item.UnitsInStock) </p>
+                        </div>
+                    }*@
+            </div>
+        </div>
+
+    </div>
+
+
+    <script>
+        var app = angular.module('ahkSearchApp', []);
+        app.controller('ahkSearchCtrl', function ($scope, $http) {
+
+            $scope.items = @Html.Raw(Json.Encode(Model));
+
+
+            //Search Variables:
+            $scope.nameFilter = "";
+            $scope.minUnitPriceFilter = "";
+            $scope.maxUnitPriceFilter = 99999;
+            $scope.minUnitsInStockFilter = "";
+            $scope.maxUnitsInStockFilter = 99999;
+
+            $scope.ahkSortBy = function (x) {
+                $scope.sortParameter = x;
+                $scope.reverseOrder = reverseOrder;
+            };
+
+            $scope.ahkSortBy = function (x, reverseOrder) {
+                $scope.sortParameter = x;
+                $scope.reverseOrder = reverseOrder;
+            };
+
+            //Reset Input Data:
+            $scope.resetDataInSearchFeilds = function () {
+                $scope.nameFilter = "";
+                $scope.minUnitPriceFilter = "";
+                $scope.maxUnitPriceFilter = 99999;
+                $scope.minUnitsInStockFilter = "";
+                $scope.maxUnitsInStockFilter = 99999;
+            };
+
+            $scope.greaterThan = function (prop, val) {
+                return function (item) {
+                    return item[prop] >= val;
+                }
+            }
+
+            $scope.lowerThan = function (prop, val) {
+                return function (item) {
+                    return item[prop] < val;
+                }
+            }
+
+        });
+    </script>
+</div>

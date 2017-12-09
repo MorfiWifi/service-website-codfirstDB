@@ -4,13 +4,12 @@
     ViewBag.Title = "اطلاعات تولیدکننده";
 }
 
-<h2 class="page-title page-title-details">@ViewBag.Title</h2>
+<h2 class="page-title page-title-details"><span class="glyphicon glyphicon-list-alt"></span> @ViewBag.Title</h2>
 
-<div class="col-sm-offset-2 col-sm-8 table-responsive">
+<div class="col-sm-offset-2 col-sm-8 table-responsive" id="content-for-print">
     <table class="table table-hover table-bordered table-striped">
         <tr class="success">
-            <th>اطلاعات تولید کننده</th>
-            <th></th>
+            <th colspan="2">اطلاعات تولید کننده</th>
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(model => model.CompanyName)</td>
@@ -42,23 +41,41 @@
             <td>@Html.DisplayFor(model => model.Price)</td>
         </tr>
         <tr class="success">
-            <th>لیست محصولات</th>
-            <th></th>
+            <th colspan="2">لیست محصولات</th>
         </tr>
         @foreach (var item in Model.Products)
         {
             <tr>
                 <td>[ @Html.DisplayNameFor(model => model.Products.FirstOrDefault().Name),
                      @Html.DisplayNameFor(model => model.Products.FirstOrDefault().UnitsInStock),
-                     @Html.DisplayNameFor(model => model.Products.FirstOrDefault().UnitPrice)]</td>
+                     @Html.DisplayNameFor(model => model.Products.FirstOrDefault().BuyUnitPrice),
+                     @Html.DisplayNameFor(model => model.Products.FirstOrDefault().SellUnitPrice)]</td>
                 <td>[@Html.ActionLink(@item.Name.ToString(),
-                        "Details", "Products", new { id = item.Id }, new { @class = "btn btn-default" }) , @item.UnitsInStock, @item.UnitPrice]</td>
+                        "Details", "Products", new { id = item.Id }) , @item.UnitsInStock, @item.BuyUnitPrice, @item.SellUnitPrice]</td>
             </tr>
         }
 
     </table>
 </div>
-<p>
-    @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<a href="~/Suppliers/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
+<button class="btn btn-success" id="printPage"><span class="glyphicon glyphicon-print"></span> پرینت</button>
+
+@Scripts.Render("~/bundles/jquery")
+<script>
+    $(document).ready(function () {
+
+        $('#printPage').click(function () {
+
+            var contentBeforePrint = document.getElementById('content-for-print').innerHTML;
+            var originalContent = document.body.innerHTML;
+
+            document.body.innerHTML = contentBeforePrint;
+
+            window.print();
+
+            document.body.innerHTML = originalContent;
+        });
+
+    });
+</script>
+

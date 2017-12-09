@@ -9,17 +9,25 @@ using System.Web;
 using System.Web.Mvc;
 using se_CodeFirst_3.Models;
 using se_CodeFirst_3.Helper;
+using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers
 {
+#if DEBUG
+
+#else
+    [RedirectIfNotAuthorized]
+#endif
     public class ProductsController : Controller
     {
         ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
+        NotificationProviderHelper notificationHelper;
 
         string basePath = "api/products/";
         public ProductsController()
         {
             basePath = "api/products/";
+            notificationHelper = new NotificationProviderHelper(this);
         }
 
         // GET: Products
@@ -49,6 +57,7 @@ namespace se_CodeFirst_3.Controllers
         public async Task<ActionResult> Create()
         {
             ViewBag.SupplierId = new SelectList(await helper.GetListOfItems<Supplier>("api/suppliers"), "Id", "CompanyName");
+            ViewBag.suppliersList = await helper.GetListOfItems<Supplier>("api/Suppliers/");
             return View();
         }
 
@@ -57,16 +66,27 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Name,UnitPrice,UnitsInStock,UnitsOnOrder,SupplierId")] Product product)//, int supplierId)//
+        public async Task<ActionResult> Create([Bind(Include = "Id,Name,BuyUnitPrice,SellUnitPrice,UnitsInStock,UnitsOnOrder,SupplierId")] Product product, bool? stayOnCreatePage)
         {
+            bool castedStayOnCreatePage = stayOnCreatePage.HasValue ? stayOnCreatePage.Value : false;
             if (ModelState.IsValid)
             {
                 //product.Supplier = await helper.GetItem<Supplier>("api/suppliers/" + product.Supplier.Id);
                 helper.CreateItem<Product>(basePath, product);
-                return RedirectToAction("Index");
+                notificationHelper.SuccessfulInsert(product.Name);
+                if (castedStayOnCreatePage == true)
+                {
+                    return RedirectToAction("Create");
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
             }
 
             ViewBag.SupplierId = new SelectList(await helper.GetListOfItems<Supplier>("api/suppliers"), "Id", "CompanyName", product.SupplierId);
+            notificationHelper.FailureInsert(product.Name);
+            ViewBag.suppliersList = await helper.GetListOfItems<Supplier>("api/Suppliers/");
             return View(product);
         }
 
@@ -92,15 +112,17 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,UnitPrice,UnitsInStock,UnitsOnOrder,SupplierId")] Product product)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,BuyUnitPrice,SellUnitPrice,UnitsInStock,UnitsOnOrder,SupplierId")] Product product)
         {
             if (ModelState.IsValid)
             {
                 helper.ChangeItem<Product>(basePath + product.Id, product);
+                notificationHelper.SuccessfulChange(product.Name);
                 return RedirectToAction("Index");
             }
 
             ViewBag.SupplierId = new SelectList(await helper.GetListOfItems<Supplier>("api/suppliers"), "Id", "CompanyName", product.SupplierId);
+            notificationHelper.FailureChange(product.Name);
             return View(product);
         }
 
@@ -122,8 +144,9 @@ namespace se_CodeFirst_3.Controllers
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
+            notificationHelper.SuccessfulDelete((await helper.GetItem<Product>(basePath + id)).Name);
             helper.DeleteItem(basePath, id);
             return RedirectToAction("Index");
         }

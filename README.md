@@ -7,6 +7,8 @@
 		update-database
 		
 	* : as result connection String will be Your sys authentication.
+	** : In Latest Version Not sure!
+	*** : added for Toturial
 	
 	noted : by MORFI
 		

@@ -9,17 +9,25 @@ using System.Web;
 using System.Web.Mvc;
 using se_CodeFirst_3.Models;
 using se_CodeFirst_3.Helper;
+using se_CodeFirst_3.Filters;
 
 namespace se_CodeFirst_3.Controllers
 {
+#if DEBUG
+
+#else
+    [RedirectIfNotAuthorized]
+#endif
     public class Order_DetailController : Controller
     {
         ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
+        NotificationProviderHelper notificationHelper;
 
         string basePath = "api/Order_Detail/";
         public Order_DetailController()
         {
             basePath = "api/Order_Detail/";
+            notificationHelper = new NotificationProviderHelper(this);
         }
 
         // GET: Order_Detail
@@ -60,22 +68,39 @@ namespace se_CodeFirst_3.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Quantity,ProductId,OrderId")] Order_Detail order_Detail)
+        public async Task<ActionResult> Create([Bind(Include = "Id,Quantity,ProductId,OrderId")] Order_Detail order_Detail, bool? stayOnCreatePage)
         {
+            bool castedStayOnCreatePage = stayOnCreatePage.HasValue ? stayOnCreatePage.Value : false;
+
             if (ModelState.IsValid)
             {
                 Order_Detail od = helper.CreateItem<Order_Detail>(basePath, order_Detail);
 
                 if (od == null)
                 {
-                    ViewBag.Title = "تعداد کالاها نمی تواند از موجودی بیشتر باشد.";
+                    notificationHelper.CustomFailureMessage("تعداد کالاها نمی تواند از موجودی بیشتر باشد.");
+
+                    ViewBag.OrderId = new SelectList(await helper.GetListOfItems<Order>("api/orders/"), "Id", "Id");
+                    ViewBag.ProductId = new SelectList(await helper.GetListOfItems<Product>("api/products/"), "Id", "Name");
+
+                    return View(order_Detail);
                 }
 
-                return RedirectToAction("Index");
+                notificationHelper.SuccessfulInsert(order_Detail.Id.ToString());
+                if (castedStayOnCreatePage == true)
+                {
+                    return RedirectToAction("Create");
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
             }
 
-            ViewBag.OrderId = new SelectList(await helper.GetListOfItems<Order>("api/orders/"), "Id", "Id");
-            ViewBag.ProductId = new SelectList(await helper.GetListOfItems<Product>("api/products/"), "Id", "Name");
+            ViewBag.OrderId = new SelectList(await helper.GetListOfItems<Order>("api/orders/"), "Id", "Id", order_Detail.OrderId);
+            ViewBag.ProductId = new SelectList(await helper.GetListOfItems<Product>("api/products/"), "Id", "Name", order_Detail.ProductId);
+
+            notificationHelper.FailureInsert(order_Detail.Id.ToString());
             return View(order_Detail);
         }
 
@@ -91,8 +116,8 @@ namespace se_CodeFirst_3.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.OrderId = new SelectList(await helper.GetListOfItems<Order>("api/orders/"), "Id", "Id");
-            ViewBag.ProductId = new SelectList(await helper.GetListOfItems<Product>("api/products/"), "Id", "Name");
+            ViewBag.OrderId = new SelectList(await helper.GetListOfItems<Order>("api/orders/"), "Id", "Id", order_Detail.OrderId);
+            ViewBag.ProductId = new SelectList(await helper.GetListOfItems<Product>("api/products/"), "Id", "Name", order_Detail.ProductId);
             return View(order_Detail);
         }
 
@@ -105,11 +130,25 @@ namespace se_CodeFirst_3.Controllers
         {
             if (ModelState.IsValid)
             {
-                helper.ChangeItem<Order_Detail>(basePath + order_Detail.Id, order_Detail);
+                Order_Detail od = helper.ChangeItem<Order_Detail>(basePath + order_Detail.Id, order_Detail);
+
+                if (od == null)
+                {
+                    notificationHelper.CustomFailureMessage("تعداد کالاها نمی تواند از موجودی بیشتر باشد.");
+
+                    ViewBag.OrderId = new SelectList(await helper.GetListOfItems<Order>("api/orders/"), "Id", "Id", order_Detail.OrderId);
+                    ViewBag.ProductId = new SelectList(await helper.GetListOfItems<Product>("api/products/"), "Id", "Name", order_Detail.ProductId);
+
+                    return View(order_Detail);
+                }
+                
+                notificationHelper.SuccessfulChange(order_Detail.Id.ToString());
                 return RedirectToAction("Index");
             }
-            ViewBag.OrderId = new SelectList(await helper.GetListOfItems<Order>("api/orders/"), "Id", "Id");
-            ViewBag.ProductId = new SelectList(await helper.GetListOfItems<Product>("api/products/"), "Id", "Name");
+            ViewBag.OrderId = new SelectList(await helper.GetListOfItems<Order>("api/orders/"), "Id", "Id", order_Detail.OrderId);
+            ViewBag.ProductId = new SelectList(await helper.GetListOfItems<Product>("api/products/"), "Id", "Name", order_Detail.ProductId);
+
+            notificationHelper.FailureChange(order_Detail.Id.ToString());
             return View(order_Detail);
         }
 
@@ -133,8 +172,8 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
+            notificationHelper.SuccessfulDelete((await helper.GetItem<Order_Detail>(basePath + id)).Id.ToString());
             helper.DeleteItem(basePath, id);
-
             return RedirectToAction("Index");
         }
 
