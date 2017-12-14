@@ -54,17 +54,6 @@
                 </td>
             </tr>
 
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.OrderId, "شماره قرارداد", htmlAttributes: new { @class = "control-label" })
-                </td>
-                <td>
-                    @Html.DropDownList("OrderId", null, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.OrderId, "", new { @class = "text-danger" })
-                </td>
-                <td></td>
-            </tr>
-
         </table>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -78,7 +67,7 @@
                     <span class="glyphicon glyphicon-plus"></span> افزودن و ماندن
                 </button>
 
-                <a href="~/Order_Detail/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
+                <a href="@Url.Action("Index", "Order_Detail")" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
             </div>
         </div>
     }
