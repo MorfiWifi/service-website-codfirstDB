@@ -1,0 +1,55 @@
+﻿@model se_CodeFirst_3.Models.UserViewModel
+
+@{
+    ViewBag.Title = "اطلاعات کاربر";
+}
+
+
+<h2 class="page-title page-title-details"><span class="glyphicon glyphicon-list-alt"></span> @ViewBag.Title</h2>
+
+<div class="col-sm-offset-2 col-sm-8 table-responsive">
+    <table class="table table-hover table-bordered table-striped">
+        <tr class="success">
+            <th>اطلاعات کاربر</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.UserName)</td>
+            <td>@Html.DisplayFor(model => model.UserName)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Roles)</td>
+            <td>@Html.DisplayFor(model => model.Roles)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Salary)</td>
+            <td>@Html.DisplayFor(model => model.Salary)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Benefits)</td>
+            <td>@Html.DisplayFor(model => model.Benefits)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.OverTime)</td>
+            <td>@Html.DisplayFor(model => model.OverTime)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.AbsentDays)</td>
+            <td>@Html.DisplayFor(model => model.AbsentDays)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.FinalSalary)</td>
+            <td>@Html.DisplayFor(model => model.FinalSalary)</td>
+        </tr>
+
+    </table>
+</div>
+
+<a href="~/Users/" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
+<a href="#" class="btn btn-success"><span class="glyphicon glyphicon-print"></span> پرینت</a>

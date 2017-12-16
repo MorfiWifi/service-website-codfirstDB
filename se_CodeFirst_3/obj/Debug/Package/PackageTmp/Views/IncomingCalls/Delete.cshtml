@@ -1,0 +1,41 @@
+﻿@model se_CodeFirst_3.Models.IncomingCall
+
+@{
+    ViewBag.Title = "حذف تماس ورودی";
+}
+
+<div class="col-sm-offset-3 col-sm-6 table-responsive ahk-style-for-delete-page">
+    <h2 class="page-title page-title-delete"><span class="glyphicon glyphicon-remove"></span> @ViewBag.Title</h2>
+
+    <table class="table table-condensed table-striped table-bordered">
+        <tr>
+            <th>ویژگی</th>
+            <th>مقدار</th>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Message)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Message)
+            </td>
+        </tr>
+
+        <tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Date)
+            </td>
+        </tr>
+    </table>
+
+    @using (Html.BeginForm("Delete", "IncomingCalls", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> حذف</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-eye-close"></span> بستن</button>
+    }
+</div>

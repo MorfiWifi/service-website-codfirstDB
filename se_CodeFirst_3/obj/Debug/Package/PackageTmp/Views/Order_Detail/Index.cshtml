@@ -1,0 +1,138 @@
+﻿@model IEnumerable<se_CodeFirst_3.Models.Order_Detail>
+@Scripts.Render("~/bundles/angular")
+
+@{
+    ViewBag.Title = "لیست جزئیات سفارش";
+}
+
+<div id="mainContainer">
+    <div ng-app="ahkSearchApp" ng-controller="ahkSearchCtrl" class="col-sm-12">
+
+        <div class="col-sm-4 col-sm-push-8">
+            <h2 class="page-title page-title-search"><span class="glyphicon glyphicon-search"></span> جست و جو</h2>
+
+            <div class="table-responsive">
+                <table class="table table-condensed table-striped">
+                    <tr>
+                        <td>آی دی قرارداد : </td>
+                        <td><input class="form-control" type="text" name="idFilter" ng-model="idFilter" autofocus /></td>
+                    </tr>
+
+                    <tr>
+                        <td>نام محصول: </td>
+                        <td>
+                            <input class="form-control form-horizontal" type="text" name="productFilter" ng-model="productFilter" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>تعداد: </td>
+                        <td>
+                            <input class="form-control form-horizontal" type="text" name="quantityFilter" ng-model="quantityFilter" />
+                        </td>
+                    </tr>
+
+                </table>
+
+
+            </div>
+
+        </div>
+
+        <div class="col-sm-8 col-sm-pull-4">
+
+            <h2 class="page-title page-title-index"><span class="glyphicon glyphicon-list"></span> @ViewBag.Title</h2>
+
+            <p>
+                <a class="btn btn-primary" href="~/Order_Detail/Create"><span class="glyphicon glyphicon-plus"></span> افزودن</a>
+            </p>
+            <div class="table-responsive">
+                <table class="table table-hover table-responsive table-striped table-bordered">
+                    <tr>
+                        <th ng-click="ahkSortBy('idFilter')" ng-dblclick="ahkSortBy('idFilter', 'true')">
+                            @Html.DisplayNameFor(model => model.Order.Id) +
+                            (@Html.DisplayNameFor(model => model.Order.Customer.Name))
+                        </th>
+                        <th ng-click="ahkSortBy('productFilter')" ng-dblclick="ahkSortBy('productFilter', 'true')">
+                            @Html.DisplayNameFor(model => model.Product.Name)
+                        </th>
+                        <th ng-click="ahkSortBy('quantityFilter')" ng-dblclick="ahkSortBy('quantityFilter', 'true')">
+                            @Html.DisplayNameFor(model => model.Quantity)
+                        </th>
+                        <th></th>
+                    </tr>
+                    @*  Order.Id:idFilter, Product.Name:productFilter,  *@
+            <tr ng-repeat="x in items | orderBy:sortParameter : reverseOrder | filter : {Quantity:quantityFilter}">
+                <td>{{x.Order.Id}} ({{x.Order.Customer.Name}})</td>
+                <td>{{x.Product.Name}}</td>
+                <td>{{x.Quantity}}</td>
+                <td>
+                    <a class="btn btn-sm btn-warning" href="~/Order_Detail/Edit/{{x.Id}}"><span class="glyphicon glyphicon-edit"></span> </a>
+                    <a class="btn btn-sm btn-info" href="~/Order_Detail/Details/{{x.Id}}"><span class="glyphicon glyphicon-list-alt"></span></a>
+                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                            href="~/Order_Detail/Delete/{{x.Id}}"
+                            data-target="#confirmItemDeleteModal{{x.Id}}">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+
+                    <!-- Modal -->
+                    <div id="confirmItemDeleteModal{{x.Id}}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    @*<h4 class="modal-title" >از حذف عنصر انتخاب شده، مطمئن هستید؟</h4>*@
+                                </div>
+                                <div class="modal-body">
+                                    <div>
+                                        @*@{
+                                                Html.RenderPartial("Delete", );
+                                            }*@
+                                        <a class="btn btn-sm btn-danger" href="~/Order_Detail/Delete/{{x.Id}}">حذف</a>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    var app = angular.module('ahkSearchApp', []);
+        app.controller('ahkSearchCtrl', function ($scope, $http) {
+
+            $scope.items = @Html.Raw(Json.Encode(Model));
+
+
+            //Search Variables:
+            $scope.idFilter = "";
+            $scope.productFilter = "";
+            $scope.quantityFilter = "";
+
+            $scope.ahkSortBy = function (x) {
+                $scope.sortParameter = x;
+                $scope.reverseOrder = reverseOrder;
+            };
+
+            $scope.ahkSortBy = function (x, reverseOrder) {
+                $scope.sortParameter = x;
+                $scope.reverseOrder = reverseOrder;
+            };
+
+        });
+</script>
+
+
+

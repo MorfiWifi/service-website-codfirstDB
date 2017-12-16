@@ -1,0 +1,28 @@
+﻿@model se_CodeFirst_3.Models.IncomingCall
+
+@{
+    ViewBag.Title = "اطلاعات تماس ورودی";
+}
+
+
+<h2 class="page-title page-title-details"><span class="glyphicon glyphicon-list-alt"></span> @ViewBag.Title</h2>
+
+<div class="col-sm-offset-2 col-sm-8 table-responsive">
+    <table class="table table-hover table-bordered table-striped">
+        <tr class="success">
+            <th>اطلاعات تولید کننده</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Message)</td>
+            <td>@Html.DisplayFor(model => model.Message)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Date)</td>
+            <td>@Html.DisplayFor(model => model.Date)</td>
+        </tr>
+    </table>
+</div>
+
+<a href="~/IncomingCalls/Index" type="submit" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>

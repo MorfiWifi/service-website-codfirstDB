@@ -1,0 +1,309 @@
+﻿@model PagedList.IPagedList<se_CodeFirst_3.Models.Order>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.css" rel="stylesheet" />
+<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/jquery-3.1.0.js"></script>
+<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/bootstrap.js"></script>
+<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/MdBootstrapPersianDateTimePicker/jalaali.js"></script>
+<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.js"></script>
+
+<link href="~/Content/ahk-custom-styles.css" rel="stylesheet" />
+
+@Scripts.Render("~/bundles/angular")
+
+@{
+    ViewBag.Title = "لیست سفارشات";
+}
+
+<div id="mainContainer">
+    <div ng-app="ahkSearchApp" ng-controller="ahkSearchCtrl" class="col-sm-12">
+
+        <div class="col-sm-4 col-sm-push-8">
+            <h2 class="page-title page-title-search"><span class="glyphicon glyphicon-search"></span> جست و جو
+                <button class="btn btn-success" ng-click="resetDataInSearchFeilds()"><span class="glyphicon glyphicon-refresh"></span></button>
+            </h2>
+            
+            <div class="table-responsive">
+                <table class="table table-condensed table-striped">
+                    <tr>
+                        <td>متن سفارش: </td>
+                        <td><input class="form-control" type="text" name="contentFilter" ng-model="contentFilter" ng-change="ahkSearch()" autofocus /></td>
+                    </tr>
+
+                    <tr>
+                        <td>نام مشتری: </td>
+                        <td>
+                            <input class="form-control form-horizontal" type="text" name="customerFilter" ng-model="customerFilter" ng-change="ahkSearch()" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>حداقل تاریخ سفارش: </td>
+                        <td>
+                            <div class="input-group" dir="ltr" style="max-width:280px;">
+                                <span class="glyphicon glyphicon-calendar input-group-addon" id="input1" data-MdDateTimePicker="true" data-TargetSelector="#input1" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
+                                <input class="form-control form-horizontal" type="text" name="orderDateFilter" ng-model="minOrderDateFilter" ng-change="ahkSearch()" id="textBoxInputId" />
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>حداکثر تاریخ سفارش: </td>
+                        <td>
+                            <div class="input-group" dir="ltr" style="max-width:280px;">
+                                <span class="glyphicon glyphicon-calendar input-group-addon" id="input2" data-MdDateTimePicker="true" data-TargetSelector="#input2" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
+                                <input class="form-control form-horizontal" type="text" name="maxOrderDateFilter" ng-model="maxOrderDateFilter" ng-change="ahkSearch()" id="textBoxInputId2" />
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>حداقل تاریخ تحویل: </td>
+                        <td>
+                            <div class="input-group" dir="ltr" style="max-width:280px;">
+                                <span class="glyphicon glyphicon-calendar input-group-addon" id="input3" data-MdDateTimePicker="true" data-TargetSelector="#input3" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
+                                <input class="form-control form-horizontal" type="text" dir="ltr" name="minRequiredDateFilter" ng-model="minRequiredDateFilter" ng-change="ahkSearch()" id="textBoxInputId3" />
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>حداکثر تاریخ تحویل: </td>
+                        <td>
+                            <div class="input-group" dir="ltr" style="max-width:280px;">
+                                <span class="glyphicon glyphicon-calendar input-group-addon" id="input4" data-MdDateTimePicker="true" data-TargetSelector="#input4" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
+                                <input class="form-control form-horizontal" type="text" dir="ltr" name="maxRequiredDateFilter" ng-model="maxRequiredDateFilter" ng-change="ahkSearch()" id="textBoxInputId4" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+
+            </div>
+
+        </div>
+
+        <div class="col-sm-8 col-sm-pull-4">
+
+            <h2 class="page-title page-title-index"><span class="glyphicon glyphicon-list"></span> @ViewBag.Title</h2>
+
+            <p>
+                <a class="btn btn-primary" href="~/Orders/Create"><span class="glyphicon glyphicon-plus"></span> افزودن</a>
+                <a class="btn btn-success" href="~/Contracts/Create"><span class="glyphicon glyphicon-plus"></span> افزودن متن قرارداد</a>
+            </p>
+            <div class="table-responsive">
+                <table class="table table-hover table-responsive table-striped table-bordered">
+                    <tr>
+                        <th ng-click="ahkSortBy('contentFilter')" ng-dblclick="ahkSortBy('contentFilter', 'true')">
+                            متن قرارداد
+                        </th>
+                        <th ng-click="ahkSortBy('customerFilter')" ng-dblclick="ahkSortBy('customerFilter', 'true')">
+                            <span class="glyphicon glyphicon-user"></span>
+                            نام مشتری
+                        </th>
+                        <th ng-click="ahkSortBy('orderDateFilter')" ng-dblclick="ahkSortBy('orderDateFilter', 'true')">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                            تاریخ سفارش
+                        </th>
+                        <th ng-click="ahkSortBy('requiredDateFilter')" ng-dblclick="ahkSortBy('requiredDateFilter', 'true')">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                            تاریخ تحویل
+                        </th>
+                        <th></th>
+                    </tr>
+                    
+                    @*| orderBy:sortParameter : reverseOrder | filter : {OrderDate:orderDateFilter, RequiredDate:requiredDateFilter}*@
+                    <tr ng-repeat="x in items">
+                        <td>{{x.Contract.Content}}</td>
+                        <td>{{x.Customer.Name}}</td>
+                        <td dir="ltr">{{x.OrderDate | date : 'yyyy/MM/dd hh:mm:ss' }}</td>
+                        <td dir="ltr">{{x.RequiredDate | date : 'yyyy/MM/dd hh:mm:ss' }}</td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" href="~/Orders/Edit/{{x.Id}}"><span class="glyphicon glyphicon-edit"></span> </a>
+                            <a class="btn btn-sm btn-info" href="~/Orders/Details/{{x.Id}}"><span class="glyphicon glyphicon-list-alt"></span></a>
+                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                                    href="~/Orders/Delete/{{x.Id}}"
+                                    data-target="#confirmItemDeleteModal{{x.Id}}">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button> | 
+
+                            <a  class="btn btn-sm btn-primary" href="~/Orders/{{x.Id}}/Order_Detail/Create"><span class="glyphicon glyphicon-plus"></span> </a>
+                            <a class="btn btn-sm btn-success" href="~/Orders/{{x.Id}}/Order_Detail/Index"><span class="glyphicon glyphicon-list"></span> </a>
+
+                            <!-- Modal -->
+                            <div id="confirmItemDeleteModal{{x.Id}}" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            @*<h4 class="modal-title" >از حذف عنصر انتخاب شده، مطمئن هستید؟</h4>*@
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                @*@{
+                                                        Html.RenderPartial("Delete", );
+                                                    }*@
+                                                <a class="btn btn-sm btn-danger" href="~/Orders/Delete/{{x.Id}}">حذف</a>
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+                <p dir="rtl">
+                    صفحه @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) از @Model.PageCount
+
+                    @Html.PagedListPager(Model, page => Url.Action("Index",
+                        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var app = angular.module('ahkSearchApp', []);
+        app.controller('ahkSearchCtrl', function ($scope, $http) {
+
+            $scope.items = @Html.Raw(Json.Encode(Model));
+        
+            $scope.usePersianDates = function (){
+                for (var i = 0; i < $scope.items.length; i++) {
+                    $scope.items[i].OrderDate = new Date(parseInt($scope.items[i].OrderDate.substr(6)));
+                    $scope.items[i].RequiredDate = new Date(parseInt($scope.items[i].RequiredDate.substr(6)));
+                }
+            }
+
+            $scope.usePersianDates();
+
+
+            //Search Variables:
+            $scope.contentFilter = "";
+            $scope.customerFilter = "";
+            $scope.minOrderDateFilter = "";
+            $scope.maxOrderDateFilter = "";
+            $scope.minRequiredDateFilter = "";
+            $scope.maxRequiredDateFilter = "";
+
+            $scope.ahkSortBy = function (x) {
+                $scope.sortParameter = x;
+                $scope.reverseOrder = reverseOrder;
+            };
+
+            $scope.ahkSortBy = function (x, reverseOrder) {
+                $scope.sortParameter = x;
+                $scope.reverseOrder = reverseOrder;
+            };
+
+            //Reset Input Data:
+            $scope.resetDataInSearchFeilds = function () {
+                $scope.contentFilter = "";
+                $scope.customerFilter = "";
+                $scope.minOrderDateFilter = "";
+                $scope.maxOrderDateFilter = "";
+                $scope.minRequiredDateFilter = "";
+                $scope.maxRequiredDateFilter = "";
+                $scope.ahkSearch();
+            };
+
+            $scope.ahkSearch = function (){
+                var orderDTO = $.param({
+                    Content     : $scope.contentFilter,
+                    Customer     :  $scope.customerFilter,
+                    MinOrderDate  :$scope.minOrderDateFilter,
+                    MaxOrderDate  :  $scope.maxOrderDateFilter,
+                    MinRequiredDate  :  $scope.minRequiredDateFilter,
+                    MaxRequiredDate  :  $scope.maxRequiredDateFilter,
+                });
+
+                $http({
+                    url: 'http://localhost:46810/orders/Index?searching=true&' + orderDTO,
+                    method: "GET",
+                    //data: supplier,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }//we have to write this code, otherwise it do not work
+                })
+                .then(function (response) {
+                    // success
+                    $scope.items = response.data;
+                    $scope.usePersianDates();
+                },
+                function (response) { // optional
+                    // failed
+                });
+            };
+
+        });
+
+
+        $('#input1').MdPersianDateTimePicker({
+            Placement: 'left',
+            Trigger: 'click',
+            EnableTimePicker: true,
+            TargetSelector: '#textBoxInputId',
+            GroupId: '',
+            ToDate: false,
+            FromDate: false,
+            DisableBeforeToday: false,
+            Disabled: false,
+            Format: 'yyyy/MM/dd HH:mm:ss',
+            IsGregorian: false,
+            EnglishNumber: true,
+        });
+
+        $('#input2').MdPersianDateTimePicker({
+            Placement: 'left',
+            Trigger: 'click',
+            EnableTimePicker: true,
+            TargetSelector: '#textBoxInputId2',
+            GroupId: '',
+            ToDate: false,
+            FromDate: false,
+            DisableBeforeToday: false,
+            Disabled: false,
+            Format: 'yyyy/MM/dd HH:mm:ss',
+            IsGregorian: false,
+            EnglishNumber: true,
+        });
+
+        $('#input3').MdPersianDateTimePicker({
+            Placement: 'left',
+            Trigger: 'click',
+            EnableTimePicker: true,
+            TargetSelector: '#textBoxInputId3',
+            GroupId: '',
+            ToDate: false,
+            FromDate: false,
+            DisableBeforeToday: false,
+            Disabled: false,
+            Format: 'yyyy/MM/dd HH:mm:ss',
+            IsGregorian: false,
+            EnglishNumber: true,
+        });
+
+        $('#input4').MdPersianDateTimePicker({
+            Placement: 'left',
+            Trigger: 'click',
+            EnableTimePicker: true,
+            TargetSelector: '#textBoxInputId4',
+            GroupId: '',
+            ToDate: false,
+            FromDate: false,
+            DisableBeforeToday: false,
+            Disabled: false,
+            Format: 'yyyy/MM/dd HH:mm:ss',
+            IsGregorian: false,
+            EnglishNumber: true,
+        });
+    </script>
+</div>
+

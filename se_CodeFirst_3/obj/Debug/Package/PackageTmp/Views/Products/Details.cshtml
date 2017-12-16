@@ -1,0 +1,39 @@
+﻿@model se_CodeFirst_3.Models.Product
+
+@{
+    ViewBag.Title = "اطلاعات محصول";
+}
+
+<h2 class="page-title page-title-details"><span class="glyphicon glyphicon-list-alt"></span> @ViewBag.Title</h2>
+
+<div class="col-sm-offset-2 col-sm-8 table-responsive">
+    <table class="table table-hover table-bordered table-striped">
+        <tr class="success">
+            <th>اطلاعات محصول</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Name)</td>
+            <td>@Html.DisplayFor(model => model.Name)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.UnitPrice)</td>
+            <td>@Html.DisplayFor(model => model.UnitPrice)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.UnitsInStock)</td>
+            <td>@Html.DisplayFor(model => model.UnitsInStock)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Supplier.CompanyName)</td>
+            <td>@Html.DisplayFor(model => model.Supplier.CompanyName)</td>
+        </tr>
+
+    </table>
+</div>
+
+<a href="~/products/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
+

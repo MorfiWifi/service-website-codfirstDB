@@ -1,0 +1,64 @@
+﻿@model se_CodeFirst_3.Models.Order
+
+@{
+    ViewBag.Title = "حذف سفارش";
+}
+
+<div class="col-sm-offset-3 col-sm-6 table-responsive ahk-style-for-delete-page">
+    <h2 class="page-title page-title-delete"><span class="glyphicon glyphicon-remove"></span> @ViewBag.Title</h2>
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <table class="table table-condensed table-striped table-bordered">
+        <tr>
+            <th>ویژگی</th>
+            <th>مقدار</th>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Contract.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Contract.Content)
+            </td>
+        </tr>
+
+        <tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Customer.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Customer.Name)
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.OrderDate)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.OrderDate)
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.RequiredDate)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.RequiredDate)
+            </td>
+        </tr>
+
+    </table>
+
+    @using (Html.BeginForm("Delete", "Orders", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> حذف برای همیشه</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-eye-close"></span> بستن</button>
+        </div>
+    }
+</div>

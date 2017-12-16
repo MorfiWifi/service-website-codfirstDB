@@ -1,0 +1,242 @@
+﻿@model PagedList.IPagedList<se_CodeFirst_3.Models.Product>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@Scripts.Render("~/bundles/angular")
+
+@{
+    ViewBag.Title = "لیست محصولات";
+}
+
+
+<div id="mainContainer">
+    <div ng-app="ahkSearchApp" ng-controller="ahkSearchCtrl" class="col-sm-12">
+
+        <div class="col-sm-4 col-sm-push-8">
+            <h2 class="page-title page-title-search">
+                <span class="glyphicon glyphicon-search"></span> جست و جو
+                <button class="btn btn-success" ng-click="resetDataInSearchFeilds()"><span class="glyphicon glyphicon-refresh"></span></button>
+            </h2>
+            <div class="table-responsive">
+                <table class="table table-condensed table-striped">
+                    <tr>
+                        <td>نام کالا: </td>
+                        <td><input class="form-control" type="text" name="nameFilter" ng-model="nameFilter" ng-change="ahkSearch()" autofocus /></td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            حداقل قیمت خرید
+                            <input class="form-control form-horizontal" type="text" name="minUnitPriceFilter" ng-model="minUnitPriceFilter" ng-change="ahkSearch()" dir="ltr" />
+                        </td>
+                        <td>
+                            حداکثر قیمت خرید
+                            <input class="form-control form-horizontal" type="text" name="maxUnitPriceFilter" ng-model="maxUnitPriceFilter" ng-change="ahkSearch()" dir="ltr" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            حداقل قیمت فروش
+                            <input class="form-control form-horizontal" type="text" name="minSellUnitPriceFilter" ng-model="minSellUnitPriceFilter" ng-change="ahkSearch()" dir="ltr" />
+                        </td>
+                        <td>
+                            حداکثر قیمت فروش
+                            <input class="form-control form-horizontal" type="text" name="maxSellUnitPriceFilter" ng-model="maxSellUnitPriceFilter" ng-change="ahkSearch()" dir="ltr" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            حداقل موجودی انبار
+                            <input class="form-control form-horizontal" type="text" name="minUnitsInStockFilter" ng-model="minUnitsInStockFilter" ng-change="ahkSearch()" dir="ltr" />
+                        </td>
+                        <td>
+                            حداکثر موجودی انبار
+                            <input class="form-control form-horizontal" type="text" name="maxUnitsInStockFilter" ng-model="maxUnitsInStockFilter" ng-change="ahkSearch()" dir="ltr" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>تولیدکننده: </td>
+                        <td>
+                            <input class="form-control form-horizontal" type="text" name="supplierCompanyNameFilter" ng-model="supplierCompanyNameFilter" ng-change="ahkSearch()" />
+                        </td>
+                    </tr>
+                </table>
+
+
+            </div>
+
+        </div>
+
+        <div class="col-sm-8 col-sm-pull-4">
+
+            <h2 class="page-title page-title-index"><span class="glyphicon glyphicon-list"></span> @ViewBag.Title</h2>
+
+            <p>
+                <a class="btn btn-primary" href="~/Products/Create"><span class="glyphicon glyphicon-plus"></span> افزودن</a>
+                <a class="btn btn-success" href="~/Suppliers/Create"><span class="glyphicon glyphicon-plus"></span> افزودن تولیدکننده</a>
+            </p>
+            <div class="table-responsive">
+                <table class="table table-hover table-responsive table-striped table-bordered">
+                    <tr>
+                        <th ng-click="ahkSortBy('nameFilter')" ng-dblclick="ahkSortBy('nameFilter', 'true')">
+                            نام کالا
+                        </th>
+                        <th ng-click="ahkSortBy('unitPriceFilter')" ng-dblclick="ahkSortBy('unitPriceFilter', 'true')">
+                            قیمت خرید
+                        </th>
+                        <th ng-click="ahkSortBy('SellUnitPriceFilter')" ng-dblclick="ahkSortBy('SellUnitPriceFilter', 'true')">
+                            قیمت فروش
+                        </th>
+                        <th ng-click="ahkSortBy('unitsInStockFilter')" ng-dblclick="ahkSortBy('unitsInStockFilter', 'true')">
+                            موجودی انبار
+                        </th>
+                        <th ng-click="ahkSortBy('supplierCompanyNameFilter')" ng-dblclick="ahkSortBy('supplierCompanyNameFilter', 'true')">
+                            نام شرکت
+                        </th>
+                        <th></th>
+                    </tr>
+                    @*| orderBy:sortParameter : reverseOrder | filter : {Name:nameFilter, UnitPrice:unitPriceFilter, UnitsInStock:unitsInStockFilter}
+                        | filter : greaterThan('BuyUnitPrice', minUnitPriceFilter)
+                        | filter : lowerThan('BuyUnitPrice', maxUnitPriceFilter)
+                        | filter : greaterThan('SellUnitPrice', minSellUnitPriceFilter)
+                        | filter : lowerThan('SellUnitPrice', maxSellUnitPriceFilter)
+                        | filter : greaterThan('UnitsInStock', minUnitsInStockFilter)
+                        | filter : lowerThan('UnitsInStock', maxUnitsInStockFilter)*@
+                    <tr ng-repeat="x in items">
+                        <td>{{x.Name}}</td>
+                        <td>{{x.BuyUnitPrice}}</td>
+                        <td>{{x.SellUnitPrice}}</td>
+                        <td>{{x.UnitsInStock}}</td>
+                        <td>{{x.Supplier.CompanyName}}</td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" href="~/Products/Edit/{{x.Id}}"><span class="glyphicon glyphicon-edit"></span> </a>
+                            <a class="btn btn-sm btn-info" href="~/Products/Details/{{x.Id}}"><span class="glyphicon glyphicon-list-alt"></span></a>
+                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                                    href="~/Products/Delete/{{x.Id}}"
+                                    data-target="#confirmItemDeleteModal{{x.Id}}">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+
+                            <!-- Modal -->
+                            <div id="confirmItemDeleteModal{{x.Id}}" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            @*<h4 class="modal-title" >از حذف عنصر انتخاب شده، مطمئن هستید؟</h4>*@
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                @*@{
+                                                        Html.RenderPartial("Delete", );
+                                                    }*@
+                                                <a class="btn btn-sm btn-danger" href="~/Products/Delete/{{x.Id}}">حذف</a>
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+                <p dir="rtl">
+                    صفحه @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) از @Model.PageCount
+
+                    @Html.PagedListPager(Model, page => Url.Action("Index",
+                        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var app = angular.module('ahkSearchApp', []);
+        app.controller('ahkSearchCtrl', function ($scope, $http) {
+
+            $scope.items = @Html.Raw(Json.Encode(Model));
+
+
+            //Search Variables:
+            $scope.nameFilter = "";
+            $scope.minUnitPriceFilter = "";
+            $scope.maxUnitPriceFilter = 99999;
+            $scope.minSellUnitPriceFilter = "";
+            $scope.maxSellUnitPriceFilter = 99999;
+            $scope.minUnitsInStockFilter = "";
+            $scope.maxUnitsInStockFilter = 99999;
+            $scope.supplierCompanyNameFilter = "";
+
+            $scope.ahkSortBy = function (x) {
+                $scope.sortParameter = x;
+                $scope.reverseOrder = reverseOrder;
+            };
+
+            $scope.ahkSortBy = function (x, reverseOrder) {
+                $scope.sortParameter = x;
+                $scope.reverseOrder = reverseOrder;
+            };
+
+            //Reset Input Data:
+            $scope.resetDataInSearchFeilds = function () {
+                $scope.nameFilter = "";
+                $scope.minUnitPriceFilter = "";
+                $scope.maxUnitPriceFilter = 99999;
+                $scope.minSellUnitPriceFilter = "";
+                $scope.maxSellUnitPriceFilter = 99999;
+                $scope.minUnitsInStockFilter = "";
+                $scope.maxUnitsInStockFilter = 99999;
+                $scope.supplierCompanyNameFilter = "";
+                $scope.ahkSearch();
+            };
+
+            $scope.greaterThan = function (prop, val) {
+                return function (item) {
+                    return item[prop] >= val;
+                }
+            }
+
+            $scope.lowerThan = function (prop, val) {
+                return function (item) {
+                    return item[prop] < val;
+                }
+            }
+
+            $scope.ahkSearch = function (){
+                var productDTO = $.param({
+                    Name     :           $scope.nameFilter,
+                    MinUnitPrice     :  $scope.minUnitPriceFilter,
+                    MaxUnitPrice     :  $scope.maxUnitPriceFilter,
+                    MinSellUnitPrice  :  $scope.minSellUnitPriceFilter,
+                    MaxSellUnitPrice  :  $scope.maxSellUnitPriceFilter,
+                    MinUnitsInStock  :  $scope.minUnitsInStockFilter,
+                    MaxUnitsInStock  :  $scope.maxUnitsInStockFilter,
+                    SupplierCompanyName :      $scope.supplierCompanyNameFilter
+                });
+
+                $http({
+                    url: 'http://localhost:46810/products/Index?searching=true&' + productDTO,
+                    method: "GET",
+                    //data: supplier,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }//we have to write this code, otherwise it do not work
+                })
+                .then(function (response) {
+                    // success
+                    $scope.items = response.data;
+                },
+                function (response) { // optional
+                    // failed
+                });
+            };
+
+        });
+    </script>
+</div>

@@ -1,0 +1,60 @@
+﻿@model se_CodeFirst_3.Models.CustomerViewModel
+
+@{
+    ViewBag.Title = "اطلاعات مشتری";
+}
+
+<h2 class="page-title page-title-details"><span class="glyphicon glyphicon-list-alt"></span> @ViewBag.Title</h2>
+
+<div class="col-sm-offset-2 col-sm-8 table-responsive">
+    <table class="table table-hover table-bordered table-striped">
+        <tr class="success">
+            <th>اطلاعات مشتری</th>
+            <th></th>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Name)</td>
+            <td>@Html.DisplayFor(model => model.Name)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.CompanyName)</td>
+            <td>@Html.DisplayFor(model => model.CompanyName)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.PhoneNumber)</td>
+            <td>@Html.DisplayFor(model => model.PhoneNumber)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.AllProductsPurchased)</td>
+            <td>@Html.DisplayFor(model => model.AllProductsPurchased)</td>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.PriceOfAllProductsPurchased)</td>
+            <td>@Html.DisplayFor(model => model.PriceOfAllProductsPurchased)</td>
+        </tr>
+        <tr class="success">
+            <th>لیست سفارش ها</th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.Orders)
+        {
+            <tr>
+                <td>
+                    [@Html.DisplayNameFor(model => model.Orders.FirstOrDefault().OrderDate),
+                    @Html.DisplayNameFor(model => model.Orders.FirstOrDefault().RequiredDate)]
+                </td>
+                <td>
+                    [@item.OrderDate, @item.RequiredDate ]
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+<a href="~/Customers/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
