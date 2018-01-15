@@ -13,15 +13,15 @@
 
 <h2 class="page-title page-title-change"><span class="glyphicon glyphicon-edit"></span> @ViewBag.Title</h2>
 
-<div class="col-sm-offset-2 col-sm-8 table-responsive ">
-    @using (Html.BeginForm())
+<div ng-app="createItemApp" ng-controller="createItemCtrl" class="col-sm-offset-2 col-sm-8 table-responsive ">
+    @using (Html.BeginForm("Edit", "IncomingCalls", FormMethod.Post, new { name = "ahkform", novalidate = "novalidate" }))
     {
         @Html.AntiForgeryToken()
 
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
 
-        <table class="table table-condensed table-striped table-bordered">
+        <table class="table table-condensed table-striped table-bordered ahk-fixed-table-layout">
             <tr>
                 <th>ویژگی</th>
                 <th>مقدار</th>
@@ -30,10 +30,18 @@
             <tr>
                 <td>@Html.LabelFor(model => model.Message, htmlAttributes: new { @class = "control-label" })</td>
                 <td>
-                    @Html.EditorFor(model => model.Message, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus" } })
+                    <textarea name="Message" class="form-control col-sm-6" autofocus style="min-height:150px;" required="required" ng-model="Message">@Model.Message</textarea>
                     @Html.ValidationMessageFor(model => model.Message, "", new { @class = "text-danger" })
                 </td>
-                <td></td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.Message.$dirty && ahkform.Message.$invalid">
+                        <span ng-show="ahkform.Message.$error.required" class="glyphicon glyphicon-remove"></span>
+                        <span ng-show="ahkform.Message.$error.required">این فیلد نمی تواند خالی باشد.</span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.Message.$dirty && !ahkform.Message.$invalid">
+                        <span ng-hide="ahkform.Message.$error.required" class="glyphicon glyphicon-check"></span>
+                    </span>
+                </td>
             </tr>
 
             <tr>
@@ -43,7 +51,7 @@
                 <td>
                     <div class="input-group" dir="ltr" style="max-width:280px;">
                         <span class="glyphicon glyphicon-calendar input-group-addon" id="input1" data-MdDateTimePicker="true" data-TargetSelector="#input1" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
-                        @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control", id = "textBoxInputId" } })
+                        <input type="text" name="Date" value="@ViewBag.IncomingCallDateTime" class="form-control" id="textBoxInputId" readonly="readonly" />
                     </div>
                         @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
                 </td>
@@ -74,10 +82,15 @@
         GroupId: '',
         ToDate: false,
         FromDate: false,
-        DisableBeforeToday: true,
+        DisableBeforeToday: false,
         Disabled: false,
         Format: 'yyyy/MM/dd HH:mm:ss',
         IsGregorian: false,
         EnglishNumber: true,
+    });
+
+    var app = angular.module('createItemApp', []);
+    app.controller('createItemCtrl', function ($scope, $http) {
+        $scope.Message = @Html.Raw(Json.Encode(Model.Message));
     });
 </script>

@@ -20,8 +20,8 @@ namespace se_CodeFirst_3.Controllers.api
 
 #else
     [Authorize(Roles = "Administrator")]
-#endif
     [LogApi]
+#endif
     public class RolesController : ApiController
     {
         private ApplicationDbContext db;

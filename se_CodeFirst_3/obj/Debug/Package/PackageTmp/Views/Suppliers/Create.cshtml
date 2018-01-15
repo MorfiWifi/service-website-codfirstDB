@@ -1,18 +1,26 @@
 ﻿@model se_CodeFirst_3.Models.Supplier
 
+
+
+@*<script src="~/Scripts/angular.js"></script>*@
+
 @{
     ViewBag.Title = "افزودن تولید کننده";
 }
 
 <h2 class="page-title page-title-create"><span class="glyphicon glyphicon-plus"></span> @ViewBag.Title</h2>
-<div class="col-sm-offset-2 col-sm-8 table-responsive">
-    @using (Html.BeginForm("Create", "Suppliers", FormMethod.Post))
+<div class="col-sm-offset-2 col-sm-8 table-responsive" ng-app="createItemApp" ng-controller="createItemCtrl">
+    @using (Html.BeginForm("Create", "Suppliers", FormMethod.Post, new { name = "ahkform" }))
     {
         @Html.AntiForgeryToken()
 
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <table class="table table-condensed table-striped table-bordered">
+        @*Below inputs are 2 inputs for handle staying on page after inserting data:*@
+        <input type="text" style="visibility:hidden" name="stayOnCreatePage" value="false" ng-model="stayOnCreatePage" />
+        @*<input type="text" style="visibility:hidden" name="stayOnCreatePageAndKeepInputsDatas" value="false" ng-model="stayOnCreatePageAndKeepInputsDatas" />*@
+
+        <table class="table table-condensed table-striped table-bordered ahk-fixed-table-layout">
             <tr>
                 <th>ویژگی</th>
                 <th>مقدار</th>
@@ -21,10 +29,23 @@
             <tr>
                 <td>@Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "control-label" })</td>
                 <td>
-                    @Html.EditorFor(model => model.CompanyName, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus" } })
+                    @*@Html.EditorFor(model => model.CompanyName, new { htmlAttributes = new { @class = "form-control",
+                            autofocus = "autofocus", required = "required", ng_model = "CompanyName",
+                            "do-not-allow-special-characters"
+                        } })*@
+                    <input type="text" value="" name="CompanyName" class="form-control" autofocus required ng-model="CompanyName" do-not-allow-special-characters />
                     @Html.ValidationMessageFor(model => model.CompanyName, "", new { @class = "text-danger" })
                 </td>
-                <td></td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.CompanyName.$dirty && ahkform.CompanyName.$invalid">
+                        <span ng-show="ahkform.CompanyName.$error.required || ahkform.CompanyName.$error.ahkUnAllowedChars" class="glyphicon glyphicon-remove"></span>
+                        <span ng-show="ahkform.CompanyName.$error.ahkUnAllowedChars">نباید کاراکتر غیر مجاز داشته باشد.</span>
+                        <span ng-show="ahkform.CompanyName.$error.required">این فیلد نمی تواند خالی باشد.</span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.CompanyName.$dirty && !ahkform.CompanyName.$invalid">
+                        <span ng-hide="ahkform.CompanyName.$error.required" class="glyphicon glyphicon-check"></span>
+                    </span>
+                </td>
             </tr>
 
             <tr>
@@ -32,10 +53,19 @@
                     @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })
                 </td>
                 <td>
-                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    <input type="text" name="Name" class="form-control" required ng-model="Name" do-not-allow-special-characters />
                     @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                 </td>
-                <td></td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.Name.$dirty && ahkform.Name.$invalid">
+                        <span ng-show="ahkform.Name.$error.required || ahkform.Name.$error.ahkUnAllowedChars" class="glyphicon glyphicon-remove"></span>
+                        <span ng-show="ahkform.Name.$error.ahkUnAllowedChars">نباید کاراکتر غیر مجاز داشته باشد.</span>
+                        <span ng-show="ahkform.Name.$error.required">این فیلد نمی تواند خالی باشد.</span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.Name.$dirty && !ahkform.Name.$invalid">
+                        <span ng-hide="ahkform.Name.$error.required" class="glyphicon glyphicon-check"></span>
+                    </span>
+                </td>
             </tr>
 
             <tr>
@@ -43,10 +73,18 @@
                     @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label" })
                 </td>
                 <td>
-                    @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                    <input type="text" name="Address" class="form-control" ng-model="Address" do-not-allow-special-characters />
                     @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
                 </td>
-                <td></td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.Address.$dirty && ahkform.Address.$invalid">
+                        <span ng-show="ahkform.Address.$error.ahkUnAllowedChars" class="glyphicon glyphicon-remove"></span>
+                        <span ng-show="ahkform.Address.$error.ahkUnAllowedChars">نباید کاراکتر غیر مجاز داشته باشد.</span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.Address.$dirty && !ahkform.Address.$invalid">
+                        <span ng-hide="ahkform.Address.$error.required" class="glyphicon glyphicon-check"></span>
+                    </span>
+                </td>
             </tr>
 
             <tr>
@@ -54,18 +92,95 @@
                     @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label" })
                 </td>
                 <td>
-                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control", required = "required", ng_model = "PhoneNumber", min = "0" } })
                     @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                 </td>
-                <td></td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.PhoneNumber.$dirty && ahkform.PhoneNumber.$invalid">
+                        <span ng-show="ahkform.PhoneNumber.$error.required || ahkform.PhoneNumber.$error.number || ahkform.PhoneNumber.$error.min" class="glyphicon glyphicon-remove"></span>
+                        <span ng-show="ahkform.PhoneNumber.$error.required">این فیلد نمی تواند خالی باشد.</span>
+                        <span ng-show="ahkform.PhoneNumber.$error.number">این فیلد حتما باید عدد باشد.</span>
+                        <span ng-show="ahkform.PhoneNumber.$error.min">یک عدد معتبر وارد کنید.</span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.PhoneNumber.$dirty && !ahkform.PhoneNumber.$invalid">
+                        <span ng-hide="ahkform.PhoneNumber.$error.required || ahkform.PhoneNumber.$error.min" class="glyphicon glyphicon-check"></span>
+                    </span>
+                </td>
             </tr>
         </table>
+
         <div class="form-group">
+
             <div class="col-md-offset-2 col-md-10">
-                <button type="submit" value="افزودن" class="btn btn-primary" ><span class="glyphicon glyphicon-plus"></span> افزودن</button>
+                <button type="submit" class="btn btn-primary"
+                        ng-disabled="ahkform.CompanyName.$invalid || ahkform.Name.$invalid || ahkform.Address.$invalid || ahkform.PhoneNumber.$invalid">
+                    <span class="glyphicon glyphicon-plus"></span> افزودن
+                </button>
+
+                <button ng-mousedown="changeStayOnCreatePage()" class="btn btn-primary" type="submit"
+                        ng-disabled="ahkform.CompanyName.$invalid || ahkform.Name.$invalid || ahkform.Address.$invalid || ahkform.PhoneNumber.$invalid">
+                    <span class="glyphicon glyphicon-plus"></span> افزودن و ماندن
+                </button>
+
+                @*<button ng-mousedown="changeStayOnCreatePageAndKeepInputsDatas()" class="btn btn-primary" type="submit"
+                            ng-disabled="ahkform.CompanyName.$invalid || ahkform.Name.$invalid || ahkform.PhoneNumber.$invalid">
+                        <span class="glyphicon glyphicon-plus"></span> افزودن و نگه داشتن داده
+                    </button>*@
+
                 <a href="~/Suppliers/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
             </div>
         </div>
-    }   
+    }
+
 </div>
 
+<script>
+
+
+
+
+    var app = angular.module('createItemApp', []);
+
+    app.directive('doNotAllowSpecialCharacters', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attr, mCtrl) {
+                function myValidation(inputToCheck) {
+                    var result = true;
+                    var chars = "*-+.=_)(&^%$#!~\"'";
+                    var splitedChars = chars.split("");
+                    for (var i = 0; i < splitedChars.length; i++) {
+                        if (inputToCheck.indexOf(splitedChars[i]) > -1) {
+                            result = false;
+                        }
+                    }
+
+                    if (result == true) {
+                        mCtrl.$setValidity('ahkUnAllowedChars', true);
+                    }
+                    else {
+                        mCtrl.$setValidity('ahkUnAllowedChars', false);
+                    }
+
+                    return inputToCheck;
+                }
+                mCtrl.$parsers.push(myValidation);
+            }
+        };
+    });
+
+    app.controller('createItemCtrl', function ($scope, $http) {
+
+        $scope.stayOnCreatePage = false;
+        $scope.changeStayOnCreatePage = function () {
+            $scope.stayOnCreatePage = true;
+        };
+
+    });
+
+
+
+
+
+
+</script>

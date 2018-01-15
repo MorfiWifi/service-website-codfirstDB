@@ -1,6 +1,7 @@
-﻿@model IEnumerable<se_CodeFirst_3.Models.UserListViewModel>
+﻿@model PagedList.IPagedList<se_CodeFirst_3.Models.ApplicationUser>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css"/>
 
-@Scripts.Render("~/bundles/angular")
 
 @{
     ViewBag.Title = "لیست کاربران";
@@ -9,73 +10,71 @@
 <div id="mainContainer">
     <div ng-app="ahkSearchApp" ng-controller="ahkSearchCtrl" class="col-sm-12">
 
-        <div class="col-sm-4 col-sm-push-8">
-            <h2 class="page-title page-title-search"><span class="glyphicon glyphicon-search"></span> جست و جو 
+        <div class="col-sm-4 col-sm-push-8 container-page-title-search">
+            <h2 class="page-title page-title-search">
+                <span class="glyphicon glyphicon-search"></span> جست و جو
                 <button class="btn btn-success" ng-click="resetDataInSearchFeilds()"><span class="glyphicon glyphicon-refresh"></span></button>
+
+                <span class="spinner loading-styles" ng-show="loading">
+                    <img src="~/Content/Images/loading.gif" class="img-responsive img-rounded" alt="Loading Image" />
+                </span>
             </h2>
 
             <div class="table-responsive">
                 <table class="table table-condensed table-striped">
                     <tr>
-                        <td>@Html.DisplayNameFor(model => model.UserName)</td>
-                        <td><input class="form-control" type="text" name="userNameFilter" ng-model="userNameFilter" autofocus /></td>
+                        <td>نام کاربری</td>
+                        <td><input class="form-control" type="text" name="userNameFilter" ng-model="userNameFilter" ng-change="ahkSearch()" autofocus /></td>
                     </tr>
 
                     <tr>
-                        <td>@Html.DisplayNameFor(model => model.Email)</td>
+                        <td>ایمیل</td>
                         <td>
-                            <input class="form-control form-horizontal" type="text" name="emailFilter" ng-model="emailFilter" />
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>@Html.DisplayNameFor(model => model.Role)</td>
-                        <td>
-                            <input class="form-control form-horizontal" type="text" name="roleFilter" ng-model="roleFilter" />
+                            <input class="form-control form-horizontal" type="text" name="emailFilter" ng-change="ahkSearch()" ng-model="emailFilter" />
                         </td>
                     </tr>
 
                     <tr>
                         <td>
-                            حداقل @Html.DisplayNameFor(model => model.Salary)
-                            <input class="form-control form-horizontal" type="text" name="minSalaryFilter" ng-model="minSalaryFilter" dir="ltr" />
+                            حداقل حقوق
+                            <input class="form-control form-horizontal" type="text" name="minSalaryFilter" ng-model="minSalaryFilter" ng-change="ahkSearch()" dir="ltr" />
                         </td>
                         <td>
-                            حداکثر @Html.DisplayNameFor(model => model.Salary)
-                            <input class="form-control form-horizontal" type="text" name="maxSalaryFilter" ng-model="maxSalaryFilter" dir="ltr" />
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            حداقل @Html.DisplayNameFor(model => model.AbsentDays)
-                            <input class="form-control form-horizontal" type="text" name="minAbsentDaysFilter" ng-model="minAbsentDaysFilter" dir="ltr" />
-                        </td>
-                        <td>
-                            حداکثر @Html.DisplayNameFor(model => model.AbsentDays)
-                            <input class="form-control form-horizontal" type="text" name="maxAbsentDaysFilter" ng-model="maxAbsentDaysFilter" dir="ltr" />
+                            حداکثر حقوق
+                            <input class="form-control form-horizontal" type="text" name="maxSalaryFilter" ng-model="maxSalaryFilter" ng-change="ahkSearch()" dir="ltr" />
                         </td>
                     </tr>
 
                     <tr>
                         <td>
-                            حداقل @Html.DisplayNameFor(model => model.OverTime)
-                            <input class="form-control form-horizontal" type="text" name="minOvertimeFilter" ng-model="minOvertimeFilter" dir="ltr" />
+                            حداقل روزهای غیبت
+                            <input class="form-control form-horizontal" type="text" name="minAbsentDaysFilter" ng-model="minAbsentDaysFilter" ng-change="ahkSearch()" dir="ltr" />
                         </td>
                         <td>
-                            حداکثر @Html.DisplayNameFor(model => model.OverTime)
-                            <input class="form-control form-horizontal" type="text" name="maxOvertimeFilter" ng-model="maxOvertimeFilter" dir="ltr" />
+                            حداکثر روزهای غیبت
+                            <input class="form-control form-horizontal" type="text" name="maxAbsentDaysFilter" ng-model="maxAbsentDaysFilter" ng-change="ahkSearch()" dir="ltr" />
                         </td>
                     </tr>
 
                     <tr>
                         <td>
-                            حداقل @Html.DisplayNameFor(model => model.Benefits)
-                            <input class="form-control form-horizontal" type="text" name="minBenefitsFilter" ng-model="minBenefitsFilter" dir="ltr" />
+                            حداقل اضافه کاری
+                            <input class="form-control form-horizontal" type="text" name="minOvertimeFilter" ng-model="minOvertimeFilter" ng-change="ahkSearch()" dir="ltr" />
                         </td>
                         <td>
-                            حداکثر @Html.DisplayNameFor(model => model.Benefits)
-                            <input class="form-control form-horizontal" type="text" name="maxBenefitsFilter" ng-model="maxBenefitsFilter" dir="ltr" />
+                            حداکثر اضافه کاری
+                            <input class="form-control form-horizontal" type="text" name="maxOvertimeFilter" ng-model="maxOvertimeFilter" ng-change="ahkSearch()" dir="ltr" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            حداقل مزایا
+                            <input class="form-control form-horizontal" type="text" name="minBenefitsFilter" ng-model="minBenefitsFilter" ng-change="ahkSearch()" dir="ltr" />
+                        </td>
+                        <td>
+                            حداکثر مزایا
+                            <input class="form-control form-horizontal" type="text" name="maxBenefitsFilter" ng-model="maxBenefitsFilter" ng-change="ahkSearch()" dir="ltr" />
                         </td>
                     </tr>
                 </table>
@@ -85,7 +84,7 @@
 
         </div>
 
-        <div class="col-sm-8 col-sm-pull-4">
+        <div class="col-sm-8 col-sm-pull-4 ahk-list-items">
 
             <h2 class="page-title page-title-index"><span class="glyphicon glyphicon-list"></span> @ViewBag.Title</h2>
 
@@ -98,43 +97,40 @@
                     <tr>
                         <th ng-click="ahkSortBy('userNameFilter')" ng-dblclick="ahkSortBy('userNameFilter', 'true')">
                             <span class="glyphicon glyphicon-user"></span>
-                            @Html.DisplayNameFor(model => model.UserName)
+                            نام کاربری
                         </th>
                         <th ng-click="ahkSortBy('emailFilter')" ng-dblclick="ahkSortBy('emailFilter', 'true')">
                             <span class="glyphicon glyphicon-envelope"></span>
-                            @Html.DisplayNameFor(model => model.Email)
-                        </th>
-                        <th ng-click="ahkSortBy('roleFilter')" ng-dblclick="ahkSortBy('roleFilter', 'true')">
-                            @Html.DisplayNameFor(model => model.Role)
+                            ایمیل
                         </th>
                         <th ng-click="ahkSortBy('minSalaryFilter')" ng-dblclick="ahkSortBy('minSalaryFilter', 'true')">
-                            @Html.DisplayNameFor(model => model.Salary)
+                            حقوق
                         </th>
                         <th ng-click="ahkSortBy('absentDaysFilter')" ng-dblclick="ahkSortBy('absentDaysFilter', 'true')">
-                            @Html.DisplayNameFor(model => model.AbsentDays)
+                            روزهای غایب
                         </th>
                         <th ng-click="ahkSortBy('overtimeFilter')" ng-dblclick="ahkSortBy('overtimeFilter', 'true')">
-                            @Html.DisplayNameFor(model => model.OverTime)
+                            اضافه کاری
                         </th>
                         <th ng-click="ahkSortBy('benefitsFilter')" ng-dblclick="ahkSortBy('benefitsFilter', 'true')">
-                            @Html.DisplayNameFor(model => model.Benefits)
+                            مزایا
                         </th>
                         <th>
                         </th>
                     </tr>
-                    <tr ng-repeat="x in items | orderBy:sortParameter : reverseOrder
-                         | filter : {UserName:userNameFilter,Email:emailFilter, Role:roleFilter, Salary:salaryFilter, AbsentDays:absentDaysFilter, OverTime:overTimeFilter, Benefits: benefitsFilter}
-                         | filter : greaterThan('Salary', minSalaryFilter)
-                         | filter : lowerThan('Salary', maxSalaryFilter)
-                         | filter : greaterThan('AbsentDays', minAbsentDaysFilter)
-                         | filter : lowerThan('AbsentDays', maxAbsentDaysFilter)
-                         | filter : greaterThan('OverTime', minOvertimeFilter)
-                         | filter : lowerThan('OverTime', maxOvertimeFilter)
-                         | filter : greaterThan('Benefits', minBenefitsFilter)
-                         | filter : lowerThan('Benefits', maxBenefitsFilter)">
+                    @*| orderBy:sortParameter : reverseOrder
+                    | filter : {UserName:userNameFilter,Email:emailFilter, Salary:salaryFilter, AbsentDays:absentDaysFilter, OverTime:overTimeFilter, Benefits: benefitsFilter}
+                    | filter : greaterThan('Salary', minSalaryFilter)
+                    | filter : lowerThan('Salary', maxSalaryFilter)
+                    | filter : greaterThan('AbsentDays', minAbsentDaysFilter)
+                    | filter : lowerThan('AbsentDays', maxAbsentDaysFilter)
+                    | filter : greaterThan('OverTime', minOvertimeFilter)
+                    | filter : lowerThan('OverTime', maxOvertimeFilter)
+                    | filter : greaterThan('Benefits', minBenefitsFilter)
+                    | filter : lowerThan('Benefits', maxBenefitsFilter)*@
+                    <tr ng-repeat="x in items">
                         <td>{{x.UserName}}</td>
                         <td>{{x.Email}}</td>
-                        <td>{{x.Role}}</td>
                         <td>{{x.Salary}}</td>
                         <td>{{x.AbsentDays}}</td>
                         <td>{{x.OverTime}}</td>
@@ -150,7 +146,7 @@
                             <a class="btn btn-sm btn-success" href="~/Claims/Create/{{x.Id}}"><span class="glyphicon glyphicon-book"></span></a>
 
                             <!-- Modal -->
-                            <div id="confirmItemDeleteModal{{x.Id}}" class="modal fade" role="dialog">
+                            <div id="confirmItemDeleteModal{{x.Id}}" class="modal fade" role="dialog" data-keyboard="true" tabindex="-1">
                                 <div class="modal-dialog">
 
                                     <!-- Modal content-->
@@ -177,6 +173,12 @@
                     </tr>
 
                 </table>
+                <p dir="rtl">
+                    صفحه @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) از @Model.PageCount
+
+                    @Html.PagedListPager(Model, page => Url.Action("Index",
+                        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+                </p>
             </div>
         </div>
 
@@ -193,7 +195,6 @@
         //Search Variables:
         $scope.userNameFilter = "";
         $scope.emailFilter = "";
-        $scope.roleFilter = "";
         $scope.minSalaryFilter = "";
         $scope.maxSalaryFilter = 99999;
         $scope.minAbsentDaysFilter = "";
@@ -217,7 +218,6 @@
         $scope.resetDataInSearchFeilds = function () {
             $scope.userNameFilter = "";
             $scope.emailFilter = "";
-            $scope.roleFilter = "";
             $scope.minSalaryFilter = "";
             $scope.maxSalaryFilter = 99999;
             $scope.minAbsentDaysFilter = "";
@@ -226,6 +226,7 @@
             $scope.maxOvertimeFilter = 9999;
             $scope.minBenefitsFilter = "";
             $scope.maxBenefitsFilter = 9999;
+            $scope.ahkSearch();
         };
 
         $scope.greaterThan = function (prop, val) {
@@ -239,6 +240,39 @@
                 return item[prop] < val;
             }
         }
+
+        $scope.ahkSearch = function (){
+            $scope.loading = true;
+
+            var userDTO = $.param({
+                UserName     :           $scope.userNameFilter,
+                Email            :           $scope.emailFilter,
+                MinSalary         :           $scope.minSalaryFilter,
+                MaxSalary     :           $scope.maxSalaryFilter,
+                MinAbsentDays     :           $scope.minAbsentDaysFilter,
+                MaxAbsentDays     :           $scope.maxAbsentDaysFilter,
+                MinOvertime     :           $scope.minOvertimeFilter,
+                MaxOvertime     :           $scope.maxOvertimeFilter,
+                MinBenefits     :           $scope.minBenefitsFilter,
+                MaxBenefits     :           $scope.maxBenefitsFilter,
+            });
+
+            $http({
+
+                url: '?searching=true&' + userDTO,
+                method: "GET",
+                //data: supplier,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }//we have to write this code, otherwise it do not work
+            })
+            .then(function (response) {
+                // success
+                $scope.items = response.data;
+                $scope.loading = false;
+            },
+            function (response) { // optional
+                // failed
+            });
+        };
 
     });
 </script>

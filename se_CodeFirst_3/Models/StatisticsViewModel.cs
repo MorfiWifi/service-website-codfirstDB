@@ -27,7 +27,7 @@ namespace se_CodeFirst_3.Models
         [Display(Name = "خرید ماه گذشته")]
         public double LastMonthBuys { get; set; }
 
-        [Display(Name = "سود کاه گذشته")]
+        [Display(Name = "سود ماه گذشته")]
         public double LastMonthProfitss { get; set; }
 
         [Display(Name = "فروش سال گذشته")]

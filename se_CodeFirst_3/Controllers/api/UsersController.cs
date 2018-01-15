@@ -23,8 +23,8 @@ namespace se_CodeFirst_3.Controllers.api
 
 #else
     [Authorize]//[Authorize(Roles = "Administrator")]
-#endif
     [LogApi]
+#endif
     public class UsersController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -148,12 +148,14 @@ namespace se_CodeFirst_3.Controllers.api
 
             var user = userManager.FindById(id);
 
+            //db.Entry(user).State = EntityState.Modified;
+
             db.Users.Attach(user);
             var entry = db.Entry(user);
-            entry.Property(e2 => e2.Email).CurrentValue = model.Email;
-            entry.Property(e2 => e2.Email).IsModified = true;
-            entry.Property(e2 => e2.UserName).CurrentValue = model.Email;
-            entry.Property(e2 => e2.UserName).IsModified = true;
+            //entry.Property(e2 => e2.Email).CurrentValue = model.Email;
+            //entry.Property(e2 => e2.Email).IsModified = true;
+            //entry.Property(e2 => e2.UserName).CurrentValue = model.Email;
+            //entry.Property(e2 => e2.UserName).IsModified = true;
             entry.Property(e2 => e2.AbsentDays).CurrentValue = model.AbsentDays;
             entry.Property(e2 => e2.AbsentDays).IsModified = true;
             entry.Property(e2 => e2.Benefits).CurrentValue = model.Benefits;
@@ -165,57 +167,9 @@ namespace se_CodeFirst_3.Controllers.api
 
             //next: role and password
 
-
-
-            //MembershipUser mu = Membership.GetUser(user.UserName);
-            //var result = mu.ChangePassword(mu.ResetPassword(), model.Password);
-
-            userManager.RemoveFromRole(user.Id, user.Roles.FirstOrDefault().ToString());
-            userManager.AddToRole(user.Id, model.Role);
-
             db.SaveChanges();
-            //IdentityResult result = await userManager.ChangePasswordAsync(user.Id, model.Password);
-
-            //userManager.RemoveFromRole(user.Id, user.Roles.FirstOrDefault().);
-
-            //if (!result)
-            //{
-            //    return Conflict();
-            //}
 
             return StatusCode(HttpStatusCode.NoContent);
-
-
-
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
-
-            //if (id != applicationUser.Id)
-            //{
-            //    return BadRequest();
-            //}
-
-            //db.Entry(applicationUser).State = EntityState.Modified;
-
-            //try
-            //{
-            //    db.SaveChanges();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!ApplicationUserExists(id))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
-
-            //return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST: api/Users

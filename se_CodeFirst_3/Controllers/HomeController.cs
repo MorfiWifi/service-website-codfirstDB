@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using PagedList;
 
 namespace se_CodeFirst_3.Controllers
 {
@@ -18,6 +19,7 @@ namespace se_CodeFirst_3.Controllers
     {
         ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
         NotificationProviderHelper notificationHelper;
+        UsefulMethodsHelper methodHelper = new UsefulMethodsHelper();
 
         public HomeController()
         {
@@ -38,10 +40,42 @@ namespace se_CodeFirst_3.Controllers
             return View();
         }
 
-        public async Task<ActionResult> EndUsersIndex()
+        public async Task<ActionResult> EndUsersIndex(int? page, bool? searching, ProductDTO productDTO)
         {
-            var products = await helper.GetListOfItems<Product>("api/products");
-            return View(products);
+            bool castedSearching = searching.HasValue ? searching.Value : false;
+
+            List<Product> products = new List<Product>();
+
+            if (productDTO != null)
+            {
+                products = await helper.GetListOfItems<Product>("api/productsNoAuthorization",
+                    "?Name=" + productDTO.Name + "&" +
+                    "SupplierCompanyName=" + productDTO.SupplierCompanyName + "&" +
+                    "MinUnitsInStock=" + productDTO.MinUnitsInStock + "&" +
+                    "MaxUnitsInStock=" + productDTO.MaxUnitsInStock + "&" +
+                    "MinUnitPrice=" + productDTO.MinUnitPrice + "&" +
+                    "MaxUnitPrice=" + productDTO.MaxUnitPrice + "&" +
+                    "MinSellUnitPrice=" + productDTO.MinSellUnitPrice + "&" +
+                    "MaxSellUnitPrice=" + productDTO.MaxSellUnitPrice
+                    );
+            }
+            else
+            {
+                products = await helper.GetListOfItems<Product>("api/productsNoAuthorization");
+            }
+
+            if (castedSearching)
+            {
+                int pageSize = 18;
+                int pageNumber = (page ?? 1);
+                return Json(products.ToPagedList(pageNumber, pageSize), JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                int pageSize = 18;
+                int pageNumber = (page ?? 1);
+                return View(products.ToPagedList(pageNumber, pageSize));
+            }
         }
 
         public ActionResult LogIn()
@@ -161,59 +195,205 @@ namespace se_CodeFirst_3.Controllers
 
         [HttpGet]
         [Route("Home/Statistics")]
-        public async Task<ActionResult> Statistics()
+        public async Task<ActionResult> Statistics(bool? searching, IncomingCallDTO incomingCallDTO)
         {
+            bool castedSearching = searching.HasValue ? searching.Value : false;
+
+
             ApplicationDbContext db = new ApplicationDbContext();
             ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
             var usersCount = db.Users.Count();
             var suppliersCount = db.Suppliers.Count();
             var customtersCount = db.Customers.Count();
             var userSalaries = 0;
-
-            foreach (var item in db.Users)
-            {
-                UserViewModel userInformation = await helper.GetItem<UserViewModel>("/api/users/" + item.Id);
-                userSalaries += userInformation.FinalSalary;
-            }
-
-            List<SupplierViewModel2> suppliers = new List<SupplierViewModel2>();
             double allBuys = 0;
-            foreach (var item in db.Suppliers)
+            double allSells = 0;
+            double allProfits = 0;
+
+            if (castedSearching == false)
             {
-                //suppliers:
-                SupplierInformationViewModel supplierInformation = await helper.GetItem<SupplierInformationViewModel>("api/suppliers/" + item.Id);
-                suppliers.Add(new SupplierViewModel2
+                foreach (var item in db.Users)
                 {
-                    ProductsCount = supplierInformation.Products.Count(),
-                    MoneySpent = supplierInformation.Price,
-                    SupplierCompanyName = supplierInformation.CompanyName
-                });
+                    UserViewModel userInformation = await helper.GetItem<UserViewModel>("/api/users/" + item.Id);
+                    userSalaries += userInformation.FinalSalary;
+                }
 
-                //buys:
-                allBuys += supplierInformation.Price;
+                List<SupplierViewModel2> suppliers = new List<SupplierViewModel2>();
+
+                foreach (var item in db.Suppliers)
+                {
+                    //suppliers:
+                    SupplierInformationViewModel supplierInformation = await helper.GetItem<SupplierInformationViewModel>("api/suppliers/" + item.Id);
+                    suppliers.Add(new SupplierViewModel2
+                    {
+                        ProductsCount = supplierInformation.Products.Count(),
+                        MoneySpent = supplierInformation.Price,
+                        SupplierCompanyName = supplierInformation.CompanyName
+                    });
+
+                    //buys:
+                    allBuys += supplierInformation.Price;
+                }
+
+                List<CustomerViewModel2> customers = new List<CustomerViewModel2>();
+                foreach (var item in db.Customers)
+                {
+                    int customerProductsCount = (from item2 in item.Orders
+                                                 join item3 in db.Order_Details on item2.Id equals item3.OrderId
+                                                 select item3.Quantity).Sum();
+
+                    int customerBuysCount = (from item2 in item.Orders
+                                             join item3 in db.Order_Details on item2.Id equals item3.OrderId
+                                             select item3.Product.BuyUnitPrice * item3.Quantity).Sum();
+
+                    int customerSellsCount = (from item2 in item.Orders
+                                              join item3 in db.Order_Details on item2.Id equals item3.OrderId
+                                              select item3.Product.SellUnitPrice * item3.Quantity).Sum();
+
+                    int customerProfitsGained = customerSellsCount - customerBuysCount;
+
+                    customers.Add(new CustomerViewModel2
+                    {
+                        Id = item.Id,
+                        CustomerName = item.Name,
+                        ProductsCount = customerProductsCount,
+                        ProfitsGained = customerProfitsGained
+                    });
+
+                    allSells += customerSellsCount;
+                }
+
+                allProfits = allSells - allBuys;
+
+
+                //Get Statistics fot last month::
+
+
+                DateTime oneMonthBefore = DateTime.Now;
+                oneMonthBefore = oneMonthBefore.AddMonths(-1);
+                OrderDTO orderDTO = new OrderDTO()
+                {
+                    Content = "",
+                    Customer = "",
+                    MinRequiredDate = oneMonthBefore,
+                    MaxRequiredDate = DateTime.Now,
+                    MinOrderDate = oneMonthBefore.AddYears(-5),
+                    MaxOrderDate = oneMonthBefore.AddYears(5)
+                };
+
+                List<Order> orders = await helper.GetListOfItems<Order>("api/orders",
+                        "?Content=" + orderDTO.Content + "&" +
+                        "Customer=" + orderDTO.Customer + "&" +
+                        "MinOrderDate=" + orderDTO.MinOrderDate + "&" +
+                        "MaxOrderDate=" + orderDTO.MaxOrderDate + "&" +
+                        "MinRequiredDate=" + orderDTO.MinRequiredDate + "&" +
+                        "MaxRequiredDate=" + orderDTO.MaxRequiredDate
+                        );
+
+
+                var lastMonthSells = (from item in orders
+                                      join item2 in db.Order_Details on item.Id equals item2.OrderId
+                                      select item2.Quantity * item2.Product.SellUnitPrice).Sum();
+
+                var temp = (from item in orders
+                            join item2 in db.Order_Details on item.Id equals item2.OrderId
+                            select item2.Quantity * item2.Product.BuyUnitPrice).Sum();
+
+                var lastMonthBenefits = lastMonthSells - temp;
+
+                //Get Statistics for last Year::
+                orderDTO = new OrderDTO()
+                {
+                    Content = "",
+                    Customer = "",
+                    MinRequiredDate = oneMonthBefore.AddMonths(1).AddYears(-1),
+                    MaxRequiredDate = DateTime.Now,
+                    MinOrderDate = oneMonthBefore.AddYears(-5),
+                    MaxOrderDate = oneMonthBefore.AddYears(5)
+                };
+
+                orders = await helper.GetListOfItems<Order>("api/orders",
+                        "?Content=" + orderDTO.Content + "&" +
+                        "Customer=" + orderDTO.Customer + "&" +
+                        "MinOrderDate=" + orderDTO.MinOrderDate + "&" +
+                        "MaxOrderDate=" + orderDTO.MaxOrderDate + "&" +
+                        "MinRequiredDate=" + orderDTO.MinRequiredDate + "&" +
+                        "MaxRequiredDate=" + orderDTO.MaxRequiredDate
+                        );
+
+                var lastYearSells = (from item in orders
+                                     join item2 in db.Order_Details on item.Id equals item2.OrderId
+                                     select item2.Quantity * item2.Product.SellUnitPrice).Sum();
+
+                temp = (from item in orders
+                        join item2 in db.Order_Details on item.Id equals item2.OrderId
+                        select item2.Quantity * item2.Product.BuyUnitPrice).Sum();
+
+                var lastYearBenefits = lastYearSells - temp;
+
+                StatisticsViewModel statistics = new StatisticsViewModel
+                {
+                    SuppliersCount = suppliersCount,
+                    CustomersCount = customtersCount,
+                    UserCounts = usersCount,
+                    UserSalaries = userSalaries,
+                    AllBuys = allBuys,
+                    AllSells = allSells,
+                    AllProfits = allProfits,
+                    Suppliers = suppliers,
+                    Customers = customers,
+                    LastMonthBuys = 0,
+                    LastMonthSells = lastMonthSells,
+                    LastMonthProfitss = lastMonthBenefits,
+                    LastYearBuys = 0,
+                    LastYearSells = lastYearSells,
+                    LastYearProfits = lastYearBenefits
+                };
+
+                return View(statistics);
             }
-
-
-
-
-            StatisticsViewModel statistics = new StatisticsViewModel
+            else
             {
-                SuppliersCount = suppliersCount,
-                CustomersCount = customtersCount,
-                UserCounts = usersCount,
-                UserSalaries = userSalaries,
-                AllBuys = allBuys,
-                Suppliers = suppliers,
-            };
+                //Get Statistics for Custom Dates::
+
+                OrderDTO orderDTO = new OrderDTO()
+                {
+                    Content = "",
+                    Customer = "",
+                    MinRequiredDate = methodHelper.ConvertDateTimeToGregorian(incomingCallDTO.MinDate),
+                    MaxRequiredDate = DateTime.Now,
+                    MinOrderDate = DateTime.Now.AddYears(-50),
+                    MaxOrderDate = DateTime.Now.AddYears(50)
+                };
+
+                List<Order> orders = await helper.GetListOfItems<Order>("api/orders",
+                        "?Content=" + orderDTO.Content + "&" +
+                        "Customer=" + orderDTO.Customer + "&" +
+                        "MinOrderDate=" + orderDTO.MinOrderDate + "&" +
+                        "MaxOrderDate=" + orderDTO.MaxOrderDate + "&" +
+                        "MinRequiredDate=" + orderDTO.MinRequiredDate + "&" +
+                        "MaxRequiredDate=" + orderDTO.MaxRequiredDate
+                        );
 
 
-            return View(statistics);
+                var customDateSells = (from item in orders
+                                       join item2 in db.Order_Details on item.Id equals item2.OrderId
+                                       select item2.Quantity * item2.Product.SellUnitPrice).Sum();
+
+                var temp = (from item in orders
+                            join item2 in db.Order_Details on item.Id equals item2.OrderId
+                            select item2.Quantity * item2.Product.BuyUnitPrice).Sum();
+
+                var customDateBenefits = customDateSells - temp;
+
+                StatisticsViewModel statistics = new StatisticsViewModel
+                {
+                    CustomDateBuys = 0,
+                    CustomDateSells = customDateSells,
+                    CustomDateProfits = customDateBenefits
+                };
+                return Json(statistics, JsonRequestBehavior.AllowGet);
+            }
         }
-        //TODO
-        //[HttpPost]
-        //public ActionResult ContactUs()
-        //{
-
-        //}
     }
 }

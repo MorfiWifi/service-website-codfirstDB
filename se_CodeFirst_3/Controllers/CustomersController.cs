@@ -68,7 +68,7 @@ namespace se_CodeFirst_3.Controllers
                 int pageNumber = (page ?? 1);
                 return View(customers.ToPagedList(pageNumber, pageSize));
             }
-            
+
         }
 
         // GET: Customers/Details/5
@@ -103,8 +103,17 @@ namespace se_CodeFirst_3.Controllers
 
             if (ModelState.IsValid)
             {
-                helper.CreateItem<Customer>(basePath, customer);
-                notificationHelper.SuccessfulInsert(customer.Name);
+                var itemCreated = helper.CreateItem<Customer>(basePath, customer);
+                if (itemCreated != null)
+                {
+                    notificationHelper.SuccessfulInsert(customer.Name);
+                }
+                else
+                {
+                    notificationHelper.FailureInsert(customer.Name);
+                }
+
+
                 if (castedStayOnCreatePage == true)
                 {
                     return RedirectToAction("Create");
@@ -143,8 +152,12 @@ namespace se_CodeFirst_3.Controllers
         {
             if (ModelState.IsValid)
             {
-                helper.ChangeItem<Customer>(basePath + customer.Id, customer);
-                notificationHelper.SuccessfulChange(customer.Name);
+                var itemEdited = helper.ChangeItem<Customer>(basePath + customer.Id, customer);
+                if (itemEdited != null)
+                    notificationHelper.SuccessfulChange(customer.Name);
+                else
+                    notificationHelper.FailureChange(customer.Name);
+
                 return RedirectToAction("Index");
             }
 
@@ -172,8 +185,13 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<Customer>(basePath + id)).Name);
-            helper.DeleteItem(basePath, id);
+            string deletedItem = (await helper.GetItem<Customer>(basePath + id)).Name;
+            bool successfulDelete = helper.DeleteItem(basePath, id);
+            if (successfulDelete)
+                notificationHelper.SuccessfulDelete(deletedItem);
+            else
+                notificationHelper.CustomFailureMessage("خطا در حذف " + deletedItem);
+
             return RedirectToAction("Index");
         }
 

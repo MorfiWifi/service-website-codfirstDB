@@ -1,6 +1,7 @@
 ﻿@model se_CodeFirst_3.Models.Supplier
 
 @{
+    Layout = null;
     ViewBag.Title = "حذف تولیدکننده";
 }
 
@@ -54,12 +55,6 @@
 
 
     <div class="form-actions no-color">
-        @using (Html.BeginForm("Delete", "Suppliers", new { Id = ViewBag.SupplierId }, FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
-            <button type="submit" class="btn btn-danger" ><span class="glyphicon glyphicon-remove"></span> حذف برای همیشه</button>
-        }
-
         @using (Html.BeginForm("Edit", "Suppliers", new
         {
             Name = Model.Name,
@@ -77,5 +72,13 @@
             <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> حذف</button>
             <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-eye-close"></span> بستن</button>
         }
+
+        @using (Html.BeginForm("Delete", "Suppliers", new { Id = ViewBag.SupplierId }, FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <p class="text-danger">این حذف، تمام کالاها و قراردادهایی که تولیدکننده در آن ها شرکت دارد را نیز حذف می کند.</p>
+            <button disabled="disabled" type="submit" class="btn btn-danger" ><span class="glyphicon glyphicon-remove"></span> حذف برای همیشه</button>
+        }
+
     </div>
 </div>

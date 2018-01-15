@@ -54,8 +54,12 @@ namespace se_CodeFirst_3.Providers
         {
             foreach (KeyValuePair<string, string> property in context.Properties.Dictionary)
             {
+                
                 context.AdditionalResponseParameters.Add(property.Key, property.Value);
             }
+
+            var accessExpiration = DateTimeOffset.Now.AddDays(1000);
+            context.Properties.ExpiresUtc = accessExpiration;
 
             return Task.FromResult<object>(null);
         }

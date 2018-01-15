@@ -1,6 +1,7 @@
 ﻿@model se_CodeFirst_3.Models.Product
 
 @{
+    Layout = null;
     ViewBag.Title = "حذف محصول";
 }
 
@@ -23,12 +24,20 @@
         </tr>
 
         <tr>
-        <tr>
             <td>
-                @Html.DisplayNameFor(model => model.UnitPrice)
+                @Html.DisplayNameFor(model => model.BuyUnitPrice)
             </td>
             <td>
-                @Html.DisplayFor(model => model.UnitPrice)
+                @Html.DisplayFor(model => model.BuyUnitPrice)
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.SellUnitPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.SellUnitPrice)
             </td>
         </tr>
 
@@ -56,6 +65,7 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
+        <p class="text-danger">با حذف کالا، کالا در سفارش ها نیز حذف می شود.</p>
 
         <div class="form-actions no-color">
             <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> حذف برای همیشه</button>

@@ -89,7 +89,8 @@ namespace se_CodeFirst_3.Controllers
         public async Task<ActionResult> Create()
         {
             ViewBag.SupplierId = new SelectList(await helper.GetListOfItems<Supplier>("api/suppliers"), "Id", "CompanyName");
-            ViewBag.suppliersList = await helper.GetListOfItems<Supplier>("api/Suppliers/");
+            ViewBag.SuppliersList2 = await helper.GetListOfItems<Supplier>("api/Suppliers/");
+
             return View();
         }
 
@@ -104,8 +105,16 @@ namespace se_CodeFirst_3.Controllers
             if (ModelState.IsValid)
             {
                 //product.Supplier = await helper.GetItem<Supplier>("api/suppliers/" + product.Supplier.Id);
-                helper.CreateItem<Product>(basePath, product);
-                notificationHelper.SuccessfulInsert(product.Name);
+                var itemCreated = helper.CreateItem<Product>(basePath, product);
+                if (itemCreated != null)
+                {
+                    notificationHelper.SuccessfulInsert(product.Name);
+                }
+                else
+                {
+                    notificationHelper.FailureInsert(product.Name);
+                }
+
                 if (castedStayOnCreatePage == true)
                 {
                     return RedirectToAction("Create");
@@ -136,6 +145,8 @@ namespace se_CodeFirst_3.Controllers
             }
 
             ViewBag.SupplierId = new SelectList(await helper.GetListOfItems<Supplier>("api/suppliers"), "Id", "CompanyName", product.SupplierId);
+            ViewBag.SuppliersList2 = await helper.GetListOfItems<Supplier>("api/Suppliers/");
+
             return View(product);
         }
 
@@ -148,8 +159,12 @@ namespace se_CodeFirst_3.Controllers
         {
             if (ModelState.IsValid)
             {
-                helper.ChangeItem<Product>(basePath + product.Id, product);
-                notificationHelper.SuccessfulChange(product.Name);
+                var itemEdited = helper.ChangeItem<Product>(basePath + product.Id, product);
+                if (itemEdited != null)
+                    notificationHelper.SuccessfulChange(product.Name);
+                else
+                    notificationHelper.FailureChange(product.Name);
+
                 return RedirectToAction("Index");
             }
 
@@ -178,8 +193,13 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<Product>(basePath + id)).Name);
-            helper.DeleteItem(basePath, id);
+            string deletedItem = (await helper.GetItem<Product>(basePath + id)).Name;
+            bool successfulDelete = helper.DeleteItem(basePath, id);
+            if (successfulDelete)
+                notificationHelper.SuccessfulDelete(deletedItem);
+            else
+                notificationHelper.CustomFailureMessage("خطا در حذف " + deletedItem);
+
             return RedirectToAction("Index");
         }
 

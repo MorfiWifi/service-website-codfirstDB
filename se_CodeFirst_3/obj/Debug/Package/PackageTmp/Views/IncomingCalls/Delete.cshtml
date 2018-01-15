@@ -1,6 +1,7 @@
 ﻿@model se_CodeFirst_3.Models.IncomingCall
 
 @{
+    Layout = null;
     ViewBag.Title = "حذف تماس ورودی";
 }
 
@@ -27,7 +28,7 @@
                 @Html.DisplayNameFor(model => model.Date)
             </td>
             <td>
-                @Html.DisplayFor(model => model.Date)
+                @ViewBag.IncomingCallDateTime
             </td>
         </tr>
     </table>
@@ -35,7 +36,7 @@
     @using (Html.BeginForm("Delete", "IncomingCalls", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> حذف</button>
+        <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-remove" ></span> حذف</button>
         <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-eye-close"></span> بستن</button>
     }
 </div>

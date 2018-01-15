@@ -17,8 +17,8 @@ namespace se_CodeFirst_3.Controllers.api
 
 #else
     [Authorize]//[Authorize(Roles = "Administrator,Secretary,StoreKeeper,Accountant")]
-#endif
     [LogApi]
+#endif
     public class ProductsController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -46,6 +46,25 @@ namespace se_CodeFirst_3.Controllers.api
             return products;
         }
 
+        [Route("api/ProductsNoAuthorization")]
+        [AllowAnonymous]
+        public IQueryable<Product> GetProductsA([FromUri]ProductDTO productDTO)
+        {
+            IQueryable<Product> products = db.Products;
+            products = from item in products
+                       where
+                          (!String.IsNullOrEmpty(productDTO.Name) ? item.Name.Contains(productDTO.Name) : true) &&
+                          (!String.IsNullOrEmpty(productDTO.SupplierCompanyName) ? item.Supplier.CompanyName.Contains(productDTO.SupplierCompanyName) : true) &&
+                          (productDTO.MinUnitsInStock != 0 ? item.UnitsInStock > productDTO.MinUnitsInStock : true) &&
+                          (productDTO.MinUnitPrice != 0 ? item.BuyUnitPrice > productDTO.MinUnitPrice : true) &&
+                          (productDTO.MinSellUnitPrice != 0 ? item.SellUnitPrice > productDTO.MinSellUnitPrice : true) &&
+                          (productDTO.MaxUnitsInStock != 0 ? item.UnitsInStock < productDTO.MaxUnitsInStock : true) &&
+                          (productDTO.MaxUnitPrice != 0 ? item.BuyUnitPrice < productDTO.MaxUnitPrice : true) &&
+                          (productDTO.MaxSellUnitPrice != 0 ? item.SellUnitPrice < productDTO.MaxSellUnitPrice : true)
+                       select item;
+
+            return products;
+        }
         // GET: api/Products/5
 #if DEBUG
 #else

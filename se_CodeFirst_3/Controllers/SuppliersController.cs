@@ -75,7 +75,7 @@ namespace se_CodeFirst_3.Controllers
         //[Route("Suppliers/SearchItems")]
         //public async Task<ActionResult> SearchItems(Supplier supplier)
         //{
-            
+
         //}
 
         // GET: Suppliers/Details/5
@@ -116,8 +116,17 @@ namespace se_CodeFirst_3.Controllers
 
             if (ModelState.IsValid)
             {
-                helper.CreateItem<Supplier>(basePath, supplier);
-                notificationHelper.SuccessfulInsert(supplier.Name);
+                var itemCreated = helper.CreateItem<Supplier>(basePath, supplier);
+                if (itemCreated != null)
+                {
+                    notificationHelper.SuccessfulInsert(supplier.Name);
+                }
+                else
+                {
+                    notificationHelper.FailureInsert(supplier.Name);
+                }
+
+
                 if (castedStayOnCreatePage == true)
                 {
                     return RedirectToAction("Create");
@@ -156,8 +165,12 @@ namespace se_CodeFirst_3.Controllers
         {
             if (ModelState.IsValid)
             {
-                helper.ChangeItem<Supplier>(basePath + supplier.Id, supplier);
-                notificationHelper.SuccessfulChange(supplier.Name);
+                var itemEdited = helper.ChangeItem<Supplier>(basePath + supplier.Id, supplier);
+                if (itemEdited != null)
+                    notificationHelper.SuccessfulChange(supplier.Name);
+                else
+                    notificationHelper.FailureChange(supplier.Name);
+
                 return RedirectToAction("Index");
             }
             notificationHelper.FailureChange(supplier.Name);
@@ -187,8 +200,13 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<Supplier>(basePath + id)).Name);
-            helper.DeleteItem(basePath, id);
+            string deletedItem = (await helper.GetItem<Supplier>(basePath + id)).Name;
+            bool successfulDelete = helper.DeleteItem(basePath, id);
+            if (successfulDelete)
+                notificationHelper.SuccessfulDelete(deletedItem);
+            else
+                notificationHelper.CustomFailureMessage("خطا در حذف " + deletedItem);
+
             return RedirectToAction("Index");
         }
 

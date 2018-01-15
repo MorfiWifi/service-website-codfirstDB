@@ -10,8 +10,7 @@
 <div class="col-sm-offset-2 col-sm-8 table-responsive">
     <table class="table table-hover table-bordered table-striped">
         <tr class="success">
-            <th>اطلاعات تولید کننده</th>
-            <th></th>
+            <th colspan="2">اطلاعات تماس ورودی</th>
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(model => model.Message)</td>
@@ -20,7 +19,7 @@
 
         <tr>
             <td>@Html.DisplayNameFor(model => model.Date)</td>
-            <td>@Html.DisplayFor(model => model.Date)</td>
+            <td>@ViewBag.IncomingCallDateTime</td>
         </tr>
     </table>
 </div>

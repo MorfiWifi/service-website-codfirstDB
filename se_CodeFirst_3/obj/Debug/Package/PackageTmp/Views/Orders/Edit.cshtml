@@ -2,7 +2,14 @@
 
 @{
     ViewBag.Title = "تغییر سفارش";
+    IEnumerable<se_CodeFirst_3.Models.Contract> contractsList = ViewBag.ContractsList;
+    List<se_CodeFirst_3.Models.Customer> customersList = ViewBag.CustomersList;
 }
+
+<script src="~/Scripts/jquery-3.1.1.js"></script>
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Plugins/materialize/css/materialize.css" rel="stylesheet" />
+<script src="~/Plugins/materialize/js/materialize.js"></script>
 
 <link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/bootstrap.css" rel="stylesheet" />
 <link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.css" rel="stylesheet" />
@@ -14,7 +21,7 @@
 
 <h2 class="page-title page-title-change"><span class="glyphicon glyphicon-edit"></span> @ViewBag.Title</h2>
 
-<div class="col-sm-offset-2 col-sm-8 table-responsive ">
+<div ng-app="createItemApp" ng-controller="createItemCtrl" class="col-sm-offset-2 col-sm-8 table-responsive ">
 
     @using (Html.BeginForm())
     {
@@ -25,7 +32,7 @@
             @Html.HiddenFor(model => model.Id)
 
 
-            <table class="table table-condensed table-striped table-bordered">
+            <table class="table table-condensed table-striped table-bordered ahk-fixed-table-layout">
                 <tr>
                     <th>ویژگی</th>
                     <th>مقدار</th>
@@ -34,24 +41,72 @@
 
                 <tr>
                     <td>
-                        @Html.LabelFor(model => model.ContractId, "ContractId", htmlAttributes: new { @class = "control-label" })
+                        @Html.LabelFor(model => model.ContractId, "قرارداد", htmlAttributes: new { @class = "control-label" })
                     </td>
                     <td>
-                        @Html.DropDownList("ContractId", null, htmlAttributes: new { @class = "form-control" })
+                        <!-- Dropdown Trigger -->
+                        <a class='dropdown-button btn btn-success' href='#' data-activates='dropdown2' style="width:100%">{{valueToShowInButtonContract}}</a>
+
+                        <!-- Dropdown Structure -->
+                        <ul id='dropdown2' class='dropdown-content ahk-style-for-dropdown-searches'>
+                            <li>
+                                <input class="form-control" type="text" name="ContentSearch" ng-model="ContentSearch" value=" " placeholder="متن" />
+                            </li>
+                            <li ng-repeat="x in contractsList | filter : {Content:ContentSearch}">
+                                <span ng-click="setItemId2(x.Id, x.Content)" style="border-bottom:1px dashed rgb(255, 106, 0);">
+                                    {{"متن: "+x.Content}}
+                                </span>
+                            </li>
+                        </ul>
+                        <input type="hidden" name="ContractId" ng-model="ContractId" id="ContractId" value="{{ContractId}}" required="required" onchange="callAngularMethodFromJavaScript('ContractId')" />
+
                         @Html.ValidationMessageFor(model => model.ContractId, "", new { @class = "text-danger" })
                     </td>
-                    <td></td>
+                    <td>
+                        <span class="show-error" ng-show="ahkform.ContractId.$dirty && ahkform.ContractId.$invalid">
+                            <span ng-show="ahkform.ContractId.$error.required" class="glyphicon glyphicon-remove"></span>
+                            <span ng-show="ahkform.ContractId.$error.required">این فیلد نمی تواند خالی باشد.</span>
+                        </span>
+                        <span class="show-success" ng-show="ahkform.ContractId.$dirty && !ahkform.ContractId.$invalid">
+                            <span ng-hide="ahkform.ContractId.$error.required || ahkform.ContractId.$error.min" class="glyphicon glyphicon-check"></span>
+                        </span>
+                    </td>
                 </tr>
 
                 <tr>
                     <td>
-                        @Html.LabelFor(model => model.CustomerId, "CustomerId", htmlAttributes: new { @class = "control-label" })
+                        @Html.LabelFor(model => model.CustomerId, "مشتری", htmlAttributes: new { @class = "control-label" })
                     </td>
                     <td>
-                        @Html.DropDownList("CustomerId", null, htmlAttributes: new { @class = "form-control" })
+                        <!-- Dropdown Trigger -->
+                        <a class='dropdown-button btn btn-success' href='#' data-activates='dropdown1' style="width:100%">{{valueToShowInButton}}</a>
+
+                        <!-- Dropdown Structure -->
+                        <ul id='dropdown1' class='dropdown-content ahk-style-for-dropdown-searches'>
+                            <li>
+                                <input class="form-control" type="text" name="NameSearch" ng-model="NameSearch" value=" " placeholder="نام" />
+                                <input class="form-control" type="text" name="CompanyNameSearch" ng-model="CompanyNameSearch" value=" " placeholder="شرکت" />
+                                <input class="form-control" type="text" name="PhoneNumberSearch" ng-model="PhoneNumberSearch" value=" " placeholder="شماره تلفن" />
+                            </li>
+                            <li ng-repeat="x in customersList | filter : {Name:NameSearch, CompanyName:CompanyNameSearch,PhoneNumber:PhoneNumberSearch}">
+                                <span ng-click="setItemId(x.Id, x.Name)" style="border-bottom:1px dashed rgb(255, 106, 0);">
+                                    {{"نام: "+x.Name+"|"+"نام شرکت: "+x.CompanyName+"|"+"شماره: "+x.PhoneNumber}}
+                                </span>
+                            </li>
+                        </ul>
+                        <input type="hidden" name="CustomerId" ng-model="CustomerId" id="CustomerId" value="{{CustomerId}}" required="required" onchange="callAngularMethodFromJavaScript('CustomerId')" />
+
                         @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
                     </td>
-                    <td></td>
+                    <td>
+                        <span class="show-error" ng-show="ahkform.CustomerId.$dirty && ahkform.CustomerId.$invalid">
+                            <span ng-show="ahkform.CustomerId.$error.required" class="glyphicon glyphicon-remove"></span>
+                            <span ng-show="ahkform.CustomerId.$error.required">این فیلد نمی تواند خالی باشد.</span>
+                        </span>
+                        <span class="show-success" ng-show="ahkform.CustomerId.$dirty && !ahkform.CustomerId.$invalid">
+                            <span ng-hide="ahkform.CustomerId.$error.required || ahkform.SupplierId.$error.min" class="glyphicon glyphicon-check"></span>
+                        </span>
+                    </td>
                 </tr>
 
                 <tr>
@@ -61,7 +116,8 @@
                     <td>
                         <div class="input-group" dir="ltr" style="max-width:280px;">
                             <span class="glyphicon glyphicon-calendar input-group-addon" id="input1" data-MdDateTimePicker="true" data-TargetSelector="#input1" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
-                            @Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @class = "form-control", id = "textBoxInputId" } })
+                            <input type="text" name="OrderDate" class="form-control" id="textBoxInputId" required="required"
+                                   value="@ViewBag.OrderDate" readonly="readonly" />
                         </div>
                         @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
                     </td>
@@ -75,7 +131,8 @@
                     <td>
                         <div class="input-group" dir="ltr" style="max-width:280px;">
                             <span class="glyphicon glyphicon-calendar input-group-addon" id="input2" data-MdDateTimePicker="true" data-TargetSelector="#input1" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
-                            @Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @class = "form-control", id = "textBoxInputId2" } })
+                            <input type="text" name="RequiredDate" class="form-control" id="textBoxInputId2" required="required"
+                                   value="@ViewBag.RequiredDate" readonly="readonly" />
                         </div>
                         @Html.ValidationMessageFor(model => model.RequiredDate, "", new { @class = "text-danger" })
                     </td>
@@ -85,12 +142,27 @@
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
                     <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> تغییر</button>
-                    <a href="~/Suppliers/Index" type="submit" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
+                    <a href="~/Orders/Index" type="submit" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
                 </div>
             </div>
         </div>
     }
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('.dropdown-button').dropdown({
+            inDuration: 300,
+            outDuration: 225,
+            constrainWidth: false, // Does not change width of dropdown to that of the activator
+            hover: true, // Activate on hover
+            gutter: 50, // Spacing from edge
+            belowOrigin: true, // Displays dropdown below the button
+            alignment: 'left', // Displays dropdown with edge aligned to the left of button
+            stopPropagation: true // Stops event propagation
+        });
+    });
+</script>
 
 <script type="text/javascript">
 
@@ -102,7 +174,7 @@
         GroupId: '',
         ToDate: false,
         FromDate: false,
-        DisableBeforeToday: true,
+        DisableBeforeToday: false,
         Disabled: false,
         Format: 'yyyy/MM/dd HH:mm:ss',
         IsGregorian: false,
@@ -117,10 +189,34 @@
         GroupId: '',
         ToDate: false,
         FromDate: false,
-        DisableBeforeToday: true,
+        DisableBeforeToday: false,
         Disabled: false,
         Format: 'yyyy/MM/dd HH:mm:ss',
         IsGregorian: false,
         EnglishNumber: true,
+    });
+</script>
+
+<script>
+    var app = angular.module('createItemApp', []);
+    app.controller('createItemCtrl', function ($scope, $http) {
+
+        $scope.customersList = @Html.Raw(Json.Encode(customersList));
+        $scope.CustomerId = @Html.Raw(Json.Encode(Model.Customer.Id));
+        $scope.valueToShowInButton = @Html.Raw(Json.Encode(Model.Customer.Name));
+
+        $scope.setItemId = function (itemId, itemName) {
+            $scope.CustomerId = itemId;
+            $scope.valueToShowInButton = itemName;
+        };
+
+        $scope.contractsList = @Html.Raw(Json.Encode(contractsList));
+        $scope.ContractId = @Html.Raw(Json.Encode(Model.Contract.Id));
+        $scope.valueToShowInButtonContract = @Html.Raw(Json.Encode(Model.Contract.Content));
+
+        $scope.setItemId2 = function (itemId, itemName) {
+            $scope.ContractId = itemId;
+            $scope.valueToShowInButtonContract = itemName;
+        };
     });
 </script>

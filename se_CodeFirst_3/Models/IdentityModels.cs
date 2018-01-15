@@ -53,6 +53,7 @@ namespace se_CodeFirst_3.Models
         {
         }
 
+
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<IncomingCall> IncomingCalls { get; set; }
@@ -61,7 +62,6 @@ namespace se_CodeFirst_3.Models
         public DbSet<Product> Products { get; set; }
         public DbSet<Contract> Contracts { get; set; }
         public DbSet<ClaimViewModel> Claims { get; set; }
-
         public DbSet<Log> Logs { get; set; }
 
 
@@ -69,6 +69,17 @@ namespace se_CodeFirst_3.Models
         {
             return new ApplicationDbContext();
         }
+
+        //Important:: Here we implement Cascade Delete with entity framwork and fluent Api, so if a row in parent table
+        //deleted it must delete rows related to it by foreign key in child table::
+        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
+        //    modelBuilder.Entity<Order>()
+        //        .HasOptional(item => item.Order_Details)
+        //        .WithOptionalDependent()
+        //        .WillCascadeOnDelete(true);
+        //}
 
     }
 }

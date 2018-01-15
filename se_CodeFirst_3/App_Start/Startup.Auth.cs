@@ -11,6 +11,7 @@ using Owin;
 using se_CodeFirst_3.Providers;
 using se_CodeFirst_3.Models;
 using System.Web;
+using Microsoft.Owin.Security.Infrastructure;
 
 namespace se_CodeFirst_3
 {
@@ -39,9 +40,19 @@ namespace se_CodeFirst_3
                 TokenEndpointPath = new PathString("/Token"),
                 Provider = new ApplicationOAuthProvider(PublicClientId),
                 AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(999999),//14
                 // In production mode set AllowInsecureHttp = false
-                AllowInsecureHttp = true
+                AllowInsecureHttp = true,
+                RefreshTokenProvider = new AuthenticationTokenProvider()
+                {
+                    OnCreate = (obj) =>
+                    {
+                        obj.Ticket.Properties.ExpiresUtc = DateTime.UtcNow.AddMonths(6);
+                        obj.SetToken(obj.SerializeTicket());
+                    },
+                    OnReceive = (obj) => { obj.DeserializeTicket(obj.Token); }
+                }
+
             };
 
             // Enable the application to use bearer tokens to authenticate users

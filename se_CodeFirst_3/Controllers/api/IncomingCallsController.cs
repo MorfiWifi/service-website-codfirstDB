@@ -18,9 +18,9 @@ namespace se_CodeFirst_3.Controllers.api
 
 #else
     [Authorize]
+    [LogApi]
 #endif
 
-    [LogApi]
     public class IncomingCallsController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

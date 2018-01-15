@@ -32,6 +32,7 @@ namespace se_CodeFirst_3.Controllers
         }
 
         // GET: Contracts
+        [ClaimsAuthorization(ClaimType = "Contract", ClaimValue = "Get")]
         public async Task<ActionResult> Index(int? page, bool? searching, Contract contract)
         {
             List<Contract> contracts = await helper.GetListOfItems<Contract>(basePath);
@@ -94,8 +95,16 @@ namespace se_CodeFirst_3.Controllers
 
             if (ModelState.IsValid)
             {
-                helper.CreateItem<Contract>(basePath, contract);
-                notificationHelper.SuccessfulInsert(contract.Id.ToString());
+                var itemCreated = helper.CreateItem<Contract>(basePath, contract);
+                if (itemCreated != null)
+                {
+                    notificationHelper.SuccessfulInsert(contract.Id.ToString());
+                }
+                else
+                {
+                    notificationHelper.FailureInsert(contract.Id.ToString());
+                }
+
                 if (castedStayOnCreatePage == true)
                 {
                     return RedirectToAction("Create");
@@ -134,8 +143,12 @@ namespace se_CodeFirst_3.Controllers
         {
             if (ModelState.IsValid)
             {
-                helper.ChangeItem<Contract>(basePath + contract.Id, contract);
-                notificationHelper.SuccessfulChange(contract.Id.ToString());
+                var itemEdited = helper.ChangeItem<Contract>(basePath + contract.Id, contract);
+                if (itemEdited != null)
+                    notificationHelper.SuccessfulChange(contract.Id.ToString());
+                else
+                    notificationHelper.FailureChange(contract.Id.ToString());
+
                 return RedirectToAction("Index");
             }
 
@@ -163,8 +176,16 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<Contract>(basePath + id)).Id.ToString());
-            helper.DeleteItem(basePath, id);
+            string deletedItem = (await helper.GetItem<Contract>(basePath + id)).Id.ToString();
+            bool successfulDelete = helper.DeleteItem(basePath, id);
+            if (successfulDelete)
+            {
+                notificationHelper.SuccessfulDelete(deletedItem);
+            }
+            else
+            {
+                notificationHelper.CustomFailureMessage("خطا در حذف " + deletedItem + ". این متن قرارداد در جایی استفاده شده است.");
+            }
             return RedirectToAction("Index");
         }
 

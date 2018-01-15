@@ -5,23 +5,34 @@
     ViewBag.Title = "ورود";
 }
 <h2 class="page-title page-title-login"><span class="glyphicon glyphicon-log-in"></span> @ViewBag.Title</h2>
-<div class="table-responsive col-sm-offset-3 col-sm-6">
-    @using (Html.BeginForm())
+<div ng-app="createItemApp" ng-controller="createItemCtrl" class="table-responsive col-sm-offset-2 col-sm-8">
+    @using (Html.BeginForm("LogIn", "Home", FormMethod.Post, new { name = "ahkform" }))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <table class="table table-condensed table-striped table-bordered">
+        <table class="table table-condensed table-striped table-bordered ahk-fixed-table-layout">
             <tr>
                 <th>ویژگی</th>
                 <th>مقدار</th>
+                <th>درستی</th>
             </tr>
 
             <tr>
                 <td><span class=" glyphicon glyphicon-user"></span> @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label" })</td>
                 <td>
-                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control", autofocus = "autofocus", dir = "ltr" } })
+                    <input type="text" dir="ltr" name="UserName" value="" class="form-control" autofocus="autofocus" required="required" ng-model="UserName" />
                     @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                </td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.UserName.$dirty && ahkform.UserName.$invalid">
+                        <span ng-show="ahkform.UserName.$error.required || ahkform.UserName.$error.ahkEmailCheck" class="glyphicon glyphicon-remove"></span>
+                        <span ng-show="ahkform.UserName.$error.ahkEmailCheck">ایمیل باید صحیح وارد شود.</span>
+                        <span ng-show="ahkform.UserName.$error.required">این فیلد نمی تواند خالی باشد.</span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.UserName.$dirty && !ahkform.UserName.$invalid">
+                        <span ng-hide="ahkform.UserName.$error.required" class="glyphicon glyphicon-check"></span>
+                    </span>
                 </td>
             </tr>
 
@@ -30,8 +41,18 @@
                     <span class=" glyphicon glyphicon-lock"></span> @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
                 </td>
                 <td>
-                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", dir = "ltr", type = "password" } })
+                    <input type="password" dir="ltr" name="Password" class="form-control" required="required" ng-model="Password" password-strength-check />
                     @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.Password.$dirty && ahkform.Password.$invalid">
+                        <span ng-show="ahkform.Password.$error.required || ahkform.Password.$error.ahkPasswordStrengthCheck" class="glyphicon glyphicon-remove"></span>
+                        <span ng-show="ahkform.Password.$error.ahkPasswordStrengthCheck">پسورد باید صحیح وارد شود.</span>
+                        <span ng-show="ahkform.Password.$error.required">این فیلد نمی تواند خالی باشد.</span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.Password.$dirty && !ahkform.Password.$invalid">
+                        <span ng-hide="ahkform.Password.$error.required" class="glyphicon glyphicon-check"></span>
+                    </span>
                 </td>
             </tr>
 
@@ -40,53 +61,78 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <button type="submit" value="ورود" class="btn btn-success"><span class="glyphicon glyphicon-log-in"></span> ورود</button>
+                <button type="submit" value="ورود" class="btn btn-success" ng-disabled="ahkform.UserName.$invalid || ahkform.Password.$invalid">
+                <span class="glyphicon glyphicon-log-in"></span> ورود</button>
             </div>
         </div>
     }
 </div>
 
+<script>
 
-@* //For Getting Token:
-    @model se_CodeFirst_3.Models.LogInViewModel
+    var app = angular.module('createItemApp', []);
 
-    <h2>
-        @ViewBag.Title
-    </h2>
+    app.directive('passwordStrengthCheck', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attr, mCtrl) {
+                function myValidation(inputToCheck) {
+                    var result = true;
+
+                    if (inputToCheck.length < 6) {
+                        result = false;
+                    }
+
+                    var regexContainsNumber = /[0-9]{1,}/;
+                    var regexContainsLowerCase = /[a-z]{1,}/;
+                    var regexContainsUpperCase = /[A-Z]{1,}/;
+                    var regexContainsSymbols = /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]{1,}/;
+
+                    result = result && regexContainsNumber.test(inputToCheck) && regexContainsLowerCase.test(inputToCheck) &&
+                        regexContainsUpperCase.test(inputToCheck) && regexContainsSymbols.test(inputToCheck);
+
+                    if (result == true) {
+                        mCtrl.$setValidity('ahkPasswordStrengthCheck', true);
+                    }
+                    else {
+                        mCtrl.$setValidity('ahkPasswordStrengthCheck', false);
+                    }
+
+                    return inputToCheck;
+                }
+                mCtrl.$parsers.push(myValidation);
+            }
+        };
+    });
+
+    app.directive('emailCheck', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attr, mCtrl) {
+                function myValidation(inputToCheck) {
+                    var result = true;
+
+                    var regex = /[a-zA-Z0-9]*[\@@][a-zA-Z]*[\.](com)/;
+
+                    result = regex.test(inputToCheck);
+
+                    if (result == true) {
+                        mCtrl.$setValidity('ahkEmailCheck', true);
+                    }
+                    else {
+                        mCtrl.$setValidity('ahkEmailCheck', false);
+                    }
+
+                    return inputToCheck;
+                }
+                mCtrl.$parsers.push(myValidation);
+            }
+        };
+    });
+
+    app.controller('createItemCtrl', function ($scope, $http) {
+        
+    });
 
 
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-
-        <div class="form-horizontal">
-            <h4>ورود</h4>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="ورود" class="btn btn-default" />
-                </div>
-            </div>
-        </div>
-    }
-
-
-
-*@
+</script>

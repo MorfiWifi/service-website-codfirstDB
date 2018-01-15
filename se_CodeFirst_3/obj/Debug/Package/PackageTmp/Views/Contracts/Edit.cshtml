@@ -6,8 +6,8 @@
 
 <h2 class="page-title page-title-change"><span class="glyphicon glyphicon-edit"></span> @ViewBag.Title</h2>
 
-<div class="col-sm-offset-2 col-sm-8 table-responsive ">
-    @using (Html.BeginForm())
+<div ng-app="createItemApp" ng-controller="createItemCtrl" class="col-sm-offset-2 col-sm-8 table-responsive ">
+    @using (Html.BeginForm("Edit", "Contracts", FormMethod.Post, new { name = "ahkform" }))
     {
         @Html.AntiForgeryToken()
 
@@ -22,20 +22,34 @@
             <tr>
                 <td>@Html.LabelFor(model => model.Content, htmlAttributes: new { @class = "control-label" })</td>
                 <td>
-                    <textarea name="Content" class="form-control col-sm-6 col-sm-offset-3" autofocus style="min-height:300px;">
-                        @{ @Model.Content}
-                    </textarea>
+                    <textarea name="Content" class="form-control col-sm-6 col-sm-offset-3" autofocus style="min-height:300px;" required="required" ng-model="Content">@Model.Content</textarea>
                     @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+                    <span class="show-error" ng-show="ahkform.Content.$dirty && ahkform.Content.$invalid">
+                        <span ng-show="ahkform.Content.$error.required" class="glyphicon glyphicon-remove"></span>
+                        <span ng-show="ahkform.Content.$error.required">این فیلد نمی تواند خالی باشد.</span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.Content.$dirty && !ahkform.Content.$invalid">
+                        <span ng-hide="ahkform.Content.$error.required" class="glyphicon glyphicon-check"></span>
+                    </span>
                 </td>
             </tr>
         </table>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span> تغییر</button>
+                <button type="submit" class="btn btn-warning" ng-disabled="ahkform.Content.$invalid"><span class="glyphicon glyphicon-edit"></span> تغییر</button>
                 <a href="~/Suppliers/Index" type="submit" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
             </div>
         </div>
 
     }
 </div>
+
+<script>
+
+    var app = angular.module('createItemApp', []);
+    app.controller('createItemCtrl', function ($scope, $http) {
+        $scope.Content = @Html.Raw(Json.Encode(Model.Content));
+    });
+
+</script>

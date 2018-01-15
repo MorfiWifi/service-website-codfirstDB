@@ -17,8 +17,8 @@ namespace se_CodeFirst_3.Controllers.api
 
 #else
     [Authorize]//[Authorize(Roles = "Administrator,Secretary,StoreKeeper,Accountant")]
-#endif
     [LogApi]
+#endif
     public class SuppliersController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

@@ -19,8 +19,8 @@ namespace se_CodeFirst_3.Controllers.api
 
 #else
     [Authorize]//[Authorize(Roles = "Administrator,Secretary")]
-#endif
     [LogApi]
+#endif
     public class ContractsController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -113,7 +113,6 @@ namespace se_CodeFirst_3.Controllers.api
 
             db.Contracts.Add(contract);
             await db.SaveChangesAsync();
-
             return CreatedAtRoute("DefaultApi", new { id = contract.Id }, contract);
         }
 

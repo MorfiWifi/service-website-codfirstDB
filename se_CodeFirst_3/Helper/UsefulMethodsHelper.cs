@@ -172,6 +172,17 @@ namespace se_CodeFirst_3.Helper
             return result;
         }
 
+        public string ConvertDateTimeToPersian(DateTime gregorianDateTime, string format = "yyyy/MM/dd HH:mm:ss")
+        {
+            DateTime dateTime = DateTime.Parse(gregorianDateTime.ToString());
+            PersianCalendar pc = new PersianCalendar();
+
+            DateTime result = new DateTime(pc.GetYear(dateTime), pc.GetMonth(dateTime), pc.GetDayOfMonth(dateTime),
+                pc.GetHour(dateTime), pc.GetMinute(dateTime), pc.GetSecond(dateTime));
+
+            return result.ToString(format);
+        }
+
         public string SetQueryStringProperly(params string[] items)
         {
 

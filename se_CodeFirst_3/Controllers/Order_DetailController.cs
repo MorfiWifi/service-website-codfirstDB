@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using se_CodeFirst_3.Models;
 using se_CodeFirst_3.Helper;
 using se_CodeFirst_3.Filters;
+using PagedList;
 
 namespace se_CodeFirst_3.Controllers
 {
@@ -32,19 +33,43 @@ namespace se_CodeFirst_3.Controllers
         }
 
         // GET: Order_Detail
-        public async Task<ActionResult> Index(int parentItemId)
+        public async Task<ActionResult> Index(int parentItemId, int? page, bool? searching, Order_DetailDTO order_detailDTO)
         {
-            List<Order_Detail> order_details = await helper.GetListOfItems<Order_Detail>(basePath);
-
-            var o = order_details.AsQueryable();
-
-            var Order_Details = from item in o
-                                where item.OrderId == parentItemId
-                                select item;
-
+            List<Order_Detail> order_details = new List<Order_Detail>();
+            bool castedSearching = searching.HasValue ? searching.Value : false;
+            
             ViewBag.ParantName = (await helper.GetItem<Order>("api/Orders/" + parentItemId)).Id;
 
-            return View(Order_Details.ToList());
+            if (order_detailDTO != null)
+            {
+                order_details = await helper.GetListOfItems<Order_Detail>("api/Order_Detail",
+                    "?Name=" + order_detailDTO.Name + "&" +
+                    "MinQuantity=" + order_detailDTO.MinQuantity + "&" +
+                    "MaxQuantity=" + order_detailDTO.MaxQuantity
+                    );
+            }
+            else
+            {
+                order_details = await helper.GetListOfItems<Order_Detail>(basePath);
+            }
+
+            List<Order_Detail> Order_Details = (from item in order_details
+                                                where item.OrderId == parentItemId
+                                                select item).ToList();
+
+            if (castedSearching)
+            {
+                int pageSize = 10;
+                int pageNumber = (page ?? 1);
+                return Json(Order_Details.ToPagedList(pageNumber, pageSize), JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                int pageSize = 10;
+                int pageNumber = (page ?? 1);
+                return View(Order_Details.ToPagedList(pageNumber, pageSize));
+            }
+
         }
 
         // GET: Order_Detail/Details/5
@@ -175,8 +200,13 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<Order_Detail>(basePath + id)).Id.ToString());
-            helper.DeleteItem(basePath, id);
+            string deletedItem = (await helper.GetItem<Order_Detail>(basePath + id)).Id.ToString();
+            bool successfulDelete = helper.DeleteItem(basePath, id);
+            if (successfulDelete)
+                notificationHelper.SuccessfulDelete(deletedItem);
+            else
+                notificationHelper.CustomFailureMessage("خطا در حذف " + deletedItem);
+
             return RedirectToAction("Index");
         }
 

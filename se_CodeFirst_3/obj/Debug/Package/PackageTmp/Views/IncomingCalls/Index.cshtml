@@ -1,4 +1,15 @@
-﻿@model IEnumerable<se_CodeFirst_3.Models.IncomingCall>
+﻿@model PagedList.IPagedList<se_CodeFirst_3.Models.IncomingCall>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.css" rel="stylesheet" />
+<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/jquery-3.1.0.js"></script>
+<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/bootstrap.js"></script>
+<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/MdBootstrapPersianDateTimePicker/jalaali.js"></script>
+<script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.js"></script>
+
+<link href="~/Content/ahk-custom-styles.css" rel="stylesheet" />
 @Scripts.Render("~/bundles/angular")
 
 @{
@@ -9,21 +20,40 @@
 <div id="mainContainer">
     <div ng-app="ahkSearchApp" ng-controller="ahkSearchCtrl" class="col-sm-12">
 
-        <div class="col-sm-4 col-sm-push-8">
-            <h2 class="page-title page-title-search"><span class="glyphicon glyphicon-search"></span> جست و جو</h2>
+        <div class="col-sm-4 col-sm-push-8 container-page-title-search">
+            <h2 class="page-title page-title-search">
+                <span class="glyphicon glyphicon-search"></span> جست و جو
+                <button class="btn btn-success" ng-click="resetDataInSearchFeilds()"><span class="glyphicon glyphicon-refresh"></span></button>
 
+                <span class="spinner loading-styles" ng-show="loading">
+                    <img src="~/Content/Images/loading.gif" class="img-responsive img-rounded" alt="Loading Image" />
+                </span>
+            </h2>
             <div class="table-responsive">
                 <table class="table table-condensed table-striped">
 
                     <tr>
                         <td>پیام: </td>
-                        <td><input class="form-control" type="text" name="messageFilter" ng-model="messageFilter" autofocus /></td>
+                        <td><input class="form-control" type="text" name="messageFilter" ng-model="messageFilter" ng-change="ahkSearch()" autofocus /></td>
                     </tr>
 
                     <tr>
-                        <td>تاریخ: </td>
+                        <td>حداقل تاریخ:</td>
                         <td>
-                            <input class="form-control form-horizontal" type="text" name="dateFilter" ng-model="dateFilter" />
+                            <div class="input-group" dir="ltr" style="max-width:280px;">
+                                <span class="glyphicon glyphicon-calendar input-group-addon" id="input1" data-MdDateTimePicker="true" data-TargetSelector="#input1" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
+                                <input class="form-control form-horizontal" type="text" name="minDateFilter" ng-model="minDateFilter" ng-change="ahkSearch()" onchange="callAngularMethodFromJavaScript('textBoxInputId')" id="textBoxInputId" />
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>حداکثر تاریخ:</td>
+                        <td>
+                            <div class="input-group" dir="ltr" style="max-width:280px;">
+                                <span class="glyphicon glyphicon-calendar input-group-addon" id="input2" data-MdDateTimePicker="true" data-TargetSelector="#input2" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
+                                <input class="form-control form-horizontal" type="text" name="maxDateFilter" ng-model="maxDateFilter" ng-change="ahkSearch()" onchange="callAngularMethodFromJavaScript('textBoxInputId2')" id="textBoxInputId2" />
+                            </div>
                         </td>
                     </tr>
 
@@ -35,12 +65,13 @@
         </div>
 
 
-        <div class="col-sm-8 col-sm-pull-4">
+        <div class="col-sm-8 col-sm-pull-4 ahk-list-items">
 
             <h2 class="page-title page-title-index"><span class="glyphicon glyphicon-list"></span> @ViewBag.Title</h2>
 
             <p>
                 <a class="btn btn-primary" href="~/IncomingCalls/Create"><span class="glyphicon glyphicon-plus"></span> افزودن</a>
+                <a class="btn btn-success" href="~/Customers/Create"><span class="glyphicon glyphicon-plus"></span> افزودن مشتری</a>
             </p>
 
             <div class="table-responsive">
@@ -48,18 +79,18 @@
                     <tr>
                         <th ng-click="ahkSortBy('messageFilter')" ng-dblclick="ahkSortBy('messageFilter', 'true')">
                             <span class="glyphicon glyphicon-envelope "></span>
-                            @Html.DisplayNameFor(model => model.Message)
+                            پیام
                         </th>
                         <th ng-click="ahkSortBy('dateFilter')" ng-dblclick="ahkSortBy('dateFilter', 'true')">
                             <span class="glyphicon glyphicon-calendar"></span>
-                            @Html.DisplayNameFor(model => model.Date)
+                            تاریخ
                         </th>
                         <th></th>
                     </tr>
-
-                    <tr ng-repeat="x in items | orderBy:sortParameter : reverseOrder | filter : {Message:messageFilter, Date:dateFilter}">
+                    @*| orderBy:sortParameter : reverseOrder | filter : {Message:messageFilter,Date:dateFilter}*@
+                    <tr ng-repeat="x in items">
                         <td>{{x.Message}}</td>
-                        <td dir="ltr">{{x.Date | date : 'yyyy/MM/dd hh:mm:ss' }}</td>
+                        <td dir="ltr">{{x.Date | date : 'yyyy/MM/dd HH:mm:ss' }}</td>
                         <td>
                             <a class="btn btn-sm btn-warning" href="~/IncomingCalls/Edit/{{x.Id}}"><span class="glyphicon glyphicon-edit"></span> </a>
                             <a class="btn btn-sm btn-info" href="~/IncomingCalls/Details/{{x.Id}}"><span class="glyphicon glyphicon-list-alt"></span></a>
@@ -70,7 +101,7 @@
                             </button>
 
                             <!-- Modal -->
-                            <div id="confirmItemDeleteModal{{x.Id}}" class="modal fade" role="dialog">
+                            <div id="confirmItemDeleteModal{{x.Id}}" class="modal fade" role="dialog" data-keyboard="true" tabindex="-1">
                                 <div class="modal-dialog">
 
                                     <!-- Modal content-->
@@ -97,6 +128,12 @@
                     </tr>
 
                 </table>
+                <p dir="rtl">
+                    صفحه @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) از @Model.PageCount
+
+                    @Html.PagedListPager(Model, page => Url.Action("Index",
+                        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+                </p>
             </div>
         </div>
     </div>
@@ -104,18 +141,29 @@
 
 
 <script>
+    
+    function callAngularMethodFromJavaScript(id) {
+        angular.element(document.getElementById(id)).triggerHandler('change');
+    }
+
     var app = angular.module('ahkSearchApp', []);
     app.controller('ahkSearchCtrl', function ($scope, $http) {
 
         $scope.items = @Html.Raw(Json.Encode(Model));
 
-        for (var i = 0; i < $scope.items.length; i++) {
-            $scope.items[i].Date = new Date(parseInt($scope.items[i].Date.substr(6)));
+        $scope.usePersianDates = function (){
+            for (var i = 0; i < $scope.items.length; i++) {
+                $scope.items[i].Date = new Date(parseInt($scope.items[i].Date.substr(6)));
+            }
         }
+
+        $scope.usePersianDates();
 
         //Search Variables:
         $scope.messageFilter = "";
-        $scope.dateFilter = "";
+        $scope.minDateFilter = "";
+        $scope.maxDateFilter = "";
+        $scope.loading = false;
 
         $scope.ahkSortBy = function (x) {
             $scope.sortParameter = x;
@@ -127,10 +175,86 @@
             $scope.reverseOrder = reverseOrder;
         };
 
+        $scope.greaterThan = function (prop, val) {
+            return function (item) {
+                return item[prop] >= val;
+            }
+        }
+
+        $scope.lowerThan = function (prop, val) {
+            return function (item) {
+                return item[prop] < val;
+            }
+        }
+
+        //Reset Input Data:
+        $scope.resetDataInSearchFeilds = function () {
+            $scope.messageFilter = "";
+            $scope.minDateFilter = "";
+            $scope.maxDateFilter = "";
+            $scope.ahkSearch();
+        };
+
+        $scope.ahkSearch = function (){
+            $scope.loading = true;
+
+            var incomingCallDTO = $.param({
+                Message: $scope.messageFilter,
+                MinDate: $scope.minDateFilter,
+                MaxDate: $scope.maxDateFilter,
+            });
+
+            $http({
+                url: '?searching=true&' + incomingCallDTO,
+                method: "GET",
+                //data: supplier,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }//we have to write this code, otherwise it do not work
+            })
+            .then(function (response) {
+                // success
+                $scope.items = response.data;
+                $scope.usePersianDates();
+                $scope.loading = false;
+            },
+            function (response) { // optional
+                // failed
+            });
+        };
+
+    });
+
+
+
+    $('#input1').MdPersianDateTimePicker({
+        Placement: 'left',
+        Trigger: 'click',
+        EnableTimePicker: true,
+        TargetSelector: '#textBoxInputId',
+        GroupId: '',
+        ToDate: false,
+        FromDate: false,
+        DisableBeforeToday: false,
+        Disabled: false,
+        Format: 'yyyy/MM/dd HH:mm:ss',
+        IsGregorian: false,
+        EnglishNumber: true,
+    });
+
+    $('#input2').MdPersianDateTimePicker({
+        Placement: 'left',
+        Trigger: 'click',
+        EnableTimePicker: true,
+        TargetSelector: '#textBoxInputId2',
+        GroupId: '',
+        ToDate: false,
+        FromDate: false,
+        DisableBeforeToday: false,
+        Disabled: false,
+        Format: 'yyyy/MM/dd HH:mm:ss',
+        IsGregorian: false,
+        EnglishNumber: true,
     });
 </script>
-
-
 
 
 

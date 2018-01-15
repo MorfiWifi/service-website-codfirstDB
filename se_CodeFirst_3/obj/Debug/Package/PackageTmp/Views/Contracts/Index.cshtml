@@ -1,4 +1,6 @@
-﻿@model IEnumerable<se_CodeFirst_3.Models.Contract>
+﻿@model PagedList.IPagedList<se_CodeFirst_3.Models.Contract>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 @Scripts.Render("~/bundles/angular")
 
 @{
@@ -8,25 +10,32 @@
 <div id="mainContainer">
     <div ng-app="ahkContractApp" ng-controller="contractAppCtrl" class="col-sm-12">
 
-        <div class="col-sm-4 col-sm-push-8">
-            <h2 class="page-title page-title-search"><span class="glyphicon glyphicon-search"></span> جست و جو</h2>
+        <div class="col-sm-4 col-sm-push-8 container-page-title-search">
+            <h2 class="page-title page-title-search">
+                <span class="glyphicon glyphicon-search"></span> جست و جو
+                <button class="btn btn-success" ng-click="resetDataInSearchFeilds()"><span class="glyphicon glyphicon-refresh"></span></button>
 
+                <span class="spinner loading-styles" ng-show="loading">
+                    <img src="~/Content/Images/loading.gif" class="img-responsive img-rounded" alt="Loading Image" />
+                </span>
+            </h2>
             <div class="table-responsive">
                 <table class="table table-condensed table-striped">
                     <tr>
                         <td>متن قرارداد: </td>
-                        <td><input class="form-control" type="text" name="contentFilter" ng-model="contentFilter" autofocus /></td>
+                        <td><input class="form-control" type="text" name="contentFilter" ng-model="contentFilter" ng-change="ahkSearch()" autofocus /></td>
                     </tr>
                 </table>
             </div>
         </div>
 
-        <div class="col-sm-8 col-sm-pull-4">
+        <div class="col-sm-8 col-sm-pull-4 ahk-list-items">
 
             <h2 class="page-title page-title-index"><span class="glyphicon glyphicon-list"></span> @ViewBag.Title</h2>
 
             <p>
                 <a class="btn btn-primary" href="~/Contracts/Create"><span class="glyphicon glyphicon-plus"></span> افزودن</a>
+                <a class="btn btn-success" href="~/Orders/Create"><span class="glyphicon glyphicon-plus"></span> افزودن سفارش</a>
             </p>
 
             <div class="table-responsive">
@@ -34,12 +43,12 @@
                     <tr>
                         <th ng-click="ahkSortBy('contentFilter')" ng-dblclick="ahkSortBy('contentFilter', 'true')">
                             <span class="glyphicon "></span>
-                            @Html.DisplayNameFor(model => model.Content)
+                            متن قرارداد
                         </th>
                         <th></th>
                     </tr>
-
-                    <tr ng-repeat="x in items | orderBy:sortParameter : reverseOrder | filter : {Content:contentFilter}">
+                    @*| orderBy:sortParameter : reverseOrder | filter : {Content:contentFilter}*@
+                    <tr ng-repeat="x in items">
                         <td>{{x.Content}}</td>
                         <td>
                             <a class="btn btn-sm btn-warning" href="~/Contracts/Edit/{{x.Id}}"><span class="glyphicon glyphicon-edit"></span> </a>
@@ -51,7 +60,7 @@
                             </button>
 
                             <!-- Modal -->
-                            <div id="confirmItemDeleteModal{{x.Id}}" class="modal fade" role="dialog">
+                            <div id="confirmItemDeleteModal{{x.Id}}" class="modal fade" role="dialog" data-keyboard="true" tabindex="-1">
                                 <div class="modal-dialog">
 
                                     <!-- Modal content-->
@@ -78,6 +87,12 @@
                     </tr>
 
                 </table>
+                <p dir="rtl">
+                    صفحه @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) از @Model.PageCount
+
+                    @Html.PagedListPager(Model, page => Url.Action("Index",
+                        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+                </p>
             </div>
         </div>
 
@@ -101,6 +116,35 @@
             $scope.ahkSortBy = function (x, reverseOrder) {
                 $scope.sortParameter = x;
                 $scope.reverseOrder = reverseOrder;
+            };
+
+            //Reset Input Data:
+            $scope.resetDataInSearchFeilds = function () {
+                $scope.contentFilter = "";
+                $scope.ahkSearch();
+            };
+
+            $scope.ahkSearch = function (){
+                $scope.loading = true;
+
+                var contract = $.param({
+                    Content: $scope.contentFilter
+                });
+
+                $http({
+                    url: '?searching=true&' + contract,
+                    method: "GET",
+                    //data: supplier,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }//we have to write this code, otherwise it do not work
+                })
+                .then(function (response) {
+                    // success
+                    $scope.items = response.data;
+                    $scope.loading = false;
+                },
+                function (response) { // optional
+                    // failed
+                });
             };
 
         });

@@ -130,3 +130,10 @@ C:\Users\amir\Documents\Visual Studio 2015\Projects\se_CodeFirst_3\se_CodeFirst_
 C:\Users\amir\Documents\Visual Studio 2015\Projects\se_CodeFirst_3\se_CodeFirst_3\obj\Release\se_CodeFirst_3.pdb
 C:\Users\amir\documents\visual studio 2015\Projects\se_CodeFirst_3\se_CodeFirst_3\obj\Release\se_CodeFirst_3.csprojResolveAssemblyReference.cache
 C:\Users\amir\Documents\Visual Studio 2015\Projects\se_CodeFirst_3\se_CodeFirst_3\obj\Release\se_CodeFirst_3.Migrations.finalizing1.resources
+C:\Users\amir\Documents\Visual Studio 2015\Projects\se_CodeFirst_3\se_CodeFirst_3\bin\PagedList.dll
+C:\Users\amir\Documents\Visual Studio 2015\Projects\se_CodeFirst_3\se_CodeFirst_3\bin\PagedList.Mvc.dll
+C:\Users\amir\Documents\Visual Studio 2015\Projects\se_CodeFirst_3\se_CodeFirst_3\bin\PagedList.xml
+C:\Users\amir\Documents\Visual Studio 2015\Projects\se_CodeFirst_3\se_CodeFirst_3\bin\PagedList.Mvc.xml
+C:\Users\amir\Documents\Visual Studio 2015\Projects\se_CodeFirst_3\se_CodeFirst_3\obj\Release\se_CodeFirst_3.Migrations.finalizing1_logging1.resources
+C:\Users\amir\Documents\Visual Studio 2015\Projects\se_CodeFirst_3\se_CodeFirst_3\obj\Release\se_CodeFirst_3.Migrations.Finalizing_3.resources
+C:\Users\amir\Documents\Visual Studio 2015\Projects\se_CodeFirst_3\se_CodeFirst_3\obj\Release\se_CodeFirst_3.Migrations.finalizing6.resources

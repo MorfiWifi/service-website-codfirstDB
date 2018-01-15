@@ -21,6 +21,12 @@ namespace se_CodeFirst_3.Filters
 
             var principal = actionContext.RequestContext.Principal as ClaimsPrincipal;
 
+            //var principal2 = actionContext.RequestContext.Principal;
+            //if (principal.Identity.IsAuthenticated == false && principal.Identity.AuthenticationType == "Bearer")
+            //{
+            //    return Task.FromResult<object>(null);
+            //}
+
             if (!principal.Identity.IsAuthenticated)
             {
                 actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);
@@ -32,6 +38,8 @@ namespace se_CodeFirst_3.Filters
                 actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);
                 return Task.FromResult<object>(null);
             }
+
+            
 
             //User is Authorized, complete execution
             return Task.FromResult<object>(null);

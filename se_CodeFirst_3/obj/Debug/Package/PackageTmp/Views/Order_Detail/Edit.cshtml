@@ -4,58 +4,72 @@
     ViewBag.Title = "تغییر جزئیات سفارش";
 }
 
-<h2>Edit</h2>
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Order_Detail</h4>
-        <hr />
+<h2 class="page-title page-title-change"><span class="glyphicon glyphicon-edit"></span> @ViewBag.Title</h2>
+
+<div ng-app="createItemApp" ng-controller="createItemCtrl" class="col-sm-offset-2 col-sm-8 table-responsive ">
+    @using (Html.BeginForm("Edit", "Order_Detail", FormMethod.Post, new { name = "ahkform", novalidate = "novalidate" }))
+    {
+        @Html.AntiForgeryToken()
+
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
 
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.UnitPrice, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.UnitPrice, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.UnitPrice, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
+        <table class="table table-condensed table-striped table-bordered ahk-fixed-table-layout">
+            <tr>
+                <th>ویژگی</th>
+                <th>مقدار</th>
+                <th>درستی</th>
+            </tr>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
-            </div>
-        </div>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ProductId, "شماره محصول", htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    @Html.DropDownList("ProductId", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.ProductId, "", new { @class = "text-danger" })
+                </td>
+                <td></td>
+            </tr>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProductId, "ProductId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("ProductId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.ProductId, "", new { @class = "text-danger" })
-            </div>
-        </div>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "control-label" })
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control", required = "required", ng_model = "Quantity", min = "0" } })
+                    @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+                </td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.Quantity.$dirty && ahkform.Quantity.$invalid">
+                        <span ng-show="ahkform.Quantity.$error.required || ahkform.Quantity.$error.number || ahkform.Quantity.$error.min" class="glyphicon glyphicon-remove"></span>
+                        <span ng-show="ahkform.Quantity.$error.required">این فیلد نمی تواند خالی باشد.</span>
+                        <span ng-show="ahkform.Quantity.$error.number">این فیلد حتما باید عدد باشد.</span>
+                        <span ng-show="ahkform.Quantity.$error.min">یک عدد معتبر وارد کنید.</span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.Quantity.$dirty && !ahkform.Quantity.$invalid">
+                        <span ng-hide="ahkform.Quantity.$error.required || ahkform.Quantity.$error.min" class="glyphicon glyphicon-check"></span>
+                    </span>
+                </td>
+            </tr>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.OrderId, "OrderId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("OrderId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.OrderId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
+        </table>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <button type="submit" class="btn btn-warning" ng-disabled="ahkform.Quantity.$invalid"><span class="glyphicon glyphicon-edit"></span> تغییر</button>
+                <a href="@Url.Action("Index", "Order_Detail")" type="submit" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
             </div>
         </div>
-    </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
+    }
 </div>
+
+<script>
+
+    var app = angular.module('createItemApp', []);
+    app.controller('createItemCtrl', function ($scope, $http) {
+        $scope.Quantity = @Html.Raw(Json.Encode(Model.Quantity));
+    });
+
+
+</script>

@@ -13,8 +13,8 @@ namespace se_CodeFirst_3.Helper
 {
     public class ConnectToWebApiHelper : IConnectToWebApiHelper
     {
-        private string baseUrl = "http://localhost:46810/";
-        //private string baseUrl = "http://kasrazhino.company/";
+        //private string baseUrl = "http://localhost:46810/";
+        private string baseUrl = "http://kasrazhino.company/";
 
         public HttpClient CreateAndConfigureHttpClient()
         {

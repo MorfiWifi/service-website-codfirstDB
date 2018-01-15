@@ -274,9 +274,7 @@
     <Compile Include="Controllers\api\LogsController.cs" />
     <Compile Include="Controllers\api\OrdersController.cs" />
     <Compile Include="Controllers\api\Order_DetailController.cs" />
-    <Compile Include="Controllers\api\OtherFunctionsController.cs" />
     <Compile Include="Controllers\api\ProductsController.cs" />
-    <Compile Include="Controllers\api\RolesController.cs" />
     <Compile Include="Controllers\api\SuppliersController.cs" />
     <Compile Include="Controllers\api\UsersController.cs" />
     <Compile Include="Controllers\ClaimsController.cs" />
@@ -449,6 +447,10 @@
     <Compile Include="Migrations\201712071732173_Finalizing_3.Designer.cs">
       <DependentUpon>201712071732173_Finalizing_3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801131336055_finalizing6.cs" />
+    <Compile Include="Migrations\201801131336055_finalizing6.Designer.cs">
+      <DependentUpon>201801131336055_finalizing6.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -458,7 +460,9 @@
     <Compile Include="Models\CustomerViewModel.cs" />
     <Compile Include="Models\IncomingCallDTO.cs" />
     <Compile Include="Models\OrderDTO.cs" />
+    <Compile Include="Models\Order_DetailDTO.cs" />
     <Compile Include="Models\ProductDTO.cs" />
+    <Compile Include="Models\StatisticsCustomDatesDTO.cs" />
     <Compile Include="Models\UserDTO.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\IncomingCall.cs" />
@@ -490,6 +494,7 @@
     <Content Include="Content\ahk-custom-styles.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\loading.gif" />
     <Content Include="Content\Images\productPicture.png" />
     <Content Include="Content\Images\logo_icon.png" />
     <Content Include="Content\nprogress.css" />
@@ -680,6 +685,7 @@
     <Content Include="Scripts\nprogress.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="TODO.html" />
     <Content Include="Views\Shared\_Layout_ForReleaseMode.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -885,6 +891,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201712071732173_Finalizing_3.resx">
       <DependentUpon>201712071732173_Finalizing_3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801131336055_finalizing6.resx">
+      <DependentUpon>201801131336055_finalizing6.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

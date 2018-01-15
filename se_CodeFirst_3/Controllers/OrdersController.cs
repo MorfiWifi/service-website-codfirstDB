@@ -90,8 +90,8 @@ namespace se_CodeFirst_3.Controllers
             }
 
             //using PersianDates::
-            order.OrderDate = methodHelper.ConvertDateTimeToPersian(order.OrderDate);
-            order.RequiredDate = methodHelper.ConvertDateTimeToPersian(order.RequiredDate);
+            ViewBag.OrderDate = methodHelper.ConvertDateTimeToPersian(order.OrderDate, "yyyy/MM/dd HH:mm:ss");
+            ViewBag.RequiredDate = methodHelper.ConvertDateTimeToPersian(order.RequiredDate, "yyyy/MM/dd HH:mm:ss");
 
 
             return View(order);
@@ -100,11 +100,14 @@ namespace se_CodeFirst_3.Controllers
         // GET: Orders/Create
         public async Task<ActionResult> Create()
         {
-            ViewBag.ContractId = new SelectList(await helper.GetListOfItems<Contract>("api/contracts/"), "Id", "Content");
-            ViewBag.CustomerId = new SelectList(await helper.GetListOfItems<Customer>("api/customers/"), "Id", "Name");
-
             ViewBag.ContractsList = await helper.GetListOfItems<Contract>("api/contracts/");
             ViewBag.CustomersList = await helper.GetListOfItems<Customer>("api/customers/");
+
+            ViewBag.OrderDate = methodHelper.ConvertDateTimeToPersian(DateTime.Now, "yyyy/MM/dd HH:mm:ss");
+            DateTime oneMonthAfter = DateTime.Now;
+            oneMonthAfter = oneMonthAfter.AddMonths(1);
+            ViewBag.RequiredDate = methodHelper.ConvertDateTimeToPersian(oneMonthAfter, "yyyy/MM/dd HH:mm:ss");
+
             return View();
         }
 
@@ -126,8 +129,16 @@ namespace se_CodeFirst_3.Controllers
 
             if (ModelState.IsValid)
             {
-                helper.CreateItem<Order>(basePath, order);
-                notificationHelper.SuccessfulInsert(order.Id.ToString());
+                var itemCreated = helper.CreateItem<Order>(basePath, order);
+                if (itemCreated != null)
+                {
+                    notificationHelper.SuccessfulInsert(order.Id.ToString());
+                }
+                else
+                {
+                    notificationHelper.FailureInsert(order.Id.ToString());
+                }
+
                 if (castedStayOnCreatePage == true)
                 {
                     return RedirectToAction("Create");
@@ -137,10 +148,7 @@ namespace se_CodeFirst_3.Controllers
                     return RedirectToAction("Index");
                 }
             }
-
-            ViewBag.ContractId = new SelectList(await helper.GetListOfItems<Contract>("api/contracts/"), "Id", "Content");
-            ViewBag.CustomerId = new SelectList(await helper.GetListOfItems<Customer>("api/customers/"), "Id", "Name");
-
+            
             ViewBag.ContractsList = await helper.GetListOfItems<Contract>("api/contracts/");
             ViewBag.CustomersList = await helper.GetListOfItems<Customer>("api/customers/");
 
@@ -161,11 +169,15 @@ namespace se_CodeFirst_3.Controllers
                 return HttpNotFound();
             }
 
-            order.OrderDate = methodHelper.ConvertDateTimeToPersian(order.OrderDate);
-            order.RequiredDate = methodHelper.ConvertDateTimeToPersian(order.RequiredDate);
+            ViewBag.OrderDate = methodHelper.ConvertDateTimeToPersian(order.OrderDate, "yyyy/MM/dd HH:mm:ss");
+            ViewBag.RequiredDate = methodHelper.ConvertDateTimeToPersian(order.RequiredDate, "yyyy/MM/dd HH:mm:ss");
 
             ViewBag.ContractId = new SelectList(await helper.GetListOfItems<Contract>("api/contracts/"), "Id", "Content");
             ViewBag.CustomerId = new SelectList(await helper.GetListOfItems<Customer>("api/customers/"), "Id", "Name");
+
+            ViewBag.ContractsList = await helper.GetListOfItems<Contract>("api/contracts/");
+            ViewBag.CustomersList = await helper.GetListOfItems<Customer>("api/customers/");
+
             return View(order);
         }
 
@@ -176,14 +188,25 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "Id,OrderDate,RequiredDate,CustomerId,ContractId")] Order order)
         {
+            var convertedOrderDateTime = methodHelper.ConvertDateTimeToGregorian(order.OrderDate);
+            var convertedRequiredDateTime = methodHelper.ConvertDateTimeToGregorian(order.RequiredDate);
+
+            order.OrderDate = convertedOrderDateTime;
+            order.RequiredDate = convertedRequiredDateTime;
+
             if (ModelState.IsValid)
             {
-                helper.ChangeItem<Order>(basePath + order.Id, order);
-                notificationHelper.SuccessfulChange(order.Id.ToString());
+                var itemEdited = helper.ChangeItem<Order>(basePath + order.Id, order);
+                if (itemEdited != null)
+                    notificationHelper.SuccessfulChange(order.Id.ToString());
+                else
+                    notificationHelper.FailureChange(order.Id.ToString());
+
                 return RedirectToAction("Index");
             }
-            ViewBag.ContractId = new SelectList(await helper.GetListOfItems<Contract>("api/contracts/"), "Id", "Content");
-            ViewBag.CustomerId = new SelectList(await helper.GetListOfItems<Customer>("api/customers/"), "Id", "Name");
+
+            ViewBag.ContractsList = await helper.GetListOfItems<Contract>("api/contracts/");
+            ViewBag.CustomersList = await helper.GetListOfItems<Customer>("api/customers/");
 
             notificationHelper.FailureChange(order.Id.ToString());
             return View(order);
@@ -203,8 +226,8 @@ namespace se_CodeFirst_3.Controllers
             }
 
             //using PersianDates::
-            order.OrderDate = methodHelper.ConvertDateTimeToPersian(order.OrderDate);
-            order.RequiredDate = methodHelper.ConvertDateTimeToPersian(order.RequiredDate);
+            ViewBag.OrderDate = methodHelper.ConvertDateTimeToPersian(order.OrderDate, "yyyy/MM/dd HH:mm:ss");
+            ViewBag.RequiredDate = methodHelper.ConvertDateTimeToPersian(order.RequiredDate, "yyyy/MM/dd HH:mm:ss");
 
             return View(order);
         }
@@ -214,8 +237,13 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<Order>(basePath + id)).Id.ToString());
-            helper.DeleteItem(basePath, id);
+            string deletedItem = id.ToString(); //(await helper.GetItem<Order>(basePath + id)).Id.ToString();
+            bool successfulDelete = helper.DeleteItem(basePath, id);
+            if (successfulDelete)
+                notificationHelper.SuccessfulDelete(deletedItem);
+            else
+                notificationHelper.CustomFailureMessage("خطا در حذف " + deletedItem);
+
             return RedirectToAction("Index");
         }
 

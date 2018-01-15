@@ -92,7 +92,7 @@ namespace se_CodeFirst_3.Controllers
             }
 
             //using PersianDates::
-            incomingCall.Date = methodHelper.ConvertDateTimeToPersian(incomingCall.Date);
+            ViewBag.IncomingCallDateTime = methodHelper.ConvertDateTimeToPersian(incomingCall.Date, "yyyy/MM/dd HH:mm:ss");
 
             return View(incomingCall);
         }
@@ -100,6 +100,7 @@ namespace se_CodeFirst_3.Controllers
         // GET: IncomingCalls/Create
         public ActionResult Create()
         {
+            ViewBag.DateTimeNow = methodHelper.ConvertDateTimeToPersian(DateTime.Now, "yyyy/MM/dd HH:mm:ss");
             return View();
         }
 
@@ -118,8 +119,16 @@ namespace se_CodeFirst_3.Controllers
 
             if (ModelState.IsValid)
             {
-                helper.CreateItem<IncomingCall>(basePath, incomingCall);
-                notificationHelper.SuccessfulInsert(incomingCall.Message);
+                var itemCreated = helper.CreateItem<IncomingCall>(basePath, incomingCall);
+                if (itemCreated != null)
+                {
+                    notificationHelper.SuccessfulInsert(incomingCall.Message);
+                }
+                else
+                {
+                    notificationHelper.FailureInsert(incomingCall.Message);
+                }
+
                 if (castedStayOnCreatePage == true)
                 {
                     return RedirectToAction("Create");
@@ -147,7 +156,7 @@ namespace se_CodeFirst_3.Controllers
                 return HttpNotFound();
             }
 
-            incomingCall.Date = methodHelper.ConvertDateTimeToPersian(incomingCall.Date);
+            ViewBag.IncomingCallDateTime = methodHelper.ConvertDateTimeToPersian(incomingCall.Date, "yyyy/MM/dd HH:mm:ss");
 
             return View(incomingCall);
         }
@@ -165,8 +174,12 @@ namespace se_CodeFirst_3.Controllers
 
             if (ModelState.IsValid)
             {
-                var returningIncomingCall = helper.ChangeItem<IncomingCall>(basePath + incomingCall.Id, incomingCall);
-                notificationHelper.SuccessfulChange(incomingCall.Message);
+                var itemEdited = helper.ChangeItem<IncomingCall>(basePath + incomingCall.Id, incomingCall);
+                if (itemEdited != null)
+                    notificationHelper.SuccessfulChange(incomingCall.Message);
+                else
+                    notificationHelper.FailureChange(incomingCall.Message);
+
                 return RedirectToAction("Index");
             }
 
@@ -188,7 +201,7 @@ namespace se_CodeFirst_3.Controllers
             }
 
             //using PersianDates::
-            incomingCall.Date = methodHelper.ConvertDateTimeToPersian(incomingCall.Date);
+            ViewBag.IncomingCallDateTime = methodHelper.ConvertDateTimeToPersian(incomingCall.Date, "yyyy/MM/dd HH:mm:ss");
 
             return View(incomingCall);
         }
@@ -198,9 +211,16 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<IncomingCall>(basePath + id)).Message);
-            helper.DeleteItem(basePath, id);
+            string deletedItem = (await helper.GetItem<IncomingCall>(basePath + id)).Message;
+            bool successfulDelete = helper.DeleteItem(basePath, id);
+            if (successfulDelete)
+                notificationHelper.SuccessfulDelete(deletedItem);
+            else
+                notificationHelper.CustomFailureMessage("خطا در حذف " + deletedItem);
+
             return RedirectToAction("Index");
+
+            
         }
 
     }

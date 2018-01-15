@@ -21,5 +21,6 @@ namespace se_CodeFirst_3
                 LoginPath = new PathString("/Account/Login"),
             });
         }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿@model se_CodeFirst_3.Models.Order
 
 @{
+    Layout = null;
     ViewBag.Title = "حذف سفارش";
 }
 
@@ -37,7 +38,7 @@
                 @Html.DisplayNameFor(model => model.OrderDate)
             </td>
             <td>
-                @Html.DisplayFor(model => model.OrderDate)
+                @ViewBag.OrderDate
             </td>
         </tr>
 
@@ -46,7 +47,7 @@
                 @Html.DisplayNameFor(model => model.RequiredDate)
             </td>
             <td>
-                @Html.DisplayFor(model => model.RequiredDate)
+                @ViewBag.RequiredDate
             </td>
         </tr>
 
@@ -57,6 +58,7 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
+            <p class="text-danger">تمام جزئیات قرارداد مربوط به این قرارداد حذف می شوند. و کالا ها به انبار باز می گردند.</p>
             <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> حذف برای همیشه</button>
             <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-eye-close"></span> بستن</button>
         </div>

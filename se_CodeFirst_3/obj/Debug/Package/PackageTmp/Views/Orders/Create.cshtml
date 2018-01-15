@@ -2,10 +2,18 @@
 @model se_CodeFirst_3.Models.Order
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/angular")
-
 @{
     ViewBag.Title = "افزودن سفارش";
+    IEnumerable<se_CodeFirst_3.Models.Contract> contractsList = ViewBag.ContractsList;
+    List<se_CodeFirst_3.Models.Customer> customersList = ViewBag.CustomersList;
 }
+<script src="~/Scripts/angular.js"></script>
+
+
+<script src="~/Scripts/jquery-3.1.1.js"></script>
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Plugins/materialize/css/materialize.css" rel="stylesheet" />
+<script src="~/Plugins/materialize/js/materialize.js"></script>
 
 <link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/bootstrap.css" rel="stylesheet" />
 <link href="~/Plugins/MD.BootstrapPersianDateTimePicker/Content/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.css" rel="stylesheet" />
@@ -14,54 +22,89 @@
 <script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/MdBootstrapPersianDateTimePicker/jalaali.js"></script>
 <script src="~/Plugins/MD.BootstrapPersianDateTimePicker/Scripts/MdBootstrapPersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.js"></script>
 
+
+
 <h2 class="page-title page-title-create"><span class="glyphicon glyphicon-plus"></span> @ViewBag.Title</h2>
-
-@{
-    IEnumerable<se_CodeFirst_3.Models.Contract> contractsList = ViewBag.ContractsList;
-    IEnumerable<se_CodeFirst_3.Models.Customer> customersList = ViewBag.CustomersList;
-}
-
-<div class="col-sm-8" >
-    @*<div style="max-height:200px;height:200px;overflow:scroll;">
-        @Html.Partial("~/Views/Contracts/Index.cshtml", contractsList);
-    </div>*@
-
-    <div >
-        @Html.Partial("~/Views/Customers/Index.cshtml", customersList);
-    </div>
-</div>
-
-<div class="col-sm-4 table-responsive">
+<div class="col-sm-offset-2 col-sm-8 table-responsive" ng-app="ahkSearchApp" ng-controller="createItemCtrl" id="second-app-in-one-page">
     @using (Html.BeginForm("Create", "Orders", FormMethod.Post))
             {
         @Html.AntiForgeryToken()
 
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <input type="text" style="visibility:hidden" name="stayOnCreatePage" value="false" ng-model="stayOnCreatePage" />
 
-        <table class="table table-condensed table-striped table-bordered">
+        <table class="table table-condensed table-striped table-bordered ahk-fixed-table-layout">
             <tr>
                 <th>ویژگی</th>
                 <th>مقدار</th>
                 <th>درستی</th>
             </tr>
             <tr>
-                <td>@Html.LabelFor(model => model.ContractId, "ContractId", htmlAttributes: new { @class = "control-label" })</td>
+                <td>@Html.LabelFor(model => model.ContractId, "قرارداد", htmlAttributes: new { @class = "control-label" })</td>
                 <td>
-                    @Html.DropDownList("ContractId", null, htmlAttributes: new { @class = "form-control" })
+                    <!-- Dropdown Trigger -->
+                    <a class='dropdown-button btn btn-success' href='#' data-activates='dropdown2' style="width:100%">{{valueToShowInButtonContract}}</a>
+
+                    <!-- Dropdown Structure -->
+                    <ul id='dropdown2' class='dropdown-content ahk-style-for-dropdown-searches'>
+                        <li>
+                            <input class="form-control" type="text" name="ContentSearch" ng-model="ContentSearch" value=" " placeholder="متن" />
+                        </li>
+                        <li ng-repeat="x in contractsList | filter : {Content:ContentSearch}">
+                            <span ng-click="setItemId2(x.Id, x.Content)" style="border-bottom:1px dashed rgb(255, 106, 0);">
+                                {{"متن: "+x.Content}}
+                            </span>
+                        </li>
+                    </ul>
+                    <input type="hidden" name="ContractId" ng-model="ContractId" id="ContractId" value="{{ContractId}}" required="required" onchange="callAngularMethodFromJavaScript('ContractId')" />
+
                     @Html.ValidationMessageFor(model => model.ContractId, "", new { @class = "text-danger" })
                 </td>
-                <td></td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.ContractId.$dirty && ahkform.ContractId.$invalid">
+                        <span ng-show="ahkform.ContractId.$error.required" class="glyphicon glyphicon-remove"></span>
+                        <span ng-show="ahkform.ContractId.$error.required">این فیلد نمی تواند خالی باشد.</span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.ContractId.$dirty && !ahkform.ContractId.$invalid">
+                        <span ng-hide="ahkform.ContractId.$error.required || ahkform.ContractId.$error.min" class="glyphicon glyphicon-check"></span>
+                    </span>
+                </td>
             </tr>
 
             <tr>
                 <td>
-                    @Html.LabelFor(model => model.CustomerId, "CustomerId", htmlAttributes: new { @class = "control-label" })
+                    @Html.LabelFor(model => model.CustomerId, "مشتری", htmlAttributes: new { @class = "control-label" })
                 </td>
                 <td>
-                    @Html.DropDownList("CustomerId", null, htmlAttributes: new { @class = "form-control" })
+                    <!-- Dropdown Trigger -->
+                    <a class='dropdown-button btn btn-success' href='#' data-activates='dropdown1' style="width:100%">{{valueToShowInButton}}</a>
+
+                    <!-- Dropdown Structure -->
+                    <ul id='dropdown1' class='dropdown-content ahk-style-for-dropdown-searches'>
+                        <li>
+                            <input class="form-control" type="text" name="NameSearch" ng-model="NameSearch" value=" " placeholder="نام" />
+                            <input class="form-control" type="text" name="CompanyNameSearch" ng-model="CompanyNameSearch" value=" " placeholder="شرکت" />
+                            <input class="form-control" type="text" name="PhoneNumberSearch" ng-model="PhoneNumberSearch" value=" " placeholder="شماره تلفن" />
+                        </li>
+                        <li ng-repeat="x in customersList | filter : {Name:NameSearch, CompanyName:CompanyNameSearch,PhoneNumber:PhoneNumberSearch}">
+                            <span ng-click="setItemId(x.Id, x.Name)" style="border-bottom:1px dashed rgb(255, 106, 0);">
+                                {{"نام: "+x.Name+"|"+"نام شرکت: "+x.CompanyName+"|"+"شماره: "+x.PhoneNumber}}
+                            </span>
+                        </li>
+                    </ul>
+                    <input type="hidden" name="CustomerId" ng-model="CustomerId" id="CustomerId" value="{{CustomerId}}" required="required" onchange="callAngularMethodFromJavaScript('CustomerId')" />
+
                     @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
                 </td>
-                <td></td>
+                <td>
+                    <span class="show-error" ng-show="ahkform.CustomerId.$dirty && ahkform.CustomerId.$invalid">
+                        <span ng-show="ahkform.CustomerId.$error.required" class="glyphicon glyphicon-remove"></span>
+                        <span ng-show="ahkform.CustomerId.$error.required">این فیلد نمی تواند خالی باشد.</span>
+                    </span>
+                    <span class="show-success" ng-show="ahkform.CustomerId.$dirty && !ahkform.CustomerId.$invalid">
+                        <span ng-hide="ahkform.CustomerId.$error.required || ahkform.SupplierId.$error.min" class="glyphicon glyphicon-check"></span>
+                    </span>
+                </td>
             </tr>
 
             <tr>
@@ -71,7 +114,8 @@
                 <td>
                     <div class="input-group" dir="ltr" style="max-width:280px;">
                         <span class="glyphicon glyphicon-calendar input-group-addon" id="input1" data-MdDateTimePicker="true" data-TargetSelector="#input1" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
-                        @Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @class = "form-control", id = "textBoxInputId" } })
+                        <input type="text" name="OrderDate" class="form-control" id="textBoxInputId" required="required"
+                               value="@ViewBag.OrderDate" readonly="readonly" />
                     </div>
                     @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
                 </td>
@@ -85,7 +129,8 @@
                 <td>
                     <div class="input-group" dir="ltr" style="max-width:280px;">
                         <span class="glyphicon glyphicon-calendar input-group-addon" id="input2" data-MdDateTimePicker="true" data-TargetSelector="#input1" data-EnableTimePicker="true" data-Placement="left" data-Trigger="click"></span>
-                        @Html.EditorFor(model => model.RequiredDate, new { htmlAttributes = new { @class = "form-control", id = "textBoxInputId2" } })
+                        <input type="text" name="RequiredDate" class="form-control" id="textBoxInputId2" required="required"
+                               value="@ViewBag.RequiredDate" readonly="readonly" />
                     </div>
                     @Html.ValidationMessageFor(model => model.RequiredDate, "", new { @class = "text-danger" })
                 </td>
@@ -94,7 +139,8 @@
         </table>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        <button type="submit" value="افزودن" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> افزودن</button>
+                        <button type="submit" value="افزودن" class="btn btn-primary" ng-hide="ahkform.ContractId.$error.required || ahkform.CustomerId.$error.required">
+                        <span class="glyphicon glyphicon-plus"></span> افزودن</button>
                         <a href="~/Orders/Index" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> برگشت به لیست</a>
                         <a href="~/Contracts/Create" class="btn btn-sm btn-success" style="margin-top: 4px;"><span class="glyphicon glyphicon-plus"></span> افزودن متن قرارداد</a>
                     </div>
@@ -103,6 +149,20 @@
 </div>
 
 
+<script>
+    $(document).ready(function () {
+        $('.dropdown-button').dropdown({
+            inDuration: 300,
+            outDuration: 225,
+            constrainWidth: false, // Does not change width of dropdown to that of the activator
+            hover: true, // Activate on hover
+            gutter: 50, // Spacing from edge
+            belowOrigin: true, // Displays dropdown below the button
+            alignment: 'left', // Displays dropdown with edge aligned to the left of button
+            stopPropagation: true // Stops event propagation
+        });
+    });
+</script>
 
 <script type="text/javascript">
 
@@ -137,3 +197,36 @@
     });
 </script>
 
+<script>
+
+    var app = angular.module('createItemApp', []);
+    app.controller('createItemCtrl', function ($scope, $http) {
+        $scope.stayOnCreatePage = false;
+        $scope.changeStayOnCreatePage = function () {
+            $scope.stayOnCreatePage = true;
+        };
+
+        $scope.customersList = @Html.Raw(Json.Encode(customersList));
+        $scope.CustomerId = "";
+        $scope.valueToShowInButton = "انتخاب مشتری";
+
+        $scope.setItemId = function (itemId, itemName) {
+            $scope.CustomerId = itemId;
+            $scope.valueToShowInButton = itemName;
+        };
+
+        $scope.contractsList = @Html.Raw(Json.Encode(contractsList));
+        $scope.ContractId = "";
+        $scope.valueToShowInButtonContract = "انتخاب متن قرارداد";
+
+        $scope.setItemId2 = function (itemId, itemName) {
+            $scope.ContractId = itemId;
+            $scope.valueToShowInButtonContract = itemName;
+        };
+    });
+
+
+    //very important: we can not have 2 angular app in one single page, se we have to use angular.bootstrap...
+    angular.bootstrap(document.getElementById("second-app-in-one-page"), ['createItemApp']);
+
+</script>

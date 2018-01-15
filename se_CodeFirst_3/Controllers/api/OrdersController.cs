@@ -11,6 +11,7 @@ using System.Web.Http.Description;
 using se_CodeFirst_3.Models;
 using se_CodeFirst_3.Filters;
 using System.Data.Entity.SqlServer;
+using se_CodeFirst_3.Helper;
 
 namespace se_CodeFirst_3.Controllers.api
 {
@@ -18,8 +19,8 @@ namespace se_CodeFirst_3.Controllers.api
 
 #else
     [Authorize]//[Authorize(Roles = "Administrator,Secretary")]
-#endif
     [LogApi]
+#endif
     public class OrdersController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -33,27 +34,27 @@ namespace se_CodeFirst_3.Controllers.api
         {
             IQueryable<Order> orders = db.Orders;
             orders = from item in orders
-                       where
-                          (!String.IsNullOrEmpty(orderDTO.Content) ? item.Contract.Content.Contains(orderDTO.Content) : true) &&
-                          (!String.IsNullOrEmpty(orderDTO.Customer) ? item.Customer.Name.Contains(orderDTO.Customer) : true) &&
-                          ((orderDTO.MinOrderDate.Year != 1) ?
-                            ((item.OrderDate.Year > orderDTO.MinOrderDate.Year) ||
-                            (item.OrderDate.Year == orderDTO.MinOrderDate.Year && item.OrderDate.Month > orderDTO.MinOrderDate.Month) ||
-                            (item.OrderDate.Year == orderDTO.MinOrderDate.Year && item.OrderDate.Month == orderDTO.MinOrderDate.Month && item.OrderDate.Day > orderDTO.MinOrderDate.Day))
-                            : true) &&
-                          ((orderDTO.MinRequiredDate.Year != 1) ?
-                            ((item.RequiredDate.Year > orderDTO.MinRequiredDate.Year) ||
-                            (item.RequiredDate.Year == orderDTO.MinRequiredDate.Year && item.RequiredDate.Month > orderDTO.MinRequiredDate.Month) ||
-                            (item.RequiredDate.Year == orderDTO.MinRequiredDate.Year && item.RequiredDate.Month == orderDTO.MinRequiredDate.Month && item.RequiredDate.Day > orderDTO.MinRequiredDate.Day))
-                            : true)
-                          //   &&
-                          //((orderDTO.MaxOrderDate.Year != 1) ?
-                          //  ((item.OrderDate.Year < orderDTO.MaxOrderDate.Year) ||
-                          //  (item.OrderDate.Year == orderDTO.MaxOrderDate.Year && item.OrderDate.Month < orderDTO.MaxOrderDate.Month) ||
-                          //  (item.OrderDate.Year == orderDTO.MaxOrderDate.Year && item.OrderDate.Month == orderDTO.MaxOrderDate.Month && item.OrderDate.Day < orderDTO.MaxOrderDate.Day))
-                          //  : true)
+                     where
+                        (!String.IsNullOrEmpty(orderDTO.Content) ? item.Contract.Content.Contains(orderDTO.Content) : true) &&
+                        (!String.IsNullOrEmpty(orderDTO.Customer) ? item.Customer.Name.Contains(orderDTO.Customer) : true) &&
+                        ((orderDTO.MinOrderDate.Year != 1) ?
+                          ((item.OrderDate.Year > orderDTO.MinOrderDate.Year) ||
+                          (item.OrderDate.Year == orderDTO.MinOrderDate.Year && item.OrderDate.Month > orderDTO.MinOrderDate.Month) ||
+                          (item.OrderDate.Year == orderDTO.MinOrderDate.Year && item.OrderDate.Month == orderDTO.MinOrderDate.Month && item.OrderDate.Day > orderDTO.MinOrderDate.Day))
+                          : true) &&
+                        ((orderDTO.MinRequiredDate.Year != 1) ?
+                          ((item.RequiredDate.Year > orderDTO.MinRequiredDate.Year) ||
+                          (item.RequiredDate.Year == orderDTO.MinRequiredDate.Year && item.RequiredDate.Month > orderDTO.MinRequiredDate.Month) ||
+                          (item.RequiredDate.Year == orderDTO.MinRequiredDate.Year && item.RequiredDate.Month == orderDTO.MinRequiredDate.Month && item.RequiredDate.Day > orderDTO.MinRequiredDate.Day))
+                          : true)
+                     //   &&
+                     //((orderDTO.MaxOrderDate.Year != 1) ?
+                     //  ((item.OrderDate.Year < orderDTO.MaxOrderDate.Year) ||
+                     //  (item.OrderDate.Year == orderDTO.MaxOrderDate.Year && item.OrderDate.Month < orderDTO.MaxOrderDate.Month) ||
+                     //  (item.OrderDate.Year == orderDTO.MaxOrderDate.Year && item.OrderDate.Month == orderDTO.MaxOrderDate.Month && item.OrderDate.Day < orderDTO.MaxOrderDate.Day))
+                     //  : true)
                      select item;
-            
+
             return orders;
         }
 
@@ -93,6 +94,17 @@ namespace se_CodeFirst_3.Controllers.api
             }
 
             db.Entry(order).State = EntityState.Modified;
+
+            //db.Orders.Attach(order);
+            //var entry = db.Entry(order);
+            //entry.Property(e2 => e2.ContractId).CurrentValue = order.ContractId;
+            //entry.Property(e2 => e2.ContractId).IsModified = true;
+            //entry.Property(e2 => e2.CustomerId).CurrentValue = order.CustomerId;
+            //entry.Property(e2 => e2.CustomerId).IsModified = true;
+            //entry.Property(e2 => e2.OrderDate).CurrentValue = order.OrderDate;
+            //entry.Property(e2 => e2.OrderDate).IsModified = true;
+            //entry.Property(e2 => e2.RequiredDate).CurrentValue = order.RequiredDate;
+            //entry.Property(e2 => e2.RequiredDate).IsModified = true;
 
             try
             {
@@ -145,10 +157,44 @@ namespace se_CodeFirst_3.Controllers.api
                 return NotFound();
             }
 
-            db.Orders.Remove(order);
-            db.SaveChanges();
+            //I couldn't implement cascade delete, so here it is implementing cascade delete manualy to delete Order_details Items too
+            //order.Order_Details.ToList().ForEach(item => db.Order_Details.Remove(item));
+            ConnectToWebApiHelper helper = new ConnectToWebApiHelper();
+            bool allOrderDetailsItemsDeleted = true;
+            List<Order_Detail> orderDetailsToBeDeleted = order.Order_Details.ToList();
+            foreach (var item in orderDetailsToBeDeleted)
+            {
+                Order_Detail order_Detail = db.Order_Details.Find(item.Id);
+                if (order_Detail == null)
+                {
+                    allOrderDetailsItemsDeleted = false;
+                    break;
+                }
 
-            return Ok(order);
+                db.Order_Details.Remove(order_Detail);
+
+                //now we have to update products table too:
+                var product = (from item2 in db.Products
+                               where item2.Id == order_Detail.ProductId
+                               select item2).SingleOrDefault();
+
+                product.UnitsInStock = product.UnitsInStock + order_Detail.Quantity;
+                db.Entry(product).State = EntityState.Modified;
+                
+            }
+
+            if (allOrderDetailsItemsDeleted == true)
+            {
+                db.SaveChanges();
+                db.Orders.Remove(order);
+                db.SaveChanges();
+                return Ok(order);
+            }
+            else
+            {
+                return BadRequest();
+            }
+
         }
 
         protected override void Dispose(bool disposing)

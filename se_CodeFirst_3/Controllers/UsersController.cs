@@ -57,7 +57,7 @@ namespace se_CodeFirst_3.Controllers
                     "MaxAbsentDays=" + userDTO.MaxAbsentDays
                     );
             }
-            else 
+            else
             {
                 users = await helper.GetListOfItems<ApplicationUser>(basePath);
             }
@@ -122,8 +122,18 @@ namespace se_CodeFirst_3.Controllers
             bool castedStayOnCreatePage = stayOnCreatePage.HasValue ? stayOnCreatePage.Value : false;
             if (ModelState.IsValid)
             {
-                helper.CreateItem<RegisterBindingModel>("/api/account/register", registerBindingModel);
+                var a = helper.CreateItem<RegisterBindingModel>("/api/account/register", registerBindingModel);
                 notificationHelper.SuccessfulInsert(registerBindingModel.Email);
+                //var itemCreated = helper.CreateItem<RegisterBindingModel>("/api/account/register", registerBindingModel);
+                //if (itemCreated != null)
+                //{
+                //    notificationHelper.SuccessfulInsert(registerBindingModel.Email);
+                //}
+                //else
+                //{
+                //    notificationHelper.FailureInsert(registerBindingModel.Email);
+                //}
+
                 if (castedStayOnCreatePage == true)
                 {
                     return RedirectToAction("Create");
@@ -197,8 +207,13 @@ namespace se_CodeFirst_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(string id)
         {
-            notificationHelper.SuccessfulDelete((await helper.GetItem<UserListViewModel>(basePath + id)).UserName);
-            helper.DeleteItem(basePath, id);
+            string deletedItem = (await helper.GetItem<UserListViewModel>(basePath + id)).UserName;
+            bool successfulDelete = helper.DeleteItem(basePath, id);
+            if (successfulDelete)
+                notificationHelper.SuccessfulDelete(deletedItem);
+            else
+                notificationHelper.CustomFailureMessage("خطا در حذف " + deletedItem);
+
             return RedirectToAction("Index");
         }
 

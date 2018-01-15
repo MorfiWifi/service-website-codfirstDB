@@ -17,8 +17,8 @@ namespace se_CodeFirst_3.Controllers.api
 
 #else
     [Authorize]//[Authorize(Roles = "Administrator,Secretary")]
-#endif
     [LogApi]
+#endif
     public class Order_DetailController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -28,16 +28,17 @@ namespace se_CodeFirst_3.Controllers.api
 #else
         [ClaimsAuthorization(ClaimType = "Order_Detail", ClaimValue = "Get")]
 #endif
-        public IQueryable<Order_Detail> GetOrder_Details([FromUri]Order_Detail orderDetail)
+        public IQueryable<Order_Detail> GetOrder_Details([FromUri]Order_DetailDTO orderDetailDTO)
         {
-            //IQueryable<Order_Detail> orderDetails = db.Order_Details;
-            //orderDetails = from item in orderDetails
-            //               where
-            //                  (!String.IsNullOrEmpty(orderDetail.Product.Name) ? item.Product.Name.Contains(orderDetail.Product.Name) : true) &&
-            //                  //(orderDetail.Quantity != 0 ? item.orderDetail.ToString().Contains(orderDetails.PhoneNumber.ToString()) : true)
-            //               select item;
+            IQueryable<Order_Detail> orderDetails = db.Order_Details;
+            orderDetails = from item in orderDetails
+                       where
+                          (!String.IsNullOrEmpty(orderDetailDTO.Name) ? item.Product.Name.Contains(orderDetailDTO.Name) : true) &&
+                          (orderDetailDTO.MinQuantity != 0 ? item.Quantity > orderDetailDTO.MinQuantity : true) &&
+                          (orderDetailDTO.MaxQuantity != 0 ? item.Quantity < orderDetailDTO.MaxQuantity : true)
+                       select item;
 
-            return db.Order_Details;
+            return orderDetails;
         }
 
         // GET: api/Order_Detail/5
